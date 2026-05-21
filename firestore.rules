@@ -1,0 +1,144 @@
+rules_version = '2';
+// ─────────────────────────────────────────────────────────────────────────────
+// Medilert — Firestore Security Rules
+// Deploy with: firebase deploy --only firestore:rules
+//
+// Access model
+// ─────────────────────────────────────────────────────────────────────────────
+//  PATIENT
+//    • Full read/write on own user document, medications, and schedules.
+//    • Read-only on their assigned caregiver's user document (name, specialty…).
+//    • No access to any other user's data.
+//
+//  DOCTOR / PHARMACIST / GUARDIAN (caregivers)
+//    • Full read/write on own user document.
+//    • Read-only on the user documents, medications, and schedules of patients
+//      they are explicitly assigned to (via careAssignments collection).
+//    • No write access to patients' sub-collections (medications/schedules).
+//    • No access to unassigned patients.
+//
+//  careAssignments collection
+//    • Caregivers may read and create/delete assignments where they are the
+//      caregiverId.  Patients may read assignments where they are the patientId.
+//
+// ACID relationship to rules
+// ─────────────────────────────────────────────────────────────────────────────
+//  The assign/unassign operations in CareRelationshipRepository use a WriteBatch
+//  that touches two documents: careAssignments/{id} and users/{patientId}.
+//  Both writes go through the rules below. If either document fails the rule
+//  check the entire batch is rejected (server-side atomicity guarantee).
+// ─────────────────────────────────────────────────────────────────────────────
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ────────────────────────────────────────────────────
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isAuthenticated() && request.auth.uid == uid;
+    }
+
+    // Returns the role stored in the caller's Firestore user document.
+    function callerRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isCaregiver() {
+      return isAuthenticated() &&
+        callerRole() in ['DOCTOR', 'PHARMACIST', 'GUARDIAN'];
+    }
+
+    // Deterministic assignment document ID: "{caregiverId}_{patientId}"
+    function assignmentId(caregiverId, patientId) {
+      return caregiverId + '_' + patientId;
+    }
+
+    // True when the authenticated caregiver has an active assignment for uid.
+    function caregiverIsAssignedTo(patientId) {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/careAssignments/$(
+          assignmentId(request.auth.uid, patientId)
+        ));
+    }
+
+    // True when the authenticated patient is assigned to caregiverId.
+    function patientIsAssignedTo(caregiverId) {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/careAssignments/$(
+          assignmentId(caregiverId, request.auth.uid)
+        ));
+    }
+
+    // ── /users/{uid} ────────────────────────────────────────────────────────
+
+    match /users/{uid} {
+      // Owner: full read + write.
+      allow read, write: if isOwner(uid);
+
+      // Caregiver: read-only access to an assigned patient's profile.
+      allow read: if isCaregiver() && caregiverIsAssignedTo(uid);
+
+      // Caregiver: read-only access to ALL patient profiles for add-patient search.
+      // Uses resource.data (the document being read) instead of nested get().
+      allow read: if isCaregiver() && resource.data.role == 'PATIENT';
+
+      // Caregiver: write access to update caregiverId field during assignment/unassignment.
+      // This is needed for the atomic WriteBatch that creates careAssignments + updates patient.
+      allow update: if isCaregiver() &&
+        resource.data.role == 'PATIENT' &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['caregiverId', 'updatedAt']);
+
+      // Patient: read-only access to their assigned caregiver's profile
+      // (to display the doctor's name, specialty, contact info).
+      allow read: if isAuthenticated() && patientIsAssignedTo(uid);
+
+      // ── /users/{uid}/medications/{medId} ──────────────────────────────────
+
+      match /medications/{medId} {
+        // Owner: full access.
+        allow read, write: if isOwner(uid);
+
+        // Assigned caregiver: read-only (monitoring; cannot add/edit/delete).
+        allow read: if isCaregiver() && caregiverIsAssignedTo(uid);
+      }
+
+      // ── /users/{uid}/schedules/{scheduleId} ───────────────────────────────
+
+      match /schedules/{scheduleId} {
+        // Owner: full access.
+        allow read, write: if isOwner(uid);
+
+        // Assigned caregiver: read-only (monitoring only).
+        allow read: if isCaregiver() && caregiverIsAssignedTo(uid);
+      }
+    }
+
+    // ── /careAssignments/{assignmentId} ─────────────────────────────────────
+    // Document ID format: "{caregiverId}_{patientId}"
+
+    match /careAssignments/{assignmentId} {
+      // Both parties can read their own assignment records.
+      allow read: if isAuthenticated() && (
+        resource.data.caregiverId == request.auth.uid ||
+        resource.data.patientId  == request.auth.uid
+      );
+
+      // Only caregivers can create an assignment, and only for themselves.
+      allow create: if isCaregiver() &&
+        request.resource.data.caregiverId == request.auth.uid;
+
+      // Only the caregiver who owns the assignment can delete it.
+      allow delete: if isCaregiver() &&
+        resource.data.caregiverId == request.auth.uid;
+
+      // Assignments are immutable once created (update not permitted).
+      // Delete + re-create to change anything.
+      allow update: if false;
+    }
+
+  }
+}

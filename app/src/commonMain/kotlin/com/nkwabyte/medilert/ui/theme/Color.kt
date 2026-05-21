@@ -1,0 +1,39 @@
+package com.nkwabyte.medilert.ui.theme
+
+import androidx.compose.ui.graphics.Color
+
+val PrimaryGreen = Color(0xFF006B3F)
+val DarkGreen = Color(0xFF0D4E48)
+val MediumGreen = Color(0xFF0A8A51)
+val LightGreen = Color(0xFF44B551)
+
+val GhanaRed = Color(0xFFCE1126)
+val GhanaRedDark = Color(0xFFA81010)
+val GhanaRedLight = Color(0xFFE53935)
+
+val GhanaYellow = Color(0xFFFCD116)
+val GhanaYellowDark = Color(0xFFE5BD14)
+val GhanaYellowMedium = Color(0xFFFDBB11)
+
+val Background = Color(0xFFFDFDFD)
+val Surface = Color(0xFFFFFFFF)
+val SurfaceVariant = Color(0xFFF8F9FA)
+
+val TextPrimary = Color(0xFF000000)
+val TextSecondary = Color(0xFF6B7280)
+val TextTertiary = Color(0xFFADB5BD)
+val TextHint = Color(0xFFD1D5DB)
+
+val BorderLight = Color(0xFFF3F4F6)
+val BorderMedium = Color(0xFFE5E7EB)
+val Divider = Color(0xFFE4E4E4)
+
+val StatusTaken = Color(0xFF006B3F)
+val StatusMissed = Color(0xFFCE1126)
+val StatusUpcoming = Color(0xFF0DC0EC)
+
+val TabActive = Color(0xFF006B3F)
+val TabInactive = Color(0xFFADB1AD)
+
+val Overlay = Color(0x66000000)
+val OverlayLight = Color(0x1A000000)
