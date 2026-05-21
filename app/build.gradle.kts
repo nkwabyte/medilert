@@ -1,8 +1,9 @@
 import java.util.Properties
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.kotlin.serialization)
@@ -11,10 +12,13 @@ plugins {
 }
 
 kotlin {
-    androidTarget()
+    androidTarget {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+    }
 
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -55,10 +59,17 @@ kotlin {
         }
 
         androidMain.dependencies {
+            // Firebase Android BoM — pins all native firebase-* versions that
+            // gitlive Firebase transitively requires (no explicit versions needed).
+            // Using project.dependencies.platform() because KMP's platform(Any) is
+            // deprecated at ERROR level since Kotlin 2.1 (KT-58759).
+            implementation(project.dependencies.platform(libs.firebase.android.bom))
+
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.core.ktx)
             implementation(libs.androidx.lifecycle.runtime.ktx)
             implementation(libs.androidx.core.splashscreen)
+            implementation(libs.androidx.material)
 
             // Android-specific coroutines + Firebase Task extensions
             implementation(libs.kotlinx.coroutines.android)
@@ -90,11 +101,7 @@ kotlin {
 
 android {
     namespace = "com.nkwabyte.medilert"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.nkwabyte.medilert"
@@ -107,9 +114,14 @@ android {
 
         // Expose Web Client ID from local.properties → BuildConfig
         val localProps = Properties().apply {
-            rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
+            rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()
+                ?.use { load(it) }
         }
-        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"${localProps["GOOGLE_WEB_CLIENT_ID"]}\"")
+        buildConfigField(
+            "String",
+            "GOOGLE_WEB_CLIENT_ID",
+            "\"${localProps["GOOGLE_WEB_CLIENT_ID"]}\""
+        )
     }
 
     buildTypes {
@@ -123,8 +135,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
@@ -132,12 +144,18 @@ android {
         buildConfig = true
     }
 
-    // Point Android source set at the new androidMain layout
+    // Point Android source sets at the KMP androidMain layout.
+    // src/main/res and src/main/java are intentionally excluded — all resources
+    // and sources live in src/androidMain/ and src/commonMain/ (KMP source sets).
+    // The old src/main/ directory is a pre-KMP leftover and must not be compiled.
     sourceSets {
         getByName("main") {
             manifest.srcFile("src/androidMain/AndroidManifest.xml")
-            res.srcDirs("src/androidMain/res", "src/main/res")
-            assets.srcDirs("src/androidMain/assets")
+            res.directories.clear()
+            res.directories.add("src/androidMain/res")
+            assets.directories.clear()
+            assets.directories.add("src/androidMain/assets")
+            java.directories.clear()  // Exclude src/main/java; KMP owns all sources
         }
     }
 }

@@ -9,6 +9,8 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        // JetBrains Compose Multiplatform dev/release artifacts
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 plugins {
@@ -19,6 +21,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // JetBrains Compose Multiplatform dev/release artifacts (required for CMP 1.11+)
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 

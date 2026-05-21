@@ -1,31 +1,32 @@
 [versions]
 agp = "9.2.1"
-kotlin = "2.1.21"
-composeMultiplatform = "1.7.3"
+kotlin = "2.3.21"
+composeMultiplatform = "1.11.0"
 coreKtx = "1.18.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
-lifecycleRuntimeKtx = "2.8.4"
+lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.13.0"
-nav3Core = "1.0.0"
-kotlinxSerializationCore = "1.8.1"
-material = "1.13.0"
+nav3Core = "1.1.2"
+kotlinxSerializationCore = "1.11.0"
+material = "1.14.0"
 coreSplashscreen = "1.2.0"
 # Firebase (gitlive-firebase — KMP wrappers for Firebase Android + Apple SDKs)
-gitlivefirebase = "2.1.0"
+gitlivefirebase = "2.4.0"
+firebaseBom = "34.13.0"
 googleServices = "4.4.4"
-firebaseCrashlyticsPlugin = "3.0.3"
+firebaseCrashlyticsPlugin = "3.0.7"
 # Coroutines (core works on all platforms; -android for Android-specific dispatcher)
-coroutines = "1.10.1"
+coroutines = "1.11.0"
 # Credential Manager (Google Sign-In, Android only)
-credentials = "1.5.0"
-googleId = "1.1.1"
+credentials = "1.6.0"
+googleId = "1.2.0"
 # KMP extras
-kotlinxDatetime = "0.6.1"
-multiplatformSettings = "1.2.0"
+kotlinxDatetime = "0.8.0"
+multiplatformSettings = "1.3.0"
 # Lifecycle ViewModel for KMP
-lifecycleViewmodelCompose = "2.8.4"
+lifecycleViewmodelCompose = "2.10.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,6 +46,7 @@ androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", vers
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerializationCore" }
 # gitlive Firebase KMP — replace all com.google.firebase Android-only deps in shared code
 firebase-gitlive-bom = { group = "dev.gitlive", name = "firebase-bom", version.ref = "gitlivefirebase" }
+firebase-android-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-gitlive-auth = { group = "dev.gitlive", name = "firebase-auth", version.ref = "gitlivefirebase" }
 firebase-gitlive-firestore = { group = "dev.gitlive", name = "firebase-firestore", version.ref = "gitlivefirebase" }
 firebase-gitlive-storage = { group = "dev.gitlive", name = "firebase-storage", version.ref = "gitlivefirebase" }

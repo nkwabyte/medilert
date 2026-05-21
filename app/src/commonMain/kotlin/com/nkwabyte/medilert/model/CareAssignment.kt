@@ -1,6 +1,6 @@
 package com.nkwabyte.medilert.model
 
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.serialization.Serializable
 
 @Serializable

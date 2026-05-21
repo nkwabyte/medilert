@@ -6,6 +6,7 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.nkwabyte.medilert.AndroidActivityHolder
 import com.nkwabyte.medilert.BuildConfig
 import com.nkwabyte.medilert.data.FirebaseResult
 

@@ -42,8 +42,8 @@ class UserService(
     suspend fun ensureProfileExists(firebaseUser: FirebaseUser): FirebaseResult<Unit> {
         return try {
             val ref = Firebase.firestore.collection("users").document(firebaseUser.uid)
-            Firebase.firestore.runTransaction { transaction ->
-                val snapshot = transaction.get(ref)
+            Firebase.firestore.runTransaction {
+                val snapshot = get(ref)
                 if (!snapshot.exists) {
                     val newUser = User(
                         id = firebaseUser.uid,
@@ -51,7 +51,7 @@ class UserService(
                         email = firebaseUser.email ?: "",
                         photoUrl = firebaseUser.photoURL ?: ""
                     )
-                    transaction.set(ref, newUser)
+                    set(ref, newUser)
                 }
             }
             FirebaseResult.Success(Unit)

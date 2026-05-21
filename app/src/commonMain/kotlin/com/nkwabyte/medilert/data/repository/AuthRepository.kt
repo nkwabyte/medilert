@@ -74,7 +74,7 @@ class AuthRepository {
 
     suspend fun verifyPhoneCode(verificationId: String, code: String): FirebaseResult<FirebaseUser> {
         return try {
-            val credential = PhoneAuthProvider.credential(verificationId, code)
+            val credential = PhoneAuthProvider(auth).credential(verificationId, code)
             val result = auth.signInWithCredential(credential)
             FirebaseResult.Success(result.user!!)
         } catch (e: Exception) {

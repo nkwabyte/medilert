@@ -41,7 +41,7 @@ import com.nkwabyte.medilert.viewmodel.CaregiverViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 import com.nkwabyte.medilert.viewmodel.TodayDoseInfo
 import com.nkwabyte.medilert.viewmodel.WeekDayInfo
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
