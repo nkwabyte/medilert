@@ -37,8 +37,8 @@ private val unitOptions = listOf("Tablet(s)", "Capsule(s)", "ml", "mg", "IU", "D
 
 @Composable
 fun AddMedicationStep1Screen(
-    navViewModel: NavViewModel = viewModel(),
-    medicationViewModel: MedicationViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    medicationViewModel: MedicationViewModel = viewModel { MedicationViewModel() }
 ) {
     val draftMedication by medicationViewModel.draftMedication.collectAsState()
     var medName by remember { mutableStateOf(draftMedication.name) }

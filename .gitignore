@@ -1,6 +1,15 @@
+# ── Gradle ──────────────────────────────────────────────────────────────────
 *.iml
 .gradle
 /local.properties
+local.properties
+/build
+**/build/
+/captures
+.externalNativeBuild
+.cxx
+
+# ── IDE ─────────────────────────────────────────────────────────────────────
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -8,24 +17,23 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
 
-# Firebase — never commit these to version control
+# ── Kotlin Multiplatform build artifacts ────────────────────────────────────
+.kotlin/
+
+# ── iOS / Xcode ─────────────────────────────────────────────────────────────
+iosApp/Pods/
+xcuserdata/
+**/*.xcuserstate
+iosApp/*.xcworkspace/xcuserdata/
+
+# ── Firebase config — never commit ──────────────────────────────────────────
 google-services.json
 app/google-services.json
+GoogleService-Info.plist
+**/GoogleService-Info.plist
 
-scripts/
-
-*.zip
-**/*.zip
-*.apk
-**/*.apk
-*.aab
-**/*.aab
+# ── Secrets & signing ────────────────────────────────────────────────────────
 *.keystore
 **/*.keystore
 *.jks
@@ -37,3 +45,13 @@ scripts/
 *.pem
 **/*.pem
 *.crt
+
+# ── Build outputs ────────────────────────────────────────────────────────────
+*.zip
+**/*.zip
+*.apk
+**/*.apk
+*.aab
+**/*.aab
+
+scripts/

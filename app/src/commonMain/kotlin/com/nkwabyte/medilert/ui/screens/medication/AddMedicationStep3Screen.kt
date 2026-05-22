@@ -30,8 +30,8 @@ import com.nkwabyte.medilert.viewmodel.NavViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddMedicationStep3Screen(
-    navViewModel: NavViewModel = viewModel(),
-    medicationViewModel: MedicationViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    medicationViewModel: MedicationViewModel = viewModel { MedicationViewModel() }
 ) {
     val draftMedication by medicationViewModel.draftMedication.collectAsState()
     val frequency by medicationViewModel.draftFrequency.collectAsState()

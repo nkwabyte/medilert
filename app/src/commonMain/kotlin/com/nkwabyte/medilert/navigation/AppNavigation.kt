@@ -40,7 +40,7 @@ import com.nkwabyte.medilert.ui.screens.setup.VoiceAccessibilityScreen
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 
 @Composable
-fun AppNavigation(navViewModel: NavViewModel = viewModel()) {
+fun AppNavigation(navViewModel: NavViewModel = viewModel { NavViewModel() }) {
     val backStack = navViewModel.backStack
     val current = backStack.lastOrNull() ?: Splash
 

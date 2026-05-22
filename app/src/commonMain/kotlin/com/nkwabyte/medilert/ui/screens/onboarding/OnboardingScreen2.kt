@@ -41,7 +41,7 @@ import com.nkwabyte.medilert.ui.theme.PrimaryGreen
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 
 @Composable
-fun OnboardingScreen2(navViewModel: NavViewModel = viewModel()) {
+fun OnboardingScreen2(navViewModel: NavViewModel = viewModel { NavViewModel() }) {
     val prefsManager = PreferencesManager.instance
 
     Box(modifier = Modifier.fillMaxSize().background(Background)) {

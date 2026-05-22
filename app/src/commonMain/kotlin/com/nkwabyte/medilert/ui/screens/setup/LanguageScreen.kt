@@ -33,8 +33,8 @@ private val languages = listOf(
 
 @Composable
 fun LanguageScreen(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() }
 ) {
     var selectedLang by remember { mutableStateOf("en") }
     Box(modifier = Modifier.fillMaxSize().background(Background)) {

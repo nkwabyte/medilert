@@ -109,9 +109,9 @@ private fun sessionOf(scheduledTime: String): String {
 
 @Composable
 fun DashboardScreen(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel(),
-    medicationViewModel: MedicationViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() },
+    medicationViewModel: MedicationViewModel = viewModel { MedicationViewModel() }
 ) {
     var activeTab by remember { mutableStateOf(DashboardTab.HOME) }
 
@@ -158,9 +158,9 @@ fun DashboardScreen(
 
 @Composable
 fun HomeTab(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel(),
-    medicationViewModel: MedicationViewModel = viewModel(),
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() },
+    medicationViewModel: MedicationViewModel = viewModel { MedicationViewModel() },
     onViewAllHistory: () -> Unit = {}
 ) {
     val currentUser by appViewModel.currentUser.collectAsState()

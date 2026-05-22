@@ -41,7 +41,7 @@ import com.nkwabyte.medilert.ui.theme.PrimaryGreen
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 
 @Composable
-fun OnboardingScreen1(navViewModel: NavViewModel = viewModel()) {
+fun OnboardingScreen1(navViewModel: NavViewModel = viewModel { NavViewModel() }) {
     Box(modifier = Modifier.fillMaxSize().background(Background)) {
         TopBarStripe(modifier = Modifier.align(Alignment.TopCenter))
 

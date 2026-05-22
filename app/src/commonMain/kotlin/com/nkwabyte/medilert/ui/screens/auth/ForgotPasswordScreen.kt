@@ -51,7 +51,7 @@ import com.nkwabyte.medilert.ui.theme.TextSecondary
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 
 @Composable
-fun ForgotPasswordScreen(navViewModel: NavViewModel = viewModel()) {
+fun ForgotPasswordScreen(navViewModel: NavViewModel = viewModel { NavViewModel() }) {
     var email by remember { mutableStateOf("") }
 
     Box(

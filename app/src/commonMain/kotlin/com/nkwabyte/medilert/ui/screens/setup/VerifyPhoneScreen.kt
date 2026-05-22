@@ -31,8 +31,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun VerifyPhoneScreen(
-    navViewModel: NavViewModel = viewModel(),
-    authViewModel: AuthViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    authViewModel: AuthViewModel = viewModel { AuthViewModel() }
 ) {
     val uiState by authViewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }

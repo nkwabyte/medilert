@@ -25,7 +25,7 @@ import com.nkwabyte.medilert.ui.theme.*
 
 @Composable
 fun ReminderScreen(
-    navViewModel: NavViewModel = viewModel(),
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
     type: String,
     time: String
 ) {

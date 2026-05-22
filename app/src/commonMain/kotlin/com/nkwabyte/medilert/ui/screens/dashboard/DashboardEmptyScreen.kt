@@ -28,8 +28,8 @@ import com.nkwabyte.medilert.viewmodel.NavViewModel
 
 @Composable
 fun DashboardEmptyScreen(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() }
 ) {
     var activeTab by remember { mutableStateOf(DashboardTab.HOME) }
 

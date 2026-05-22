@@ -27,7 +27,7 @@ import com.nkwabyte.medilert.ui.theme.*
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 
 @Composable
-fun ForgetPinScreen(navViewModel: NavViewModel = viewModel()) {
+fun ForgetPinScreen(navViewModel: NavViewModel = viewModel { NavViewModel() }) {
     var phone by remember { mutableStateOf("") }
     Box(modifier = Modifier.fillMaxSize().background(Background)) {
         Column(modifier = Modifier.fillMaxSize()) {

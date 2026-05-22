@@ -28,8 +28,8 @@ import com.nkwabyte.medilert.viewmodel.NavViewModel
 
 @Composable
 fun VoiceAccessibilityScreen(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() }
 ) {
     var voiceEnabled by remember { mutableStateOf(false) }
     Box(modifier = Modifier.fillMaxSize().background(Background)) {

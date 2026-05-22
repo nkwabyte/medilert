@@ -33,8 +33,8 @@ private val frequencies = listOf(
 
 @Composable
 fun AddMedicationStep2Screen(
-    navViewModel: NavViewModel = viewModel(),
-    medicationViewModel: MedicationViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    medicationViewModel: MedicationViewModel = viewModel { MedicationViewModel() }
 ) {
     val draftMedication by medicationViewModel.draftMedication.collectAsState()
     var selectedFrequency by remember { mutableStateOf(draftMedication.frequency) }

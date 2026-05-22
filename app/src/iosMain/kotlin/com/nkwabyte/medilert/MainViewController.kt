@@ -7,7 +7,9 @@ import androidx.compose.ui.window.ComposeUIViewController
 import com.nkwabyte.medilert.navigation.AppNavigation
 import com.nkwabyte.medilert.ui.theme.MedilertTheme
 
-fun MainViewController() = ComposeUIViewController {
+fun MainViewController() = ComposeUIViewController(configure = {
+    enforceStrictPlistSanityCheck = false
+}) {
     MedilertTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             AppNavigation()

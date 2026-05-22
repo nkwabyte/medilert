@@ -28,7 +28,7 @@ import com.nkwabyte.medilert.ui.components.TopBarStripe
 import com.nkwabyte.medilert.ui.theme.*
 
 @Composable
-fun ResetPinScreen(navViewModel: NavViewModel = viewModel()) {
+fun ResetPinScreen(navViewModel: NavViewModel = viewModel { NavViewModel() }) {
     var newPin by remember { mutableStateOf("") }
     var confirmPin by remember { mutableStateOf("") }
     var step by remember { mutableStateOf(0) }

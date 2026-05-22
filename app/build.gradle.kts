@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics.plugin)
+    kotlin("native.cocoapods")
 }
 
 kotlin {
@@ -18,14 +19,28 @@ kotlin {
         }
     }
 
-    listOf(
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
+    iosArm64()
+    iosSimulatorArm64()
+
+    // CocoaPods integration: generates MediLert.podspec and links Firebase iOS SDK
+    // so that gitlive-firebase can resolve its native symbols at link time.
+    cocoapods {
+        version = "1.0"
+        summary = "MediLert Kotlin Multiplatform shared module"
+        homepage = "https://github.com/nkwabyte/medilert"
+        ios.deploymentTarget = "16.0"
+        framework {
             baseName = "MediLert"
             isStatic = true
         }
+        // Firebase pods required by gitlive-firebase for iOS linking
+        pod("FirebaseCore")
+        pod("FirebaseAuth")
+        pod("FirebaseFirestore")
+        pod("FirebaseStorage")
+        pod("FirebaseMessaging")
+        pod("FirebaseCrashlytics")
+        pod("FirebaseAnalytics")
     }
 
     sourceSets {
@@ -54,8 +69,8 @@ kotlin {
             implementation(libs.firebase.gitlive.crashlytics)
             implementation(libs.firebase.gitlive.analytics)
 
-            // Multiplatform Settings (SharedPreferences replacement)
-            implementation(libs.multiplatform.settings)
+            // Multiplatform Settings with no-arg factory (works on all platforms)
+            implementation(libs.multiplatform.settings.no.arg)
         }
 
         androidMain.dependencies {
@@ -80,8 +95,6 @@ kotlin {
             implementation(libs.androidx.credentials.play.services)
             implementation(libs.google.identity.googleid)
 
-            // Multiplatform Settings Android backing
-            implementation(libs.multiplatform.settings.no.arg)
         }
 
         iosMain.dependencies {

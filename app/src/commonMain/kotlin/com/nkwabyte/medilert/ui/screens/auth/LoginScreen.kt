@@ -87,9 +87,9 @@ import com.nkwabyte.medilert.generated.resources.logo
 
 @Composable
 fun LoginScreen(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel(),
-    authViewModel: AuthViewModel = viewModel(),
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() },
+    authViewModel: AuthViewModel = viewModel { AuthViewModel() },
     userService: UserService = UserService()
 ) {
     val uiState by authViewModel.uiState.collectAsState()

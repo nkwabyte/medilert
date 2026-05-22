@@ -40,8 +40,8 @@ import kotlinx.datetime.toLocalDateTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MedicationHistoryScreen(
-    navViewModel: NavViewModel = viewModel(),
-    medicationViewModel: MedicationViewModel = viewModel(),
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    medicationViewModel: MedicationViewModel = viewModel { MedicationViewModel() },
     hideBackButton: Boolean = false
 ) {
     val scheduleHistory by medicationViewModel.scheduleHistory.collectAsState()
@@ -52,7 +52,7 @@ fun MedicationHistoryScreen(
     var selectedDate by remember { mutableStateOf<String?>(null) }
 
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = System.currentTimeMillis()
+        initialSelectedDateMillis = Clock.System.now().toEpochMilliseconds()
     )
 
     val filteredHistory = remember(scheduleHistory, searchQuery, selectedFilter, selectedDate) {

@@ -58,8 +58,8 @@ import com.nkwabyte.medilert.viewmodel.NavViewModel
 
 @Composable
 fun ConfirmPinScreen(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() }
 ) {
     var pin by remember { mutableStateOf("") }
     val tempPin by appViewModel.tempPin.collectAsState()

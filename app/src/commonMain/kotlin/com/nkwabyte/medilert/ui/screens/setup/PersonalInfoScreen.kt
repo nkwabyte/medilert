@@ -72,8 +72,8 @@ import com.nkwabyte.medilert.viewmodel.SignupViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonalInfoScreen(
-    navViewModel: NavViewModel = viewModel(),
-    signupViewModel: SignupViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    signupViewModel: SignupViewModel = viewModel { SignupViewModel() }
 ) {
     val signupData by signupViewModel.signupData.collectAsState()
 

@@ -22,7 +22,7 @@ import com.nkwabyte.medilert.ui.theme.*
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 
 @Composable
-fun ProfilePhotoViewScreen(navViewModel: NavViewModel = viewModel()) {
+fun ProfilePhotoViewScreen(navViewModel: NavViewModel = viewModel { NavViewModel() }) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize().background(TextPrimary)) {

@@ -125,9 +125,9 @@ private fun professionalFieldFor(role: UserRole): ProfessionalFieldConfig? = whe
 
 @Composable
 fun UserRoleScreen(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel(),
-    signupViewModel: SignupViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() },
+    signupViewModel: SignupViewModel = viewModel { SignupViewModel() }
 ) {
     var selectedRole by remember { mutableStateOf(UserRole.PATIENT) }
     var professionalDetail by remember { mutableStateOf("") }

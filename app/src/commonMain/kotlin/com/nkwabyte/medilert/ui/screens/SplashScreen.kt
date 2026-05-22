@@ -49,7 +49,7 @@ import androidx.compose.foundation.Image
 
 @Composable
 fun SplashScreen(
-    navViewModel: NavViewModel = viewModel(),
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
     userService: UserService = UserService()
 ) {
     val prefsManager = remember { PreferencesManager.instance }

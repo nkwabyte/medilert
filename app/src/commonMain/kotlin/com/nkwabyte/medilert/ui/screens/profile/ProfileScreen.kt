@@ -27,6 +27,7 @@ import com.nkwabyte.medilert.ui.screens.auth.AuthInputField
 import com.nkwabyte.medilert.ui.theme.*
 import com.nkwabyte.medilert.viewmodel.AppViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
+import kotlin.time.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -34,8 +35,8 @@ import kotlinx.datetime.toLocalDateTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() }
 ) {
     val currentUser by appViewModel.currentUser.collectAsState()
     val userRole by appViewModel.userRole.collectAsState()
@@ -65,7 +66,7 @@ fun ProfileScreen(
     }
 
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = System.currentTimeMillis()
+        initialSelectedDateMillis = Clock.System.now().toEpochMilliseconds()
     )
 
     LaunchedEffect(currentUser) {

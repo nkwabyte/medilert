@@ -27,8 +27,8 @@ private val languages = listOf(Triple("en", "English", "English"), Triple("tw", 
 
 @Composable
 fun LanguageSettingsScreen(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() }
 ) {
     val currentLang by appViewModel.selectedLanguage.collectAsState()
     var selectedLang by remember { mutableStateOf(languages.firstOrNull { it.second == currentLang }?.first ?: "en") }

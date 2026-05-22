@@ -89,8 +89,8 @@ private val frequencies = listOf(
 @Composable
 fun EditMedicationScreen(
     medicationId: String,
-    navViewModel: NavViewModel = viewModel(),
-    medicationViewModel: MedicationViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    medicationViewModel: MedicationViewModel = viewModel { MedicationViewModel() }
 ) {
     LaunchedEffect(medicationId) {
         medicationViewModel.startEditMedication(medicationId)

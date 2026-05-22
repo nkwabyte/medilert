@@ -86,9 +86,9 @@ import com.nkwabyte.medilert.generated.resources.logo
 
 @Composable
 fun SignUpScreen(
-    navViewModel: NavViewModel = viewModel(),
-    authViewModel: AuthViewModel = viewModel(),
-    signupViewModel: SignupViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    authViewModel: AuthViewModel = viewModel { AuthViewModel() },
+    signupViewModel: SignupViewModel = viewModel { SignupViewModel() }
 ) {
     val uiState by authViewModel.uiState.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }

@@ -30,7 +30,7 @@ import com.nkwabyte.medilert.viewmodel.NavViewModel
 import com.nkwabyte.medilert.ui.theme.*
 
 @Composable
-fun NewPasswordScreen(navViewModel: NavViewModel = viewModel()) {
+fun NewPasswordScreen(navViewModel: NavViewModel = viewModel { NavViewModel() }) {
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var newPasswordVisible by remember { mutableStateOf(false) }

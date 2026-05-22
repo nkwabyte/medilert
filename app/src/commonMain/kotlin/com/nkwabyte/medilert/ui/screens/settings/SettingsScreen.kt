@@ -83,8 +83,8 @@ import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun SettingsScreen(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel(),
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() },
     hideBackButton: Boolean = false,
     isCaregiver: Boolean = false
 ) {

@@ -72,9 +72,9 @@ import kotlinx.datetime.toLocalDateTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddMedicationStep4Screen(
-    navViewModel: NavViewModel = viewModel(),
-    medicationViewModel: MedicationViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    medicationViewModel: MedicationViewModel = viewModel { MedicationViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() }
 ) {
     val draftMedication by medicationViewModel.draftMedication.collectAsState()
     val userRole by appViewModel.userRole.collectAsState()

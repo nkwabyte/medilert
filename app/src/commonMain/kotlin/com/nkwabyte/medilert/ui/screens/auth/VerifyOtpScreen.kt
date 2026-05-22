@@ -64,8 +64,8 @@ import com.nkwabyte.medilert.viewmodel.NavViewModel
 
 @Composable
 fun VerifyOtpScreen(
-    navViewModel: NavViewModel = viewModel(),
-    authViewModel: AuthViewModel = viewModel(),
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    authViewModel: AuthViewModel = viewModel { AuthViewModel() },
     source: String = "signup"
 ) {
     val uiState by authViewModel.uiState.collectAsState()

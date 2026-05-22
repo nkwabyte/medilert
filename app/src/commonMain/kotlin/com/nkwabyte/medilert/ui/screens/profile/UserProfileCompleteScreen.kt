@@ -27,9 +27,9 @@ import com.nkwabyte.medilert.viewmodel.SignupViewModel
 
 @Composable
 fun UserProfileCompleteScreen(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel(),
-    signupViewModel: SignupViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() },
+    signupViewModel: SignupViewModel = viewModel { SignupViewModel() }
 ) {
     val userRole by appViewModel.userRole.collectAsState()
     val saveState by signupViewModel.saveState.collectAsState()

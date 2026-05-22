@@ -28,7 +28,7 @@ import com.nkwabyte.medilert.generated.resources.Res
 import com.nkwabyte.medilert.generated.resources.logo
 
 @Composable
-fun AppVersionScreen(navViewModel: NavViewModel = viewModel()) {
+fun AppVersionScreen(navViewModel: NavViewModel = viewModel { NavViewModel() }) {
     Box(modifier = Modifier.fillMaxSize().background(Background)) {
         Box(modifier = Modifier.fillMaxWidth().height(300.dp).background(brush = Brush.verticalGradient(listOf(PrimaryGreen.copy(alpha = 0.05f), Color.Transparent))))
 

@@ -24,7 +24,7 @@ import com.nkwabyte.medilert.viewmodel.NavViewModel
 import com.nkwabyte.medilert.ui.theme.*
 
 @Composable
-fun PrivacyPolicyScreen(navViewModel: NavViewModel = viewModel()) {
+fun PrivacyPolicyScreen(navViewModel: NavViewModel = viewModel { NavViewModel() }) {
     Box(modifier = Modifier.fillMaxSize().background(Background)) {
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
