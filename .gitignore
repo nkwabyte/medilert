@@ -33,6 +33,9 @@ app/google-services.json
 GoogleService-Info.plist
 **/GoogleService-Info.plist
 
+# info.zip contains both Firebase config files and IS committed intentionally
+!info.zip
+
 # ── Secrets & signing ────────────────────────────────────────────────────────
 *.keystore
 **/*.keystore
@@ -47,8 +50,7 @@ GoogleService-Info.plist
 *.crt
 
 # ── Build outputs ────────────────────────────────────────────────────────────
-*.zip
-**/*.zip
+scripts.zip
 *.apk
 **/*.apk
 *.aab
