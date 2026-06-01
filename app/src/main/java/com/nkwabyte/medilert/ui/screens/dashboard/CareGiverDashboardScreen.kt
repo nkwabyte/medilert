@@ -89,7 +89,15 @@ fun CareGiverHomeContent(
     val selectedDayDisplay by caregiverViewModel.selectedDayDisplay.collectAsState()
 
     val groupedSchedule = remember(todayScheduleEnriched) {
-        todayScheduleEnriched.groupBy { it.intakeTitle }
+        val sessionOrder = listOf("Morning", "Afternoon", "Evening")
+        val rawGroups = todayScheduleEnriched.groupBy { entry ->
+            sessionOrder.firstOrNull { s -> entry.intakeTitle.contains(s, ignoreCase = true) }
+                ?: entry.intakeTitle
+        }
+        val ordered = linkedMapOf<String, List<com.nkwabyte.medilert.viewmodel.TodayDoseInfo>>()
+        sessionOrder.forEach { s -> rawGroups[s]?.let { ordered[s] = it } }
+        rawGroups.forEach { (k, v) -> if (k !in sessionOrder) ordered[k] = v }
+        ordered
     }
 
     val today = remember { SimpleDateFormat("EEEE, d MMMM, yyyy", Locale.getDefault()).format(Date()) }
@@ -380,17 +388,29 @@ fun CareGiverHomeContent(
                         item {
                             val headerColor = when {
                                 title.contains("Morning", ignoreCase = true) -> GhanaRed
-                                title.contains("Afternoon", ignoreCase = true) -> GhanaYellow
+                                title.contains("Afternoon", ignoreCase = true) -> GhanaYellowDark
                                 else -> DarkGreen
                             }
-                            Text(
-                                title,
-                                fontFamily = Poppins,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp,
-                                color = headerColor,
-                                modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-                            )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 24.dp, vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(10.dp)
+                                        .background(headerColor, CircleShape)
+                                )
+                                Text(
+                                    title,
+                                    fontFamily = Poppins,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 14.sp,
+                                    color = headerColor
+                                )
+                            }
                         }
                         items(doseItems) { info ->
                             TodayScheduleCard(
@@ -651,7 +671,7 @@ private fun HistoryPatientDetailScreen(
                 ) {
                     HistoryStatCard("${weeklyStats.taken}", "Taken", PrimaryGreen, modifier = Modifier.weight(1f))
                     HistoryStatCard("${weeklyStats.missed}", "Missed", GhanaRed, modifier = Modifier.weight(1f))
-                    HistoryStatCard("${weeklyStats.upcoming}", "Upcoming", TextPrimary, modifier = Modifier.weight(1f))
+                    HistoryStatCard("${weeklyStats.upcoming}", "Upcoming", Color(0xFF4A9EFF), modifier = Modifier.weight(1f))
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -956,22 +976,25 @@ private fun TodayScheduleCard(info: TodayDoseInfo, modifier: Modifier = Modifier
                 fontSize = 12.sp, color = Color.White.copy(alpha = 0.85f)
             )
             Spacer(modifier = Modifier.height(8.dp))
-            // Week dots (Mo–Sa)
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
-                info.weekDots.forEach { taken ->
+            // Dosage quantity circles
+            val doseCount = info.schedule.dose.coerceIn(1, 8)
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+                repeat(doseCount) {
                     Box(
                         modifier = Modifier
-                            .size(10.dp)
-                            .background(
-                                if (taken) Color.White else Color.Transparent,
-                                CircleShape
-                            )
-                            .then(
-                                if (!taken) Modifier.border(1.dp, Color.White.copy(alpha = 0.5f), CircleShape)
-                                else Modifier
-                            )
+                            .size(12.dp)
+                            .background(Color.White, CircleShape)
+                            .border(1.dp, Color.White.copy(alpha = 0.6f), CircleShape)
                     )
                 }
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    "${info.schedule.dose} ${info.schedule.unit}",
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 11.sp,
+                    color = Color.White.copy(alpha = 0.9f)
+                )
             }
             if (info.sideEffects.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(6.dp))

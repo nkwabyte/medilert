@@ -9,6 +9,7 @@ local.properties
 .externalNativeBuild
 .cxx
 
+
 # ── IDE ─────────────────────────────────────────────────────────────────────
 /.idea/caches
 /.idea/libraries
@@ -35,6 +36,12 @@ GoogleService-Info.plist
 
 # info.zip contains both Firebase config files and IS committed intentionally
 !info.zip
+
+# ── Local credential files — NEVER commit ────────────────────────────────────
+cred.txt
+*.cred.txt
+secrets.txt
+*.secrets
 
 # ── Secrets & signing ────────────────────────────────────────────────────────
 *.keystore

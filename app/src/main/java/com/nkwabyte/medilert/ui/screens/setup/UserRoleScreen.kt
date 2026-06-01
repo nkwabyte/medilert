@@ -5,9 +5,11 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +24,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import com.nkwabyte.medilert.R
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.Check
@@ -68,34 +73,15 @@ private data class RoleOption(
     val role: UserRole,
     val label: String,
     val subtitle: String,
-    val icon: ImageVector
+    val icon: ImageVector,
+    val imageRes: Int? = null
 )
 
 private val roles = listOf(
-    RoleOption(
-        UserRole.PATIENT,
-        "Patient",
-        "Track your own medications",
-        Icons.Default.Person
-    ),
-    RoleOption(
-        UserRole.DOCTOR,
-        "Doctor",
-        "Monitor patient adherence",
-        Icons.Default.LocalHospital
-    ),
-    RoleOption(
-        UserRole.PHARMACIST,
-        "Pharmacist",
-        "Manage prescriptions",
-        Icons.Default.MedicalServices
-    ),
-    RoleOption(
-        UserRole.GUARDIAN,
-        "Guardian",
-        "Care for a family member",
-        Icons.Default.FamilyRestroom
-    ),
+    RoleOption(UserRole.PATIENT, "Patient", "Track your own medications", Icons.Default.Person, R.drawable.img_patient),
+    RoleOption(UserRole.DOCTOR, "Doctor", "Monitor patient adherence", Icons.Default.LocalHospital, R.drawable.img_doctor),
+    RoleOption(UserRole.PHARMACIST, "Pharmacist", "Manage prescriptions", Icons.Default.MedicalServices, R.drawable.img_pharmacist),
+    RoleOption(UserRole.GUARDIAN, "Guardian", "Care for a family member", Icons.Default.FamilyRestroom, R.drawable.img_guardian),
 )
 
 private data class ProfessionalFieldConfig(
@@ -306,19 +292,44 @@ private fun RoleCard(option: RoleOption, isSelected: Boolean, onClick: () -> Uni
     ) {
         Box(
             modifier = Modifier
-                .size(52.dp)
+                .size(72.dp)
+                .clip(RoundedCornerShape(18.dp))
                 .background(
                     if (isSelected) PrimaryGreen else PrimaryGreen.copy(alpha = 0.1f),
-                    RoundedCornerShape(16.dp)
+                    RoundedCornerShape(18.dp)
+                )
+                .border(
+                    width = if (isSelected) 2.dp else 1.dp,
+                    color = if (isSelected) PrimaryGreen else PrimaryGreen.copy(alpha = 0.2f),
+                    shape = RoundedCornerShape(18.dp)
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                option.icon,
-                contentDescription = null,
-                tint = if (isSelected) Color.White else PrimaryGreen,
-                modifier = Modifier.size(28.dp)
-            )
+            if (option.imageRes != null) {
+                Image(
+                    painter = painterResource(id = option.imageRes),
+                    contentDescription = option.label,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+                // Dark tint overlay when selected so checkmark is readable
+                if (isSelected) {
+                    Box(modifier = Modifier.fillMaxSize().background(PrimaryGreen.copy(alpha = 0.35f)))
+                    Icon(
+                        Icons.Default.Check,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(28.dp).align(Alignment.Center)
+                    )
+                }
+            } else {
+                Icon(
+                    option.icon,
+                    contentDescription = null,
+                    tint = if (isSelected) Color.White else PrimaryGreen,
+                    modifier = Modifier.size(32.dp)
+                )
+            }
         }
         Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.weight(1f)) {

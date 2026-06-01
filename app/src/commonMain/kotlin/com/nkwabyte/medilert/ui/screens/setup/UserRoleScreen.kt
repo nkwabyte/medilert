@@ -5,9 +5,11 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +24,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import com.nkwabyte.medilert.R
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.Check
@@ -68,34 +73,15 @@ private data class RoleOption(
     val role: UserRole,
     val label: String,
     val subtitle: String,
-    val icon: ImageVector
+    val icon: ImageVector,
+    val imageRes: Int? = null
 )
 
 private val roles = listOf(
-    RoleOption(
-        UserRole.PATIENT,
-        "Patient",
-        "Track your own medications",
-        Icons.Default.Person
-    ),
-    RoleOption(
-        UserRole.DOCTOR,
-        "Doctor",
-        "Monitor patient adherence",
-        Icons.Default.LocalHospital
-    ),
-    RoleOption(
-        UserRole.PHARMACIST,
-        "Pharmacist",
-        "Manage prescriptions",
-        Icons.Default.MedicalServices
-    ),
-    RoleOption(
-        UserRole.GUARDIAN,
-        "Guardian",
-        "Care for a family member",
-        Icons.Default.FamilyRestroom
-    ),
+    RoleOption(UserRole.PATIENT, "Patient", "Track your own medications", Icons.Default.Person),
+    RoleOption(UserRole.DOCTOR, "Doctor", "Monitor patient adherence", Icons.Default.LocalHospital),
+    RoleOption(UserRole.PHARMACIST, "Pharmacist", "Manage prescriptions", Icons.Default.MedicalServices),
+    RoleOption(UserRole.GUARDIAN, "Guardian", "Care for a family member", Icons.Default.FamilyRestroom),
 )
 
 private data class ProfessionalFieldConfig(
@@ -125,13 +111,14 @@ private fun professionalFieldFor(role: UserRole): ProfessionalFieldConfig? = whe
 
 @Composable
 fun UserRoleScreen(
-    navViewModel: NavViewModel = viewModel { NavViewModel() },
-    appViewModel: AppViewModel = viewModel { AppViewModel() },
-    signupViewModel: SignupViewModel = viewModel { SignupViewModel() }
+    navViewModel: NavViewModel = viewModel(),
+    appViewModel: AppViewModel = viewModel(),
+    signupViewModel: SignupViewModel = viewModel()
 ) {
     var selectedRole by remember { mutableStateOf(UserRole.PATIENT) }
     var professionalDetail by remember { mutableStateOf("") }
 
+    // Reset detail field when role changes
     val fieldConfig = professionalFieldFor(selectedRole)
 
     Box(
@@ -183,6 +170,7 @@ fun UserRoleScreen(
                     Spacer(modifier = Modifier.height(12.dp))
                 }
 
+                // Professional detail input — animates in when a non-PATIENT role is selected
                 AnimatedVisibility(
                     visible = fieldConfig != null,
                     enter = fadeIn() + expandVertically(),
@@ -208,6 +196,7 @@ fun UserRoleScreen(
                     }
                 }
 
+                // License / ID number field for regulated roles
                 AnimatedVisibility(
                     visible = selectedRole == UserRole.DOCTOR || selectedRole == UserRole.PHARMACIST,
                     enter = fadeIn() + expandVertically(),
@@ -303,10 +292,16 @@ private fun RoleCard(option: RoleOption, isSelected: Boolean, onClick: () -> Uni
     ) {
         Box(
             modifier = Modifier
-                .size(52.dp)
+                .size(72.dp)
+                .clip(RoundedCornerShape(18.dp))
                 .background(
                     if (isSelected) PrimaryGreen else PrimaryGreen.copy(alpha = 0.1f),
-                    RoundedCornerShape(16.dp)
+                    RoundedCornerShape(18.dp)
+                )
+                .border(
+                    width = if (isSelected) 2.dp else 1.dp,
+                    color = if (isSelected) PrimaryGreen else PrimaryGreen.copy(alpha = 0.2f),
+                    shape = RoundedCornerShape(18.dp)
                 ),
             contentAlignment = Alignment.Center
         ) {
@@ -314,7 +309,7 @@ private fun RoleCard(option: RoleOption, isSelected: Boolean, onClick: () -> Uni
                 option.icon,
                 contentDescription = null,
                 tint = if (isSelected) Color.White else PrimaryGreen,
-                modifier = Modifier.size(28.dp)
+                modifier = Modifier.size(32.dp)
             )
         }
         Spacer(modifier = Modifier.width(16.dp))

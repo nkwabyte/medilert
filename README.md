@@ -1,6 +1,6 @@
 # MediLert
 
-A cross-platform medication reminder and management app built with **Kotlin Multiplatform** and **Compose Multiplatform**. A single shared codebase targets both Android and iOS, with Firebase powering authentication, data storage, push notifications, and crash reporting on both platforms.
+A cross-platform medication reminder and management app built with **Kotlin Multiplatform** and **Compose Multiplatform**. A single shared codebase targets both Android and iOS, with Firebase powering authentication, data storage, push notifications, and crash reporting, and Cloudinary handling all media (profile photos).
 
 ---
 
@@ -11,13 +11,17 @@ A cross-platform medication reminder and management app built with **Kotlin Mult
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Prerequisites](#prerequisites)
-- [Firebase Configuration](#firebase-configuration)
+- [Quick Start — Credentials & Config Files](#quick-start--credentials--config-files)
+  - [Step 1 · Copy the local.properties template](#step-1--copy-the-localproperties-template)
+  - [Step 2 · Extract Firebase config from info.zip](#step-2--extract-firebase-config-from-infozip)
+  - [Step 3 · Fill in credentials from cred.txt](#step-3--fill-in-credentials-from-credtxt)
 - [Android Setup](#android-setup)
 - [iOS Setup](#ios-setup)
 - [Building and Running](#building-and-running)
 - [App Architecture](#app-architecture)
 - [Screens and Navigation](#screens-and-navigation)
 - [Permissions](#permissions)
+- [Security Notes](#security-notes)
 
 ---
 
@@ -28,7 +32,7 @@ MediLert helps patients track their medications and caregivers monitor the peopl
 The app supports two user roles established during onboarding:
 
 - **Patient** — manages their own medication schedule
-- **Caregiver** — monitors one or more assigned patients
+- **Caregiver** — monitors one or more assigned patients (Doctor / Pharmacist / Guardian)
 
 ---
 
@@ -41,9 +45,11 @@ The app supports two user roles established during onboarding:
 - Push notifications via Firebase Cloud Messaging
 - Dose adherence tracking with history view and weekly statistics
 - Caregiver dashboard with per-patient dose monitoring
-- Profile management with photo upload (Firebase Storage)
+- Profile management with photo upload (Cloudinary CDN — `medilert/profiles/`)
+- Dark mode and adjustable text size
+- Language preference with Ghanaian language support (Twi, Ga, Ewe, Dagbani)
+- Haptic / vibration feedback
 - PIN setup and reset for app lock
-- Language preference setting
 - Voice accessibility toggle
 - Privacy policy and app version screens
 - Crash reporting via Firebase Crashlytics
@@ -54,13 +60,15 @@ The app supports two user roles established during onboarding:
 ## Tech Stack
 
 | Layer | Technology | Version |
-|---|---|---|
+| --- | --- | --- |
 | Language | Kotlin | 2.3.21 |
 | UI | Compose Multiplatform | 1.11.0 |
 | Architecture | MVVM + shared ViewModels | — |
 | Lifecycle / ViewModel | JetBrains Lifecycle KMP | 2.10.0 |
 | Firebase (KMP) | gitlive-firebase | 2.4.0 |
 | Firebase (Android native) | Firebase BOM | 34.13.0 |
+| Media storage | Cloudinary (direct HTTP API) | — |
+| Image loading | Coil Compose | 2.7.0 |
 | Async | Kotlin Coroutines | 1.11.0 |
 | Date / Time | kotlinx-datetime | 0.8.0 |
 | Serialization | kotlinx-serialization | 1.11.0 |
@@ -75,38 +83,32 @@ The app supports two user roles established during onboarding:
 
 ## Project Structure
 
-```
+```text
 medilert/
 ├── app/                          # KMP module (shared + Android)
 │   ├── src/
 │   │   ├── commonMain/           # Shared Kotlin/Compose code
 │   │   │   ├── kotlin/com/nkwabyte/medilert/
-│   │   │   │   ├── data/         # Firebase services, repositories, preferences
+│   │   │   │   ├── data/         # Firebase services, Cloudinary, repositories
 │   │   │   │   ├── model/        # Domain models (User, Medication, etc.)
-│   │   │   │   ├── navigation/   # AppDestination sealed interface + AppNavigation
+│   │   │   │   ├── navigation/   # AppDestination + AppNavigation
 │   │   │   │   ├── ui/
 │   │   │   │   │   ├── components/  # Reusable composables
-│   │   │   │   │   ├── screens/     # All app screens (auth, dashboard, medication…)
+│   │   │   │   │   ├── screens/     # All app screens
 │   │   │   │   │   └── theme/       # Material 3 theme, colours, typography
-│   │   │   │   ├── util/         # Utility helpers
+│   │   │   │   ├── util/         # HapticFeedback, GhanaianPhrases, etc.
 │   │   │   │   └── viewmodel/    # Shared ViewModels
 │   │   │   └── composeResources/ # Shared drawables, fonts
 │   │   ├── androidMain/          # Android-specific entry point + services
 │   │   └── iosMain/              # iOS entry point (MainViewController)
 │   ├── build.gradle.kts
-│   └── app.podspec               # Generated by KMP cocoapods plugin
-├── iosApp/                       # Xcode project (thin shell wrapping KMP framework)
-│   ├── iosApp/
-│   │   ├── iOSApp.swift          # @main SwiftUI App entry point
-│   │   ├── ContentView.swift     # ComposeView wrapper
-│   │   ├── Info.plist
-│   │   └── iosApp-Bridging-Header.h
-│   ├── Podfile
-│   ├── Podfile.lock
-│   └── iosApp.xcodeproj/
+│   └── app.podspec
+├── iosApp/                       # Xcode project (thin shell)
 ├── gradle/
 │   └── libs.versions.toml        # Version catalog
-├── info.zip                      # Firebase config files (see Firebase Configuration)
+├── local.properties.template     # ← copy this → local.properties and fill in values
+├── info.zip                      # ← Firebase config files (gitignored once extracted)
+├── cred.txt                      # ← credential reference (gitignored)
 └── README.md
 ```
 
@@ -121,10 +123,10 @@ medilert/
 - A **Firebase project** with the following services enabled:
   - Authentication (Email/Password, Phone, Google)
   - Firestore
-  - Storage
   - Cloud Messaging
   - Crashlytics
   - Analytics
+- A **Cloudinary account** for media storage — [cloudinary.com](https://cloudinary.com) (free tier is sufficient)
 
 ### Android only
 
@@ -138,122 +140,207 @@ medilert/
 
 ---
 
-## Firebase Configuration
+## Quick Start — Credentials & Config Files
 
-The Firebase config files contain API keys and project identifiers and are **not committed to the repository**. They are distributed separately inside `info.zip`, which is committed to the repo root.
+The project requires the following files before it will build:
 
-### Extracting the config files
+| File | Purpose | Tracked in git? |
+| --- | --- | --- |
+| `local.properties` | SDK path + all secret keys | **No** — gitignored |
+| `local.properties.template` | Skeleton with placeholders | **Yes** — copy this |
+| `app/google-services.json` | Firebase Android config | **No** — gitignored |
+| `iosApp/iosApp/GoogleService-Info.plist` | Firebase iOS config | **No** — gitignored |
+| `info.zip` | Archive containing both Firebase files | **Yes** — extract this |
+| `cred.txt` | Actual credential values for quick copy-paste | **No** — gitignored |
+
+Follow the three steps below in order.
+
+---
+
+### Step 1 · Copy the `local.properties` template
 
 ```bash
-# From the repo root
-unzip info.zip -d firebase_config
+cp local.properties.template local.properties
 ```
 
-This creates a `firebase_config/` folder containing:
+`local.properties` is already gitignored — it will never be committed. The template shows every key the build expects, with inline comments explaining where each value comes from:
 
+```properties
+sdk.dir=<absolute-path-to-your-android-sdk>
+
+GOOGLE_WEB_CLIENT_ID=<your-google-web-client-id>
+
+CLOUDINARY_CLOUD_NAME=<your-cloudinary-cloud-name>
+CLOUDINARY_API_KEY=<your-cloudinary-api-key>
+CLOUDINARY_API_SECRET=<your-cloudinary-api-secret>
 ```
-firebase_config/
-├── google-services.json        # Android
-└── GoogleService-Info.plist    # iOS
-```
 
-### Placing the files
+Android Studio will write `sdk.dir` automatically the first time you open the project. The remaining four keys must be filled in manually — see [Step 3](#step-3--fill-in-credentials-from-credtxt) below.
 
-**Android:**
+---
+
+### Step 2 · Extract Firebase config from `info.zip`
+
+`info.zip` is committed to the repo root and contains both Firebase config files. Extract it once from the repo root:
+
 ```bash
-cp firebase_config/google-services.json app/google-services.json
+unzip info.zip
 ```
 
-**iOS:**
+This produces two files:
+
+```text
+google-services.json        # Firebase Android config
+GoogleService-Info.plist    # Firebase iOS config
+```
+
+Place each file in its required location:
+
+**Android** — copy into the `app/` directory:
+
 ```bash
-cp firebase_config/GoogleService-Info.plist iosApp/iosApp/GoogleService-Info.plist
+cp google-services.json app/google-services.json
 ```
 
-> Both files are gitignored. You must place them before building — the build will fail without them.
+**iOS** — copy into the Xcode target directory:
+
+```bash
+cp GoogleService-Info.plist iosApp/iosApp/GoogleService-Info.plist
+```
+
+> Both destination paths are gitignored. The build will fail without them — Gradle and Xcode both require these files to resolve Firebase services.
+
+---
+
+### Step 3 · Fill in credentials from `cred.txt`
+
+`cred.txt` (gitignored) stores all active credential values in one place for easy copy-paste. Open it:
+
+```bash
+cat cred.txt
+```
+
+You will see output similar to:
+
+```text
+── Cloudinary ──────────────────────────────────────────────────────────────────
+Cloud name : dtmzbg1aw
+API Key    : <key>
+API Secret : <secret>
+Full URL   : cloudinary://<key>:<secret>@dtmzbg1aw
+Dashboard  : https://console.cloudinary.com
+
+── Firebase ────────────────────────────────────────────────────────────────────
+Config files live in info.zip (tracked in git).
+```
+
+Copy the three Cloudinary values into `local.properties`:
+
+```properties
+CLOUDINARY_CLOUD_NAME=dtmzbg1aw
+CLOUDINARY_API_KEY=<API Key from cred.txt>
+CLOUDINARY_API_SECRET=<API Secret from cred.txt>
+```
+
+For `GOOGLE_WEB_CLIENT_ID`, open the [Firebase Console](https://console.firebase.google.com) and navigate to Authentication → Sign-in method → Google → Web SDK configuration → Web client ID.
+
+The value ends in `.apps.googleusercontent.com`. Paste it into `local.properties`:
+
+```properties
+GOOGLE_WEB_CLIENT_ID=<paste-web-client-id-here>
+```
+
+All four values are read by `build.gradle.kts` and injected into `BuildConfig` at compile time — they never appear in committed source code.
 
 ---
 
 ## Android Setup
 
-### 1. Clone the repository
+### Android step 1 · Clone the repository
 
 ```bash
 git clone https://github.com/NkwaByte/medilert.git
 cd medilert
 ```
 
-### 2. Place the Firebase config file
+### Android step 2 · Set up credentials and config files
 
-Follow the [Firebase Configuration](#firebase-configuration) section above and copy `google-services.json` to `app/google-services.json`.
+Run the Quick Start steps from the section above:
 
-### 3. Set the Google Sign-In Web Client ID
+```bash
+# 1. Create local.properties from the template
+cp local.properties.template local.properties
 
-Create or open `local.properties` in the repo root and add:
+# 2. Extract and place the Firebase config
+unzip info.zip
+cp google-services.json app/google-services.json
 
-```properties
-GOOGLE_WEB_CLIENT_ID=your-web-client-id-here
+# 3. Open local.properties and fill in keys using values from cred.txt
 ```
 
-You can find the Web Client ID in the Firebase Console under **Authentication → Sign-in method → Google → Web SDK configuration**.
+### Android step 3 · Open in Android Studio
 
-### 4. Open in Android Studio
+Open the repo root as a project. Gradle sync runs automatically. If prompted, trust the project and allow Gradle to download dependencies.
 
-Open the repo root as a project. Gradle sync will run automatically.
+### Android step 4 · Run
 
-### 5. Run on a device or emulator
-
-Select the `app` run configuration and target an Android device or emulator running API 24 or higher.
+Select the `app` run configuration and target a device or emulator running **API 24 (Android 7.0) or higher**.
 
 ---
 
 ## iOS Setup
 
-iOS setup requires macOS and Xcode. Run all terminal commands from the **repo root** unless noted otherwise.
+iOS setup requires macOS and Xcode. Run all commands from the **repo root** unless noted otherwise.
 
-### 1. Clone the repository
+### iOS step 1 · Clone the repository
 
 ```bash
 git clone https://github.com/NkwaByte/medilert.git
 cd medilert
 ```
 
-### 2. Place the Firebase config file
+### iOS step 2 · Set up credentials and config files
 
-Follow the [Firebase Configuration](#firebase-configuration) section above and copy `GoogleService-Info.plist` to `iosApp/iosApp/GoogleService-Info.plist`.
+```bash
+# 1. Create local.properties from the template
+cp local.properties.template local.properties
 
-### 3. Generate the KMP framework and install Pods
+# 2. Extract and place the Firebase config
+unzip info.zip
+cp GoogleService-Info.plist iosApp/iosApp/GoogleService-Info.plist
 
-The Gradle `podInstall` task generates `app.podspec` and then runs `pod install` inside `iosApp/`. Run it once before opening Xcode:
+# 3. Fill in local.properties using values from cred.txt
+```
+
+### iOS step 3 · Generate the KMP framework and install Pods
 
 ```bash
 ./gradlew :app:podInstall
 ```
 
-> If CocoaPods reports a CDN issue, try `pod repo update` first.
+> If CocoaPods reports a CDN issue, run `pod repo update` first.
 
-### 4. Open the Xcode workspace
+### iOS step 4 · Open the Xcode workspace
 
-**Always open the `.xcworkspace`, not the `.xcodeproj`.**
+Always open the `.xcworkspace`, **not** the `.xcodeproj`:
 
 ```bash
 open iosApp/iosApp.xcworkspace
 ```
 
-### 5. Configure signing
+### iOS step 5 · Configure signing
 
 In Xcode, select the `iosApp` target → **Signing & Capabilities** → choose your development team.
 
-### 6. Build and run
+### iOS step 6 · Build and run
 
-Select your target device or simulator (arm64 or arm64 simulator) and press **Run** (`Cmd+R`).
-
-> When iterating on shared Kotlin code, you must rebuild the Gradle project first so the framework is regenerated before Xcode picks it up. The easiest way is to run `./gradlew :app:compileKotlinIosArm64` (device) or `./gradlew :app:compileKotlinIosSimulatorArm64` (simulator) before building in Xcode, or use the **Android Studio → Run on iOS** integration.
+Select your target device or simulator and press **Run** (`Cmd+R`).
 
 ---
 
 ## Building and Running
 
-### Android
+### Android builds
 
 ```bash
 # Debug APK
@@ -262,11 +349,11 @@ Select your target device or simulator (arm64 or arm64 simulator) and press **Ru
 # Release APK
 ./gradlew :app:assembleRelease
 
-# Install debug build directly on a connected device
+# Install debug build on a connected device
 ./gradlew :app:installDebug
 ```
 
-### iOS
+### iOS builds
 
 ```bash
 # Compile Kotlin → iOS arm64 (physical device)
@@ -285,9 +372,9 @@ Then build and run from Xcode.
 
 ## App Architecture
 
-MediLert follows a standard **MVVM** pattern with shared ViewModels across both platforms.
+MediLert follows **MVVM** with shared ViewModels across both platforms.
 
-```
+```text
 UI (Compose screens)
     │
     ▼
@@ -296,37 +383,38 @@ ViewModels  (androidx.lifecycle, KMP)
     ▼
 Services / Repositories  (pure Kotlin, platform-agnostic)
     │
-    ▼
-Firebase (via gitlive-firebase KMP wrappers)
+    ├── Firebase (via gitlive-firebase KMP wrappers)
+    │     ├── Firestore  — user profiles, medications, schedules
+    │     ├── Auth       — authentication state
+    │     └── Messaging  — push notification tokens
     │
-    ├── Firestore  — user profiles, medications, schedules, care relationships
-    ├── Auth       — authentication state
-    ├── Storage    — profile photos
-    └── Messaging  — push notification tokens
+    └── Cloudinary (direct HTTP API, no SDK)
+          └── Media CDN — profile photos → medilert/profiles/
 ```
 
 **Key files:**
 
 | File | Purpose |
-|---|---|
-| `MainViewController.kt` | iOS entry point — `ComposeUIViewController` |
-| `MainActivity.kt` | Android entry point |
+| --- | --- |
+| `MainActivity.kt` | Android entry point; observes dark-mode + font-scale |
 | `AppNavigation.kt` | Root composable — custom back-stack navigation |
 | `AppDestination.kt` | Sealed interface defining all navigation destinations |
 | `NavViewModel.kt` | Manages the in-memory navigation back-stack |
-| `AppViewModel.kt` | Current user state, login status, language/PIN preferences |
+| `AppViewModel.kt` | Current user, login state, dark mode, font scale, language |
 | `AuthViewModel.kt` | Authentication flows (sign-in, sign-up, OTP, Google) |
 | `MedicationViewModel.kt` | Medication CRUD and schedule management |
-| `SignupViewModel.kt` | Multi-step signup wizard state |
 | `CaregiverViewModel.kt` | Caregiver dashboard — patient list, dose statistics |
+| `CloudinaryService.kt` | Signed multipart upload to Cloudinary CDN |
+| `HapticFeedback.kt` | Device vibration helper (success / error / light pulses) |
+| `GhanaianPhrases.kt` | Time-of-day greetings in Twi, Ga, Ewe, Dagbani |
 
 ---
 
 ## Screens and Navigation
 
 | Section | Screens |
-|---|---|
-| Splash | SplashScreen |
+| --- | --- |
+| Splash | SplashScreen (full-image landing + auth routing) |
 | Onboarding | OnboardingScreen1, OnboardingScreen2 |
 | Auth | Login, SignUp, ForgotPassword, VerifyOtp, NewPassword |
 | Account setup | VerifyPhone, Language, VoiceAccessibility, PersonalInfo, UserRole, SetPin, ConfirmPin, ForgetPin, ResetPin, UserProfileComplete |
@@ -334,7 +422,7 @@ Firebase (via gitlive-firebase KMP wrappers)
 | Caregiver dashboard | CareGiverDashboardScreen, CaregiverAddPatientScreen |
 | Medication | AddMedicationStep1–4, EditMedicationScreen, MedicationHistoryScreen |
 | Reminders | ReminderScreen (morning / afternoon / evening) |
-| Profile | ProfileScreen, ProfilePhotoViewScreen |
+| Profile | ProfileScreen (Cloudinary photo upload), ProfilePhotoViewScreen |
 | Settings | SettingsScreen, LanguageSettingsScreen, PrivacyPolicyScreen, AppVersionScreen |
 
 ---
@@ -344,16 +432,28 @@ Firebase (via gitlive-firebase KMP wrappers)
 ### Android (`AndroidManifest.xml`)
 
 | Permission | Reason |
-|---|---|
+| --- | --- |
+| `INTERNET` | Firebase, Cloudinary uploads, FCM |
 | `POST_NOTIFICATIONS` | Show medication reminder notifications |
 | `SCHEDULE_EXACT_ALARM` | Schedule precise dose reminders |
 | `RECEIVE_BOOT_COMPLETED` | Re-schedule alarms after device restart |
-| `VIBRATE` | Vibrate on reminder notification |
+| `VIBRATE` | Haptic feedback on dose actions |
 | `CAMERA` | Capture profile photo |
 | `READ_EXTERNAL_STORAGE` (≤ API 32) | Pick profile photo from gallery |
 
 ### iOS (`Info.plist`)
 
 | Key | Reason |
-|---|---|
+| --- | --- |
 | `NSCameraUsageDescription` | Capture or update profile photo |
+
+---
+
+## Security Notes
+
+- **`local.properties`** — gitignored. Contains all secret keys. Never commit it.
+- **`cred.txt`** — gitignored. Convenient single-file reference for the active credential set. Never commit it.
+- **`google-services.json` / `GoogleService-Info.plist`** — gitignored. Distributed via `info.zip` (which is committed) so collaborators can extract them without exposing raw config in git history.
+- **`local.properties.template`** — committed. Safe to share — contains only placeholder text and zero real values.
+- **Cloudinary API Secret** — currently embedded in the APK via `BuildConfig`. This is acceptable for development but should be moved to a **server-side signing function** (e.g. a Firebase Cloud Function) before a production release. The client would request a time-limited signature from the function and use an unsigned upload preset instead of the raw secret.
+- **Google Web Client ID** — not a secret; safe to embed in the client. It appears in `BuildConfig` for convenience but does not grant any privileged access on its own.

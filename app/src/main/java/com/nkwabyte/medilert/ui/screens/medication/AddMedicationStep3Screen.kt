@@ -61,15 +61,15 @@ fun AddMedicationStep3Screen(
                     // Add new default intake
                     val defaultTime = when(i) {
                         0 -> "08:00 AM"
-                        1 -> "06:00 PM"
-                        2 -> "12:00 PM"
+                        1 -> "12:00 PM"
+                        2 -> "06:00 PM"
                         3 -> "10:00 PM"
                         else -> "08:00 AM"
                     }
                     val defaultTitle = when(i) {
                         0 -> "Morning"
-                        1 -> "Evening"
-                        2 -> "Afternoon"
+                        1 -> "Afternoon"
+                        2 -> "Evening"
                         3 -> "Night"
                         else -> ""
                     }

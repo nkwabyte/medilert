@@ -38,6 +38,12 @@ class AppViewModel(
     private val _textSize = MutableStateFlow("Medium")
     val textSize: StateFlow<String> = _textSize.asStateFlow()
 
+    private val _isDarkMode = MutableStateFlow(false)
+    val isDarkMode: StateFlow<Boolean> = _isDarkMode.asStateFlow()
+
+    private val _fontScale = MutableStateFlow(1f)
+    val fontScale: StateFlow<Float> = _fontScale.asStateFlow()
+
     init {
         viewModelScope.launch {
             authService.authStateFlow.collect { firebaseUser ->
@@ -62,7 +68,26 @@ class AppViewModel(
     fun setLanguage(lang: String) { _selectedLanguage.value = lang }
     fun setVoiceEnabled(enabled: Boolean) { _voiceEnabled.value = enabled }
     fun setTempPin(pin: String) { _tempPin.value = pin }
-    fun setTextSize(size: String) { _textSize.value = size }
+    fun setTextSize(size: String) {
+        _textSize.value = size
+        _fontScale.value = when (size) {
+            "Small"  -> 0.85f
+            "Large"  -> 1.18f
+            "XLarge" -> 1.35f
+            else     -> 1f
+        }
+    }
+
+    fun setDarkMode(enabled: Boolean) {
+        _isDarkMode.value = enabled
+        updatePreferences(theme = if (enabled) "dark" else "light")
+    }
+
+    fun setLanguageAndPersist(lang: String) {
+        _selectedLanguage.value = lang
+        updatePreferences(language = lang)
+    }
+
     fun updateUser(user: User) { _currentUser.value = user }
 
     fun updatePreferences(

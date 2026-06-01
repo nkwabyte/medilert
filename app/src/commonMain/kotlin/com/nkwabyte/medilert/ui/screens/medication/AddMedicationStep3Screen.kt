@@ -16,22 +16,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nkwabyte.medilert.model.MedicationIntake
 import com.nkwabyte.medilert.navigation.*
 import com.nkwabyte.medilert.ui.theme.*
 import com.nkwabyte.medilert.viewmodel.MedicationViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddMedicationStep3Screen(
-    navViewModel: NavViewModel = viewModel { NavViewModel() },
-    medicationViewModel: MedicationViewModel = viewModel { MedicationViewModel() }
+    navViewModel: NavViewModel = viewModel(),
+    medicationViewModel: MedicationViewModel = viewModel()
 ) {
     val draftMedication by medicationViewModel.draftMedication.collectAsState()
     val frequency by medicationViewModel.draftFrequency.collectAsState()
@@ -55,17 +58,18 @@ fun AddMedicationStep3Screen(
                 if (i < intakes.size) {
                     newIntakes.add(intakes[i])
                 } else {
-                    val defaultTime = when (i) {
+                    // Add new default intake
+                    val defaultTime = when(i) {
                         0 -> "08:00 AM"
-                        1 -> "06:00 PM"
-                        2 -> "12:00 PM"
+                        1 -> "12:00 PM"
+                        2 -> "06:00 PM"
                         3 -> "10:00 PM"
                         else -> "08:00 AM"
                     }
-                    val defaultTitle = when (i) {
+                    val defaultTitle = when(i) {
                         0 -> "Morning"
-                        1 -> "Evening"
-                        2 -> "Afternoon"
+                        1 -> "Afternoon"
+                        2 -> "Evening"
                         3 -> "Night"
                         else -> ""
                     }
@@ -139,6 +143,7 @@ fun AddMedicationStep3Screen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Add/Remove buttons
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
@@ -173,6 +178,7 @@ fun AddMedicationStep3Screen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // With food toggle
                 Row(
                     modifier = Modifier.fillMaxWidth().background(Surface, RoundedCornerShape(20.dp)).border(1.dp, BorderLight, RoundedCornerShape(20.dp)).padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
@@ -264,10 +270,11 @@ fun EditReminderDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    val h24 = timePickerState.hour
-                    val h12 = if (h24 % 12 == 0) 12 else h24 % 12
-                    val amPm = if (h24 < 12) "AM" else "PM"
-                    val time = "${h12.toString().padStart(2, '0')}:${timePickerState.minute.toString().padStart(2, '0')} $amPm"
+                    val cal = Calendar.getInstance()
+                    cal.set(Calendar.HOUR_OF_DAY, timePickerState.hour)
+                    cal.set(Calendar.MINUTE, timePickerState.minute)
+                    cal.isLenient = false
+                    val time = android.text.format.DateFormat.format("hh:mm a", cal).toString()
                     onConfirm(title, time)
                 }
             ) {

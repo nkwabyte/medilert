@@ -7,16 +7,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nkwabyte.medilert.navigation.AppNavigation
 import com.nkwabyte.medilert.ui.theme.MedilertTheme
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.auth
-import kotlinx.coroutines.launch
+import com.nkwabyte.medilert.viewmodel.AppViewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -40,7 +40,11 @@ class MainActivity : ComponentActivity() {
         })
 
         setContent {
-            MedilertTheme {
+            val appViewModel: AppViewModel = viewModel { AppViewModel() }
+            val isDarkMode by appViewModel.isDarkMode.collectAsState()
+            val fontScale  by appViewModel.fontScale.collectAsState()
+
+            MedilertTheme(darkTheme = isDarkMode, fontScale = fontScale) {
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()

@@ -44,3 +44,13 @@ val TabInactive = Color(0xFFADB1AD)
 // Overlay
 val Overlay = Color(0x66000000)
 val OverlayLight = Color(0x1A000000)
+
+// ── Dark mode surface/text tokens ─────────────────────────────────────────────
+val DarkBackground   = Color(0xFF0A120A)
+val DarkSurface      = Color(0xFF131D13)
+val DarkSurfaceVar   = Color(0xFF1A271A)
+val DarkTextPrimary  = Color(0xFFE6EEE6)
+val DarkTextSecond   = Color(0xFF8A9E8A)
+val DarkBorderLight  = Color(0xFF1E2E1E)
+val DarkBorderMed    = Color(0xFF263826)
+val DarkDivider      = Color(0xFF1E2E1E)

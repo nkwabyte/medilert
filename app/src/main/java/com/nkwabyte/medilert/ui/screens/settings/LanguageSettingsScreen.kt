@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -23,13 +24,20 @@ import com.nkwabyte.medilert.ui.theme.*
 import com.nkwabyte.medilert.viewmodel.AppViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 
-private val languages = listOf(Triple("en", "English", "English"), Triple("tw", "Akan / Twi", "Twi"), Triple("ga", "Ga", "Ga"), Triple("ee", "Ewe", "Ewe"))
+private val languages = listOf(
+    Triple("en", "English", "English"),
+    Triple("tw", "Akan / Twi", "Twi"),
+    Triple("ga", "Ga", "Ga"),
+    Triple("ee", "Ewe", "Ewe"),
+    Triple("dag", "Dagbani", "Dagbani")
+)
 
 @Composable
 fun LanguageSettingsScreen(
     navViewModel: NavViewModel = viewModel(),
     appViewModel: AppViewModel = viewModel()
 ) {
+    val context = LocalContext.current
     val currentLang by appViewModel.selectedLanguage.collectAsState()
     var selectedLang by remember { mutableStateOf(languages.firstOrNull { it.second == currentLang }?.first ?: "en") }
 
@@ -62,8 +70,7 @@ fun LanguageSettingsScreen(
                 Button(
                     onClick = {
                         val langName = languages.firstOrNull { it.first == selectedLang }?.second ?: "English"
-                        appViewModel.setLanguage(langName)
-                        navViewModel.popBack()
+                        appViewModel.setLanguageAndPersist(langName, context)
                     },
                     modifier = Modifier.fillMaxWidth().height(60.dp),
                     shape = RoundedCornerShape(50.dp),

@@ -1,5 +1,12 @@
 package com.nkwabyte.medilert.ui.screens.auth
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,9 +30,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -51,13 +60,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nkwabyte.medilert.R
 import com.nkwabyte.medilert.data.FirebaseResult
 import com.nkwabyte.medilert.data.service.UserService
 import com.nkwabyte.medilert.model.UserRole
@@ -68,6 +82,7 @@ import com.nkwabyte.medilert.navigation.SignUp
 import com.nkwabyte.medilert.ui.theme.Background
 import com.nkwabyte.medilert.ui.theme.BorderLight
 import com.nkwabyte.medilert.ui.theme.BorderMedium
+import com.nkwabyte.medilert.ui.theme.DarkGreen
 import com.nkwabyte.medilert.ui.theme.Divider
 import com.nkwabyte.medilert.ui.theme.GhanaRed
 import com.nkwabyte.medilert.ui.theme.GhanaYellow
@@ -81,9 +96,35 @@ import com.nkwabyte.medilert.ui.theme.TextSecondary
 import com.nkwabyte.medilert.viewmodel.AppViewModel
 import com.nkwabyte.medilert.viewmodel.AuthViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
-import org.jetbrains.compose.resources.painterResource
-import com.nkwabyte.medilert.generated.resources.Res
-import com.nkwabyte.medilert.generated.resources.logo
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+// Maps verbose Firebase error strings to short, friendly messages
+private fun friendlyError(raw: String): String = when {
+    raw.contains("no user record", ignoreCase = true) ||
+    raw.contains("user-not-found", ignoreCase = true) ||
+    raw.contains("EMAIL_NOT_FOUND", ignoreCase = true) ->
+        "No account found with this email address."
+    raw.contains("password is invalid", ignoreCase = true) ||
+    raw.contains("INVALID_PASSWORD", ignoreCase = true) ||
+    raw.contains("wrong-password", ignoreCase = true) ->
+        "Incorrect password. Please try again."
+    raw.contains("badly formatted", ignoreCase = true) ||
+    raw.contains("invalid-email", ignoreCase = true) ->
+        "Please enter a valid email address."
+    raw.contains("too-many-requests", ignoreCase = true) ||
+    raw.contains("too many", ignoreCase = true) ->
+        "Too many failed attempts. Please wait a moment and try again."
+    raw.contains("network", ignoreCase = true) ||
+    raw.contains("NETWORK_ERROR", ignoreCase = true) ->
+        "Network error. Please check your connection."
+    raw.contains("user-disabled", ignoreCase = true) ->
+        "This account has been disabled. Contact support."
+    raw.contains("INVALID_LOGIN_CREDENTIALS", ignoreCase = true) ||
+    raw.contains("invalid-credential", ignoreCase = true) ->
+        "Incorrect email or password. Please try again."
+    else -> raw.take(120)
+}
 
 @Composable
 fun LoginScreen(
@@ -92,57 +133,97 @@ fun LoginScreen(
     authViewModel: AuthViewModel = viewModel { AuthViewModel() },
     userService: UserService = UserService()
 ) {
+    val context = LocalContext.current
     val uiState by authViewModel.uiState.collectAsState()
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var rememberMe by remember { mutableStateOf(false) }
+
+    // Local feedback state — persists until user edits a field
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var successMessage by remember { mutableStateOf<String?>(null) }
+    var passwordHasError by remember { mutableStateOf(false) }
+    var emailHasError by remember { mutableStateOf(false) }
+
+    // Shake animation for the form on error
+    val shakeOffset = remember { Animatable(0f) }
+
+    // Lift Firebase errors into local state (do NOT clear them immediately)
+    LaunchedEffect(uiState.errorMessage) {
+        val raw = uiState.errorMessage ?: return@LaunchedEffect
+        val msg = friendlyError(raw)
+        errorMessage = msg
+        successMessage = null
+
+        // Decide which field to highlight
+        passwordHasError = msg.contains("password", ignoreCase = true) ||
+                           msg.contains("Incorrect", ignoreCase = true) ||
+                           msg.contains("credential", ignoreCase = true)
+        emailHasError = msg.contains("email", ignoreCase = true) &&
+                        !msg.contains("password", ignoreCase = true)
+
+        // Shake the form
+        repeat(4) {
+            shakeOffset.animateTo(if (it % 2 == 0) 10f else -10f, tween(60))
+        }
+        shakeOffset.animateTo(0f, tween(60))
+
+        authViewModel.clearError()
+    }
+
+    // Clear errors as soon as user starts editing again
+    LaunchedEffect(email) {
+        if (emailHasError) { errorMessage = null; emailHasError = false }
+    }
+    LaunchedEffect(password) {
+        if (passwordHasError || errorMessage != null) {
+            errorMessage = null; passwordHasError = false
+        }
+    }
+
+    // Navigate on success
+    LaunchedEffect(uiState.isSuccess) {
+        if (!uiState.isSuccess) return@LaunchedEffect
+        successMessage = "Login successful! Welcome back."
+        errorMessage = null
+        delay(800)
+        when (val result = userService.getProfile()) {
+            is FirebaseResult.Success -> {
+                val role = result.data.role
+                appViewModel.setUserRole(role)
+                navViewModel.navigateAndClearStack(
+                    if (role == UserRole.PATIENT) Dashboard else CareGiverDashboard
+                )
+            }
+            else -> navViewModel.navigateAndClearStack(Dashboard)
+        }
+    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Background)
     ) {
+        // Ambient gradients
         Box(
-            modifier = Modifier
-                .size(300.dp)
-                .offset(x = 100.dp, y = (-80).dp)
-                .background(
-                    brush = Brush.radialGradient(
-                        listOf(
-                            PrimaryGreen.copy(alpha = 0.05f),
-                            Color.Transparent
-                        )
-                    ),
-                    shape = CircleShape
-                )
+            modifier = Modifier.size(300.dp).offset(x = 100.dp, y = (-80).dp)
+                .background(Brush.radialGradient(listOf(PrimaryGreen.copy(alpha = 0.05f), Color.Transparent)), CircleShape)
         )
         Box(
-            modifier = Modifier
-                .size(300.dp)
-                .offset(x = (-80).dp, y = 500.dp)
-                .background(
-                    brush = Brush.radialGradient(
-                        listOf(
-                            GhanaYellow.copy(alpha = 0.08f),
-                            Color.Transparent
-                        )
-                    ),
-                    shape = CircleShape
-                )
+            modifier = Modifier.size(300.dp).offset(x = (-80).dp, y = 500.dp)
+                .background(Brush.radialGradient(listOf(GhanaYellow.copy(alpha = 0.08f), Color.Transparent)), CircleShape)
         )
 
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
                     .padding(horizontal = 24.dp)
                     .padding(top = 52.dp, bottom = 8.dp)
             ) {
                 Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(Surface, CircleShape)
+                    modifier = Modifier.size(40.dp).background(Surface, CircleShape)
                         .border(1.dp, BorderLight, CircleShape)
                         .clickable { navViewModel.popBack() },
                     contentAlignment = Alignment.Center
@@ -155,19 +236,20 @@ fun LoginScreen(
                 modifier = Modifier
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
+                    .offset(x = shakeOffset.value.dp)
                     .padding(horizontal = 32.dp)
                     .padding(bottom = 40.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Logo
                 Box(
-                    modifier = Modifier
-                        .size(100.dp)
+                    modifier = Modifier.size(100.dp)
                         .background(Surface, RoundedCornerShape(28.dp))
                         .border(1.dp, BorderLight, RoundedCornerShape(28.dp)),
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(Res.drawable.logo),
+                        painter = painterResource(R.drawable.logo),
                         contentDescription = "Logo",
                         modifier = Modifier.size(60.dp),
                         contentScale = ContentScale.Fit
@@ -177,7 +259,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
-                    text = "Welcome Back",
+                    "Welcome Back",
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
                     fontSize = 32.sp,
@@ -186,34 +268,47 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
+                // Email field
                 AuthInputField(
                     label = "Email",
                     value = email,
                     onValueChange = { email = it },
                     placeholder = "Enter your email",
                     leadingIcon = {
-                        Icon(
-                            Icons.Default.Email,
-                            contentDescription = null,
-                            tint = TextSecondary
-                        )
+                        Icon(Icons.Default.Email, contentDescription = null,
+                            tint = if (emailHasError) GhanaRed else TextSecondary)
                     },
-                    keyboardType = KeyboardType.Email
+                    keyboardType = KeyboardType.Email,
+                    isError = emailHasError
                 )
+
+                // Inline email error
+                AnimatedVisibility(
+                    visible = emailHasError && errorMessage != null,
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically()
+                ) {
+                    Text(
+                        errorMessage ?: "",
+                        fontFamily = Poppins,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 12.sp,
+                        color = GhanaRed,
+                        modifier = Modifier.fillMaxWidth().padding(start = 4.dp, top = 4.dp)
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Password field
                 AuthInputField(
                     label = "Password",
                     value = password,
                     onValueChange = { password = it },
                     placeholder = "Enter password",
                     leadingIcon = {
-                        Icon(
-                            Icons.Default.Lock,
-                            contentDescription = null,
-                            tint = TextSecondary
-                        )
+                        Icon(Icons.Default.Lock, contentDescription = null,
+                            tint = if (passwordHasError) GhanaRed else TextSecondary)
                     },
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardType = KeyboardType.Password,
@@ -221,14 +316,17 @@ fun LoginScreen(
                         IconButton(onClick = { passwordVisible = !passwordVisible }) {
                             Icon(
                                 if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                contentDescription = null, tint = TextSecondary
+                                contentDescription = null,
+                                tint = if (passwordHasError) GhanaRed else TextSecondary
                             )
                         }
-                    }
+                    },
+                    isError = passwordHasError
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
+                // Remember me + Forgot password
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -239,22 +337,14 @@ fun LoginScreen(
                         modifier = Modifier.clickable { rememberMe = !rememberMe }
                     ) {
                         Box(
-                            modifier = Modifier
-                                .size(22.dp)
-                                .background(
-                                    if (rememberMe) PrimaryGreen else Color.Transparent,
-                                    RoundedCornerShape(6.dp)
-                                )
-                                .border(
-                                    2.dp,
-                                    if (rememberMe) PrimaryGreen else BorderMedium,
-                                    RoundedCornerShape(6.dp)
-                                ),
+                            modifier = Modifier.size(22.dp)
+                                .background(if (rememberMe) PrimaryGreen else Color.Transparent, RoundedCornerShape(6.dp))
+                                .border(2.dp, if (rememberMe) PrimaryGreen else BorderMedium, RoundedCornerShape(6.dp)),
                             contentAlignment = Alignment.Center
                         ) {
                             if (rememberMe) {
                                 Icon(
-                                    Icons.Default.Check,
+                                    painter = painterResource(android.R.drawable.checkbox_on_background),
                                     contentDescription = null,
                                     tint = Color.White,
                                     modifier = Modifier.size(14.dp)
@@ -264,32 +354,130 @@ fun LoginScreen(
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             "Remember Me",
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 13.sp,
-                            color = TextSecondary
+                            fontFamily = Poppins, fontWeight = FontWeight.Medium,
+                            fontSize = 13.sp, color = TextSecondary
                         )
                     }
                     Text(
-                        text = "Forgot Password?",
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 13.sp,
-                        color = GhanaRed,
+                        "Forgot Password?",
+                        fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
+                        fontSize = 13.sp, color = GhanaRed,
                         modifier = Modifier
                             .clickable { navViewModel.navigateTo(ForgotPassword) }
                             .padding(vertical = 4.dp, horizontal = 8.dp)
                     )
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
+                // ── Error banner ─────────────────────────────────────────────
+                AnimatedVisibility(
+                    visible = errorMessage != null && !emailHasError,
+                    enter = fadeIn(tween(250)) + expandVertically(tween(250)),
+                    exit = fadeOut(tween(200)) + shrinkVertically(tween(200))
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(GhanaRed.copy(alpha = 0.09f), RoundedCornerShape(16.dp))
+                            .border(1.dp, GhanaRed.copy(alpha = 0.3f), RoundedCornerShape(16.dp))
+                            .padding(horizontal = 16.dp, vertical = 12.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(
+                                Icons.Default.ErrorOutline,
+                                contentDescription = null,
+                                tint = GhanaRed,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Text(
+                                errorMessage ?: "",
+                                fontFamily = Poppins, fontWeight = FontWeight.Medium,
+                                fontSize = 13.sp, color = GhanaRed,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = "Dismiss",
+                                tint = GhanaRed.copy(alpha = 0.5f),
+                                modifier = Modifier
+                                    .size(18.dp)
+                                    .clickable { errorMessage = null; passwordHasError = false }
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(0.dp))
+                }
+
+                // ── Success banner ────────────────────────────────────────────
+                AnimatedVisibility(
+                    visible = successMessage != null,
+                    enter = fadeIn(tween(250)) + expandVertically(tween(250)),
+                    exit = fadeOut(tween(200)) + shrinkVertically(tween(200))
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(PrimaryGreen.copy(alpha = 0.09f), RoundedCornerShape(16.dp))
+                            .border(1.dp, PrimaryGreen.copy(alpha = 0.3f), RoundedCornerShape(16.dp))
+                            .padding(horizontal = 16.dp, vertical = 12.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.CheckCircle,
+                                contentDescription = null,
+                                tint = DarkGreen,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Text(
+                                successMessage ?: "",
+                                fontFamily = Poppins, fontWeight = FontWeight.Medium,
+                                fontSize = 13.sp, color = DarkGreen
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(if (errorMessage != null || successMessage != null) 16.dp else 8.dp))
+
+                // Login button
                 Button(
-                    onClick = { authViewModel.signInWithEmail(email, password, rememberMe) },
-                    enabled = !uiState.isLoading && email.isNotBlank() && password.isNotBlank(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp),
+                    onClick = {
+                        // Client-side validation before hitting Firebase
+                        when {
+                            email.isBlank() -> {
+                                errorMessage = "Please enter your email address."
+                                emailHasError = true
+                            }
+                            !android.util.Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches() -> {
+                                errorMessage = "Please enter a valid email address."
+                                emailHasError = true
+                            }
+                            password.isBlank() -> {
+                                errorMessage = "Please enter your password."
+                                passwordHasError = true
+                            }
+                            password.length < 6 -> {
+                                errorMessage = "Password must be at least 6 characters."
+                                passwordHasError = true
+                            }
+                            else -> {
+                                errorMessage = null
+                                emailHasError = false
+                                passwordHasError = false
+                                authViewModel.signInWithEmail(email.trim(), password, rememberMe)
+                            }
+                        }
+                    },
+                    enabled = !uiState.isLoading && successMessage == null,
+                    modifier = Modifier.fillMaxWidth().height(64.dp),
                     shape = RoundedCornerShape(24.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                     contentPadding = PaddingValues(0.dp)
@@ -303,50 +491,29 @@ fun LoginScreen(
                             ),
                         contentAlignment = Alignment.Center
                     ) {
-                        if (uiState.isLoading) {
-                            CircularProgressIndicator(
-                                color = Color.White,
-                                modifier = Modifier.size(24.dp),
-                                strokeWidth = 2.dp
+                        when {
+                            uiState.isLoading -> CircularProgressIndicator(
+                                color = Color.White, modifier = Modifier.size(24.dp), strokeWidth = 2.dp
                             )
-                        } else {
-                            Text(
-                                "Log In",
-                                fontFamily = Poppins,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp,
-                                color = Color.White
-                            )
-                        }
-                    }
-                }
-
-                LaunchedEffect(uiState.isSuccess) {
-                    if (uiState.isSuccess) {
-                        when (val result = userService.getProfile()) {
-                            is FirebaseResult.Success -> {
-                                val role = result.data.role
-                                appViewModel.setUserRole(role)
-                                val dest = if (role == UserRole.PATIENT) Dashboard else CareGiverDashboard
-                                navViewModel.navigateAndClearStack(dest)
+                            successMessage != null -> Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+                                Text("Logged In", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White)
                             }
-                            else -> navViewModel.navigateAndClearStack(Dashboard)
+                            else -> Text(
+                                "Log In",
+                                fontFamily = Poppins, fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp, color = Color.White
+                            )
                         }
                     }
-                }
-
-                uiState.errorMessage?.let { msg ->
-                    LaunchedEffect(msg) {
-                        authViewModel.clearError()
-                    }
-                    Text(
-                        msg, color = GhanaRed, fontFamily = Poppins, fontSize = 13.sp,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
 
+                // Divider
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
@@ -354,26 +521,20 @@ fun LoginScreen(
                     HorizontalDivider(modifier = Modifier.weight(1f), color = BorderMedium)
                     Text(
                         "  Or sign in with  ",
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 13.sp,
-                        color = TextSecondary
+                        fontFamily = Poppins, fontWeight = FontWeight.Medium,
+                        fontSize = 13.sp, color = TextSecondary
                     )
                     HorizontalDivider(modifier = Modifier.weight(1f), color = BorderMedium)
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+                // Google Sign-In
                 Button(
                     onClick = { authViewModel.signInWithGoogle() },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp),
+                    modifier = Modifier.fillMaxWidth().height(64.dp),
                     shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Surface,
-                        contentColor = TextPrimary
-                    ),
+                    colors = ButtonDefaults.buttonColors(containerColor = Surface, contentColor = TextPrimary),
                     contentPadding = PaddingValues(0.dp)
                 ) {
                     Row(
@@ -385,27 +546,16 @@ fun LoginScreen(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .size(24.dp)
-                                .background(Color(0xFF4285F4), CircleShape),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                "G",
-                                fontFamily = Poppins,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp,
-                                color = Color.White
-                            )
-                        }
+                        Image(
+                            painter = painterResource(R.drawable.ic_google),
+                            contentDescription = "Google",
+                            modifier = Modifier.size(24.dp)
+                        )
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
                             "Continue with Google",
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 16.sp,
-                            color = TextPrimary
+                            fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
+                            fontSize = 16.sp, color = TextPrimary
                         )
                     }
                 }
@@ -415,17 +565,13 @@ fun LoginScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         "Don't have an account? ",
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 15.sp,
-                        color = TextSecondary
+                        fontFamily = Poppins, fontWeight = FontWeight.Medium,
+                        fontSize = 15.sp, color = TextSecondary
                     )
                     Text(
                         "Sign up",
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp,
-                        color = PrimaryGreen,
+                        fontFamily = Poppins, fontWeight = FontWeight.Bold,
+                        fontSize = 15.sp, color = PrimaryGreen,
                         modifier = Modifier
                             .clickable { navViewModel.navigateTo(SignUp) }
                             .padding(vertical = 8.dp, horizontal = 8.dp)
@@ -434,6 +580,7 @@ fun LoginScreen(
             }
         }
 
+        // Home indicator
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -455,49 +602,45 @@ fun AuthInputField(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    keyboardType: KeyboardType = KeyboardType.Text
+    keyboardType: KeyboardType = KeyboardType.Text,
+    isError: Boolean = false
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             label,
-            fontFamily = Poppins,
-            fontWeight = FontWeight.SemiBold,
+            fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,
-            color = TextPrimary,
+            color = if (isError) GhanaRed else TextPrimary,
             modifier = Modifier.padding(start = 4.dp, bottom = 6.dp)
         )
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp),
+            modifier = Modifier.fillMaxWidth().height(64.dp),
             placeholder = {
-                Text(
-                    placeholder,
-                    fontFamily = Poppins,
-                    color = TextHint,
-                    fontSize = 15.sp
-                )
+                Text(placeholder, fontFamily = Poppins, color = TextHint, fontSize = 15.sp)
             },
             leadingIcon = leadingIcon,
             trailingIcon = trailingIcon,
             visualTransformation = visualTransformation,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             singleLine = true,
+            isError = isError,
             shape = RoundedCornerShape(24.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = Surface,
                 focusedContainerColor = Surface,
+                errorContainerColor = GhanaRed.copy(alpha = 0.05f),
                 unfocusedBorderColor = BorderLight,
                 focusedBorderColor = PrimaryGreen,
+                errorBorderColor = GhanaRed,
+                errorCursorColor = GhanaRed,
                 unfocusedTextColor = TextPrimary,
-                focusedTextColor = TextPrimary
+                focusedTextColor = TextPrimary,
+                errorTextColor = TextPrimary
             ),
             textStyle = LocalTextStyle.current.copy(
-                fontFamily = Poppins,
-                fontWeight = FontWeight.Medium,
-                fontSize = 15.sp
+                fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp
             )
         )
     }

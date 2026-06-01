@@ -39,6 +39,12 @@ class AppViewModel(
     private val _textSize = MutableStateFlow("Medium")
     val textSize: StateFlow<String> = _textSize.asStateFlow()
 
+    private val _isDarkMode = MutableStateFlow(false)
+    val isDarkMode: StateFlow<Boolean> = _isDarkMode.asStateFlow()
+
+    private val _fontScale = MutableStateFlow(1f)
+    val fontScale: StateFlow<Float> = _fontScale.asStateFlow()
+
     init {
         // React to Firebase auth state changes
         viewModelScope.launch {
@@ -79,6 +85,17 @@ class AppViewModel(
 
     fun setTextSize(size: String) {
         _textSize.value = size
+        _fontScale.value = when (size) {
+            "Small"  -> 0.85f
+            "Large"  -> 1.18f
+            "XLarge" -> 1.35f
+            else     -> 1f
+        }
+    }
+
+    fun setDarkMode(enabled: Boolean) {
+        _isDarkMode.value = enabled
+        updatePreferences(theme = if (enabled) "dark" else "light")
     }
 
     fun updateUser(user: User) {
@@ -124,7 +141,8 @@ class AppViewModel(
         dateOfBirth: String? = null,
         gender: String? = null,
         emergencyContact: String? = null,
-        specialty: String? = null
+        specialty: String? = null,
+        photoUrl: String? = null
     ) {
         viewModelScope.launch {
             val updates = mutableMapOf<String, Any>()
@@ -136,12 +154,20 @@ class AppViewModel(
             gender?.let { updates["gender"] = it }
             emergencyContact?.let { updates["emergencyContact"] = it }
             specialty?.let { updates["specialty"] = it }
+            photoUrl?.let { updates["photoUrl"] = it }
 
             if (updates.isNotEmpty()) {
                 updates["updatedAt"] = System.currentTimeMillis()
                 userService.updateProfile(updates)
             }
         }
+    }
+
+    fun setLanguageAndPersist(lang: String, context: Context) {
+        _selectedLanguage.value = lang
+        updatePreferences(language = lang)
+        // Recreate the host activity so locale change takes visible effect
+        (context as? android.app.Activity)?.recreate()
     }
 
     fun logout(context: Context) {

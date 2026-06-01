@@ -22,9 +22,12 @@ import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,21 +41,44 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.nkwabyte.medilert.navigation.RecoveryOtp
 import com.nkwabyte.medilert.ui.theme.Background
 import com.nkwabyte.medilert.ui.theme.BorderLight
+import com.nkwabyte.medilert.ui.theme.DarkGreen
 import com.nkwabyte.medilert.ui.theme.Divider
+import com.nkwabyte.medilert.ui.theme.GhanaRed
 import com.nkwabyte.medilert.ui.theme.MediumGreen
 import com.nkwabyte.medilert.ui.theme.Poppins
 import com.nkwabyte.medilert.ui.theme.PrimaryGreen
 import com.nkwabyte.medilert.ui.theme.Surface
 import com.nkwabyte.medilert.ui.theme.TextPrimary
 import com.nkwabyte.medilert.ui.theme.TextSecondary
+import com.nkwabyte.medilert.viewmodel.AuthViewModel
+import com.nkwabyte.medilert.viewmodel.AuthViewModelFactory
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 
 @Composable
 fun ForgotPasswordScreen(navViewModel: NavViewModel = viewModel()) {
     var email by remember { mutableStateOf("") }
+
+    val authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())
+    val uiState by authViewModel.uiState.collectAsState()
+
+    var successMessage by remember { mutableStateOf<String?>(null) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    // React to state changes
+    LaunchedEffect(uiState.isSuccess) {
+        if (uiState.isSuccess) {
+            successMessage = "Reset link sent to $email. Check your inbox."
+            authViewModel.clearError()
+        }
+    }
+    LaunchedEffect(uiState.errorMessage) {
+        uiState.errorMessage?.let {
+            errorMessage = it
+            authViewModel.clearError()
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -65,10 +91,7 @@ fun ForgotPasswordScreen(navViewModel: NavViewModel = viewModel()) {
                 .offset(x = 80.dp, y = (-60).dp)
                 .background(
                     brush = Brush.radialGradient(
-                        listOf(
-                            PrimaryGreen.copy(alpha = 0.05f),
-                            Color.Transparent
-                        )
+                        listOf(PrimaryGreen.copy(alpha = 0.05f), Color.Transparent)
                     ), shape = CircleShape
                 )
         )
@@ -88,10 +111,7 @@ fun ForgotPasswordScreen(navViewModel: NavViewModel = viewModel()) {
                         .clickable { navViewModel.popBack() },
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        Icons.Default.ChevronLeft,
-                        contentDescription = "Back", tint = TextPrimary
-                    )
+                    Icon(Icons.Default.ChevronLeft, contentDescription = "Back", tint = TextPrimary)
                 }
             }
 
@@ -100,14 +120,10 @@ fun ForgotPasswordScreen(navViewModel: NavViewModel = viewModel()) {
                     .weight(1f)
                     .padding(horizontal = 32.dp)
             ) {
-                // Icon
                 Box(
                     modifier = Modifier
                         .size(80.dp)
-                        .background(
-                            PrimaryGreen.copy(alpha = 0.1f),
-                            RoundedCornerShape(24.dp)
-                        )
+                        .background(PrimaryGreen.copy(alpha = 0.1f), RoundedCornerShape(24.dp))
                         .align(Alignment.CenterHorizontally),
                     contentAlignment = Alignment.Center
                 ) {
@@ -134,7 +150,7 @@ fun ForgotPasswordScreen(navViewModel: NavViewModel = viewModel()) {
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
-                    "Enter your email or phone number and we'll send you a recovery code",
+                    "Enter your email and we'll send you a password reset link",
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 15.sp,
@@ -146,21 +162,72 @@ fun ForgotPasswordScreen(navViewModel: NavViewModel = viewModel()) {
                 Spacer(modifier = Modifier.height(40.dp))
 
                 AuthInputField(
-                    label = "Email", value = email, onValueChange = { email = it },
+                    label = "Email",
+                    value = email,
+                    onValueChange = {
+                        email = it
+                        successMessage = null
+                        errorMessage = null
+                    },
                     placeholder = "Enter your email",
                     leadingIcon = {
-                        Icon(
-                            Icons.Default.Email,
-                            contentDescription = null,
-                            tint = TextSecondary
-                        )
+                        Icon(Icons.Default.Email, contentDescription = null, tint = TextSecondary)
                     }
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Success message
+                successMessage?.let {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(PrimaryGreen.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
+                            .border(1.dp, PrimaryGreen.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+                            .padding(12.dp)
+                    ) {
+                        Text(
+                            it,
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 13.sp,
+                            color = DarkGreen
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
+                // Error message
+                errorMessage?.let {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(GhanaRed.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
+                            .border(1.dp, GhanaRed.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+                            .padding(12.dp)
+                    ) {
+                        Text(
+                            it,
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 13.sp,
+                            color = GhanaRed
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
 
                 Button(
-                    onClick = { navViewModel.navigateTo(RecoveryOtp("forgot")) },
+                    onClick = {
+                        if (email.isNotBlank()) {
+                            successMessage = null
+                            errorMessage = null
+                            authViewModel.sendPasswordResetEmail(email.trim())
+                        } else {
+                            errorMessage = "Please enter your email address"
+                        }
+                    },
+                    enabled = !uiState.isLoading,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(64.dp),
@@ -172,20 +239,26 @@ fun ForgotPasswordScreen(navViewModel: NavViewModel = viewModel()) {
                         modifier = Modifier
                             .fillMaxSize()
                             .background(
-                                brush = Brush.horizontalGradient(
-                                    listOf(PrimaryGreen, MediumGreen)
-                                ),
+                                brush = Brush.horizontalGradient(listOf(PrimaryGreen, MediumGreen)),
                                 shape = RoundedCornerShape(24.dp)
                             ),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            "Send Code",
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
-                            color = Color.White
-                        )
+                        if (uiState.isLoading) {
+                            CircularProgressIndicator(
+                                color = Color.White,
+                                strokeWidth = 2.dp,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        } else {
+                            Text(
+                                "Send Reset Link",
+                                fontFamily = Poppins,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp,
+                                color = Color.White
+                            )
+                        }
                     }
                 }
             }

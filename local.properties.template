@@ -1,0 +1,45 @@
+## ─────────────────────────────────────────────────────────────────────────────
+## local.properties.template
+##
+## USAGE
+##   1. Copy this file to local.properties in the same directory:
+##        cp local.properties.template local.properties
+##   2. Fill in every value marked <...> — see the notes beside each key.
+##   3. local.properties is gitignored and must NEVER be committed.
+##      This template IS committed and acts as the canonical reference for
+##      every key the build expects.
+##
+## For the actual credential values, refer to cred.txt (also gitignored).
+## ─────────────────────────────────────────────────────────────────────────────
+
+
+## ── Android SDK ──────────────────────────────────────────────────────────────
+## Set automatically by Android Studio on first open.
+## If building from the command line, set it to the absolute path of your SDK.
+sdk.dir=<absolute-path-to-your-android-sdk>
+## Example (macOS):  sdk.dir=/Users/yourname/Library/Android/sdk
+## Example (Windows): sdk.dir=C\:\\Users\\yourname\\AppData\\Local\\Android\\Sdk
+
+
+## ── Google Sign-In ───────────────────────────────────────────────────────────
+## Found in Firebase Console → Authentication → Sign-in method
+##   → Google → Web SDK configuration → Web client ID.
+## Format: <project-number>-<hash>.apps.googleusercontent.com
+GOOGLE_WEB_CLIENT_ID=<your-google-web-client-id>
+
+
+## ── Cloudinary — profile photo & media storage ───────────────────────────────
+## Dashboard: https://console.cloudinary.com
+## All three values are shown on the Cloudinary home screen.
+##
+## Cloud name  — the unique subdomain of your Cloudinary account
+## API Key     — 15-digit numeric key (NOT secret; safe to share)
+## API Secret  — keep private; never commit or log this value
+##
+## Full connection URL format (for reference only):
+##   cloudinary://<API_KEY>:<API_SECRET>@<CLOUD_NAME>
+##
+## Credentials are stored in cred.txt (gitignored) for quick reference.
+CLOUDINARY_CLOUD_NAME=<your-cloudinary-cloud-name>
+CLOUDINARY_API_KEY=<your-cloudinary-api-key>
+CLOUDINARY_API_SECRET=<your-cloudinary-api-secret>

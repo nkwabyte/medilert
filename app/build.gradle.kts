@@ -95,6 +95,8 @@ kotlin {
             implementation(libs.androidx.credentials.play.services)
             implementation(libs.google.identity.googleid)
 
+            // Coil — Compose image loading (profile photos, etc.)
+            implementation(libs.coil.compose)
         }
 
         iosMain.dependencies {
@@ -125,16 +127,20 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Expose Web Client ID from local.properties → BuildConfig
+        // Expose secrets from local.properties → BuildConfig
         val localProps = Properties().apply {
             rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()
                 ?.use { load(it) }
         }
-        buildConfigField(
-            "String",
-            "GOOGLE_WEB_CLIENT_ID",
-            "\"${localProps["GOOGLE_WEB_CLIENT_ID"]}\""
-        )
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID",
+            "\"${localProps["GOOGLE_WEB_CLIENT_ID"] ?: ""}\"")
+        buildConfigField("String", "CLOUDINARY_CLOUD_NAME",
+            "\"${localProps["CLOUDINARY_CLOUD_NAME"] ?: ""}\"")
+        buildConfigField("String", "CLOUDINARY_API_KEY",
+            "\"${localProps["CLOUDINARY_API_KEY"] ?: ""}\"")
+        buildConfigField("String", "CLOUDINARY_API_SECRET",
+            "\"${localProps["CLOUDINARY_API_SECRET"] ?: ""}\"")
+        buildConfigField("String", "CLOUDINARY_UPLOAD_FOLDER", "\"medilert/profiles\"")
     }
 
     buildTypes {

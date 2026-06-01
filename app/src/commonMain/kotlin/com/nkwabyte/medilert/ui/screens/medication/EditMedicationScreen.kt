@@ -71,9 +71,7 @@ import com.nkwabyte.medilert.ui.theme.TextPrimary
 import com.nkwabyte.medilert.ui.theme.TextSecondary
 import com.nkwabyte.medilert.viewmodel.MedicationViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import java.util.Calendar
 
 private val frequencies = listOf(
     "Once daily",
@@ -89,8 +87,8 @@ private val frequencies = listOf(
 @Composable
 fun EditMedicationScreen(
     medicationId: String,
-    navViewModel: NavViewModel = viewModel { NavViewModel() },
-    medicationViewModel: MedicationViewModel = viewModel { MedicationViewModel() }
+    navViewModel: NavViewModel = viewModel(),
+    medicationViewModel: MedicationViewModel = viewModel()
 ) {
     LaunchedEffect(medicationId) {
         medicationViewModel.startEditMedication(medicationId)
@@ -110,7 +108,7 @@ fun EditMedicationScreen(
     val showTimePicker = remember { mutableStateOf(false) }
     val selectedIntakeIndex = remember { mutableIntStateOf(-1) }
     var showDatePicker by remember { mutableStateOf(false) }
-    var datePickerTarget by remember { mutableStateOf("start") }
+    var datePickerTarget by remember { mutableStateOf("start") } // "start" or "end"
 
     LaunchedEffect(draftMedication) {
         if (draftMedication.id == medicationId) {
@@ -140,17 +138,18 @@ fun EditMedicationScreen(
                 if (i < intakes.size) {
                     newIntakes.add(intakes[i])
                 } else {
+                    // Add new default intake
                     val defaultTime = when (i) {
                         0 -> "08:00 AM"
-                        1 -> "06:00 PM"
-                        2 -> "12:00 PM"
+                        1 -> "12:00 PM"
+                        2 -> "06:00 PM"
                         3 -> "10:00 PM"
                         else -> "08:00 AM"
                     }
                     val defaultTitle = when (i) {
                         0 -> "Morning"
-                        1 -> "Evening"
-                        2 -> "Afternoon"
+                        1 -> "Afternoon"
+                        2 -> "Evening"
                         3 -> "Night"
                         else -> ""
                     }
@@ -178,7 +177,9 @@ fun EditMedicationScreen(
                 TextButton(
                     onClick = {
                         val selectedDate = datePickerState.selectedDateMillis?.let {
-                            Instant.fromEpochMilliseconds(it).toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
+                            val cal = Calendar.getInstance()
+                            cal.timeInMillis = it
+                            android.text.format.DateFormat.format("yyyy-MM-dd", cal).toString()
                         }
                         if (selectedDate != null) {
                             if (datePickerTarget == "start") {
@@ -302,6 +303,7 @@ fun EditMedicationScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Dose
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         "Dose Amount",
@@ -354,6 +356,7 @@ fun EditMedicationScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Frequency
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         "Frequency",
@@ -411,6 +414,7 @@ fun EditMedicationScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Start Date
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         "Start Date",
@@ -445,6 +449,7 @@ fun EditMedicationScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // End Date
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         "End Date (Optional)",
@@ -479,6 +484,7 @@ fun EditMedicationScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Reminder times
                 Text(
                     "Reminder Times",
                     fontFamily = Poppins,

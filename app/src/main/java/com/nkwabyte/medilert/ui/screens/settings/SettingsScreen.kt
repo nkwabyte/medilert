@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Notifications
@@ -93,29 +94,23 @@ fun SettingsScreen(
     var remindersOn by remember { mutableStateOf(true) }
     var soundAlerts by remember { mutableStateOf(false) }
     var vibration by remember { mutableStateOf(true) }
-    var darkMode by remember { mutableStateOf(false) }
+    val darkMode by appViewModel.isDarkMode.collectAsState()
+    val textSize by appViewModel.textSize.collectAsState()
     var missedAlerts by remember { mutableStateOf(true) }
     var lowAdherence by remember { mutableStateOf(true) }
     var showLogoutDialog by remember { mutableStateOf(false) }
+    var showToneDialog by remember { mutableStateOf(false) }
+    var selectedTone by remember { mutableStateOf("Default") }
+    var showTextSizeDialog by remember { mutableStateOf(false) }
 
     // Compute user display info
     val fullName = remember(currentUser.name) {
         currentUser.name.ifBlank { "User" }
     }
 
-    val contactInfo = remember(currentUser.phone, currentUser.specialty, caregiver) {
-        if (caregiver) {
-            currentUser.specialty.ifBlank {
-                when (currentUser.role) {
-                    UserRole.DOCTOR -> "Doctor"
-                    UserRole.PHARMACIST -> "Pharmacist"
-                    UserRole.GUARDIAN -> "Caregiver"
-                    UserRole.PATIENT -> currentUser.phone.ifBlank { "No phone number" }
-                }
-            }
-        } else {
-            currentUser.phone.ifBlank { "No phone number" }
-        }
+    // Always show phone number (required by spec: name, phone, time joined)
+    val contactInfo = remember(currentUser.phone) {
+        currentUser.phone.ifBlank { "No phone number" }
     }
 
     val roleBadgeLabel = remember(currentUser.role, caregiver) {
@@ -278,23 +273,21 @@ fun SettingsScreen(
                                         )
                                     }
                                 }
-                                if (!caregiver) {
-                                    Box(
-                                        modifier = Modifier
-                                            .background(
-                                                Color.Black.copy(alpha = 0.2f),
-                                                RoundedCornerShape(8.dp)
-                                            )
-                                            .padding(horizontal = 10.dp, vertical = 4.dp)
-                                    ) {
-                                        Text(
-                                            memberSince,
-                                            fontFamily = Poppins,
-                                            fontWeight = FontWeight.Medium,
-                                            fontSize = 11.sp,
-                                            color = Color.White
+                                Box(
+                                    modifier = Modifier
+                                        .background(
+                                            Color.Black.copy(alpha = 0.2f),
+                                            RoundedCornerShape(8.dp)
                                         )
-                                    }
+                                        .padding(horizontal = 10.dp, vertical = 4.dp)
+                                ) {
+                                    Text(
+                                        memberSince,
+                                        fontFamily = Poppins,
+                                        fontWeight = FontWeight.Medium,
+                                        fontSize = 11.sp,
+                                        color = Color.White
+                                    )
                                 }
                             }
                         }
@@ -371,6 +364,12 @@ fun SettingsScreen(
                                 checked = vibration,
                                 onCheckedChange = { vibration = it })
                         })
+                    SettingsDivider()
+                    SettingsRow(
+                        icon = Icons.Default.GraphicEq,
+                        title = "Notification Tone",
+                        subtitle = selectedTone,
+                        onClick = { showToneDialog = true })
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -386,19 +385,17 @@ fun SettingsScreen(
                         rightElement = {
                             MedSwitch(
                                 checked = darkMode,
-                                onCheckedChange = {
-                                    darkMode = it
-                                    appViewModel.updatePreferences(theme = if (it) "dark" else "light")
-                                })
+                                onCheckedChange = { appViewModel.setDarkMode(it) })
                         })
                     SettingsDivider()
                     SettingsRow(
-                        icon = Icons.Default.Language, title = "Language", subtitle = "English",
+                        icon = Icons.Default.Language, title = "Language",
+                        subtitle = appViewModel.selectedLanguage.collectAsState().value,
                         onClick = { navViewModel.navigateTo(LanguageSettings) })
                     SettingsDivider()
                     SettingsRow(
-                        icon = Icons.Default.TextFields, title = "Text Size", subtitle = "Normal",
-                        onClick = { })
+                        icon = Icons.Default.TextFields, title = "Text Size", subtitle = textSize,
+                        onClick = { showTextSizeDialog = true })
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -460,19 +457,12 @@ fun SettingsScreen(
         AlertDialog(
             onDismissRequest = { showLogoutDialog = false },
             title = {
-                Text(
-                    "Log Out",
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                )
+                Text("Log Out", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             },
             text = {
                 Text(
                     "Are you sure you want to log out of Medilert?",
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp
+                    fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp
                 )
             },
             confirmButton = {
@@ -486,11 +476,102 @@ fun SettingsScreen(
             },
             dismissButton = {
                 OutlinedButton(onClick = { showLogoutDialog = false }) {
-                    Text(
-                        "Cancel",
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                    Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                }
+            },
+            shape = RoundedCornerShape(24.dp)
+        )
+    }
+
+    if (showTextSizeDialog) {
+        val sizes = listOf("Small", "Medium", "Large", "XLarge")
+        AlertDialog(
+            onDismissRequest = { showTextSizeDialog = false },
+            containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
+            title = { Text("Text Size", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp) },
+            text = {
+                androidx.compose.foundation.layout.Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    sizes.forEach { size ->
+                        androidx.compose.foundation.layout.Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    if (textSize == size) PrimaryGreen.copy(alpha = 0.08f) else androidx.compose.ui.graphics.Color.Transparent,
+                                    RoundedCornerShape(12.dp)
+                                )
+                                .border(1.dp, if (textSize == size) PrimaryGreen.copy(alpha = 0.3f) else BorderLight, RoundedCornerShape(12.dp))
+                                .clickable { appViewModel.setTextSize(size); showTextSizeDialog = false }
+                                .padding(horizontal = 16.dp, vertical = 14.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(size, fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp, color = TextPrimary)
+                            if (textSize == size) Icon(Icons.Default.ChevronRight, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(20.dp))
+                        }
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = { androidx.compose.material3.TextButton(onClick = { showTextSizeDialog = false }) { Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary) } },
+            shape = RoundedCornerShape(24.dp)
+        )
+    }
+
+    if (showToneDialog) {
+        val tones = listOf("Default", "Bell", "Chime", "Ding", "Soft Alert")
+        AlertDialog(
+            onDismissRequest = { showToneDialog = false },
+            containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
+            title = {
+                Text("Notification Tone", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            },
+            text = {
+                androidx.compose.foundation.layout.Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    tones.forEach { tone ->
+                        androidx.compose.foundation.layout.Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    if (selectedTone == tone) PrimaryGreen.copy(alpha = 0.08f)
+                                    else androidx.compose.ui.graphics.Color.Transparent,
+                                    RoundedCornerShape(12.dp)
+                                )
+                                .border(
+                                    1.dp,
+                                    if (selectedTone == tone) PrimaryGreen.copy(alpha = 0.3f)
+                                    else BorderLight,
+                                    RoundedCornerShape(12.dp)
+                                )
+                                .clickable { selectedTone = tone; showToneDialog = false }
+                                .padding(horizontal = 16.dp, vertical = 14.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                tone,
+                                fontFamily = Poppins,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 14.sp,
+                                color = TextPrimary
+                            )
+                            if (selectedTone == tone) {
+                                Icon(
+                                    androidx.compose.material.icons.Icons.Default.ChevronRight,
+                                    contentDescription = null,
+                                    tint = PrimaryGreen,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                androidx.compose.material3.TextButton(onClick = { showToneDialog = false }) {
+                    Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary)
                 }
             },
             shape = RoundedCornerShape(24.dp)

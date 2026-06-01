@@ -102,9 +102,10 @@ fun CaregiverAddPatientScreen(
         caregiverViewModel.clearAssignmentMessage()
     }
 
+    // Only show results when the user has typed something — do not list all patients on load
     val filteredPatients = remember(availablePatients, searchQuery) {
         if (searchQuery.isBlank()) {
-            availablePatients
+            emptyList()
         } else {
             availablePatients.filter { patient ->
                 patient.name.contains(searchQuery, ignoreCase = true) ||
@@ -217,9 +218,18 @@ fun CaregiverAddPatientScreen(
                 Spacer(modifier = Modifier.height(12.dp))
             }
 
-            if (filteredPatients.isEmpty()) {
+            if (searchQuery.isBlank()) {
+                item {
+                    SearchPromptState(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp, vertical = 48.dp)
+                    )
+                }
+            } else if (filteredPatients.isEmpty()) {
                 item {
                     EmptyPatientSearchState(
+                        query = searchQuery,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp, vertical = 48.dp)
@@ -338,7 +348,7 @@ private fun AddPatientRow(
 }
 
 @Composable
-private fun EmptyPatientSearchState(modifier: Modifier = Modifier) {
+private fun SearchPromptState(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -351,7 +361,47 @@ private fun EmptyPatientSearchState(modifier: Modifier = Modifier) {
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                Icons.Default.Check,
+                Icons.Default.Search,
+                contentDescription = null,
+                tint = PrimaryGreen,
+                modifier = Modifier.size(40.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            "Search for a Patient",
+            fontFamily = Poppins,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 16.sp,
+            color = TextPrimary
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+        Text(
+            "Type a patient's name or phone number above to find and add them.",
+            fontFamily = Poppins,
+            fontWeight = FontWeight.Medium,
+            fontSize = 13.sp,
+            color = TextSecondary,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun EmptyPatientSearchState(query: String = "", modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .size(88.dp)
+                .background(PrimaryGreen.copy(alpha = 0.1f), CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                Icons.Default.Search,
                 contentDescription = null,
                 tint = PrimaryGreen,
                 modifier = Modifier.size(40.dp)
@@ -367,11 +417,13 @@ private fun EmptyPatientSearchState(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.height(6.dp))
         Text(
-            "Try another search term or check if all patients are already assigned.",
+            if (query.isNotBlank()) "No results for \"$query\". Try a different name or phone number."
+            else "Try another search term.",
             fontFamily = Poppins,
             fontWeight = FontWeight.Medium,
             fontSize = 13.sp,
-            color = TextSecondary
+            color = TextSecondary,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
     }
 }

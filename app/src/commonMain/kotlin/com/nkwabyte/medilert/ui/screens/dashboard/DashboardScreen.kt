@@ -28,10 +28,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EventAvailable
+import androidx.compose.material.icons.filled.Medication
 import androidx.compose.material.icons.filled.MedicalServices
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.Vaccines
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
@@ -58,6 +64,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nkwabyte.medilert.model.DoseStatus
 import com.nkwabyte.medilert.model.MedicationSchedule
 import com.nkwabyte.medilert.navigation.AddMedication1
+import com.nkwabyte.medilert.navigation.EditMedication
 import com.nkwabyte.medilert.navigation.ProfilePage
 import com.nkwabyte.medilert.ui.components.BottomTabBar
 import com.nkwabyte.medilert.ui.components.DashboardTab
@@ -77,41 +84,34 @@ import com.nkwabyte.medilert.ui.theme.Surface
 import com.nkwabyte.medilert.ui.theme.SurfaceVariant
 import com.nkwabyte.medilert.ui.theme.TextPrimary
 import com.nkwabyte.medilert.ui.theme.TextSecondary
+import com.nkwabyte.medilert.util.GhanaianPhrases
+import com.nkwabyte.medilert.util.HapticFeedback
 import com.nkwabyte.medilert.viewmodel.AppViewModel
 import com.nkwabyte.medilert.viewmodel.MedicationViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
-import kotlin.time.Clock
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.DayOfWeek
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.minus
-import kotlinx.datetime.plus
-import kotlinx.datetime.todayIn
-import kotlinx.datetime.toLocalDateTime
+import androidx.compose.ui.platform.LocalContext
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 private fun sessionOf(scheduledTime: String): String {
-    val parts = scheduledTime.trim().split(" ")
-    val hhmm = parts.getOrElse(0) { "00:00" }
-    val amPm = parts.getOrElse(1) { "AM" }.uppercase()
-    val h = hhmm.split(":").getOrElse(0) { "0" }.toIntOrNull() ?: 0
-    val h24 = when {
-        amPm == "PM" && h != 12 -> h + 12
-        amPm == "AM" && h == 12 -> 0
-        else -> h
-    }
-    return when (h24) {
-        in 0..11 -> "Morning"
-        in 12..17 -> "Afternoon"
-        else -> "Evening"
-    }
+    return try {
+        val cal = Calendar.getInstance()
+        cal.time = SimpleDateFormat("h:mm a", Locale.ENGLISH).parse(scheduledTime)!!
+        when (cal.get(Calendar.HOUR_OF_DAY)) {
+            in 0..11 -> "Morning"
+            in 12..17 -> "Afternoon"
+            else -> "Evening"
+        }
+    } catch (e: Exception) { "Morning" }
 }
 
 @Composable
 fun DashboardScreen(
-    navViewModel: NavViewModel = viewModel { NavViewModel() },
-    appViewModel: AppViewModel = viewModel { AppViewModel() },
-    medicationViewModel: MedicationViewModel = viewModel { MedicationViewModel() }
+    navViewModel: NavViewModel = viewModel(),
+    appViewModel: AppViewModel = viewModel(),
+    medicationViewModel: MedicationViewModel = viewModel()
 ) {
     var activeTab by remember { mutableStateOf(DashboardTab.HOME) }
 
@@ -158,19 +158,22 @@ fun DashboardScreen(
 
 @Composable
 fun HomeTab(
-    navViewModel: NavViewModel = viewModel { NavViewModel() },
-    appViewModel: AppViewModel = viewModel { AppViewModel() },
-    medicationViewModel: MedicationViewModel = viewModel { MedicationViewModel() },
+    navViewModel: NavViewModel = viewModel(),
+    appViewModel: AppViewModel = viewModel(),
+    medicationViewModel: MedicationViewModel = viewModel(),
     onViewAllHistory: () -> Unit = {}
 ) {
+    val context = LocalContext.current
     val currentUser by appViewModel.currentUser.collectAsState()
+    val selectedLanguage by appViewModel.selectedLanguage.collectAsState()
     val scheduleHistory by medicationViewModel.scheduleHistory.collectAsState()
     val medications by medicationViewModel.medications.collectAsState()
 
-    val todayDateStr = remember { Clock.System.todayIn(TimeZone.currentSystemDefault()).toString() }
+    val todayDateStr = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()) }
     var selectedDateStr by remember { mutableStateOf(todayDateStr) }
 
-    val currentHour = remember { Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).hour }
+    val calendar = remember { Calendar.getInstance() }
+    val currentHour = remember { calendar.get(Calendar.HOUR_OF_DAY) }
     val greeting = remember(currentHour) {
         when (currentHour) {
             in 0..11 -> "Good Morning"
@@ -178,18 +181,21 @@ fun HomeTab(
             else -> "Good Evening"
         }
     }
+    val localGreeting = remember(selectedLanguage, currentHour) {
+        GhanaianPhrases.greeting(selectedLanguage, currentHour)
+    }
 
     val userName = remember(currentUser.name) {
         currentUser.name.split(" ").firstOrNull() ?: "User"
     }
 
     val currentDate = remember {
-        val ldt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-        val dayName = ldt.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
-        val monthName = ldt.month.name.lowercase().replaceFirstChar { it.uppercase() }
-        "$dayName, ${ldt.dayOfMonth} $monthName, ${ldt.year}"
+        val dateFormat = SimpleDateFormat("EEEE, d MMMM, yyyy", Locale.getDefault())
+        dateFormat.format(Date())
     }
 
+    // Filter schedule for selected date, cross-referencing active medications to exclude
+    // orphaned schedule documents left behind by deleted or test medications.
     val selectedSchedule = remember(scheduleHistory, selectedDateStr, medications) {
         val activeIds = medications.map { it.id }.toSet()
         scheduleHistory
@@ -197,6 +203,7 @@ fun HomeTab(
             .sortedBy { it.scheduledTime }
     }
 
+    // Group schedule by session in display order: Morning → Afternoon → Evening
     val sessionGroups = remember(selectedSchedule) {
         val grouped = selectedSchedule.groupBy { sessionOf(it.scheduledTime) }
         listOf("Morning", "Afternoon", "Evening").mapNotNull { name ->
@@ -204,50 +211,67 @@ fun HomeTab(
         }
     }
 
+    // Which schedule entry the Edit dialog is open for (null = closed)
     var editingSchedule by remember { mutableStateOf<MedicationSchedule?>(null) }
 
+    // Get formatted day name for selected date
     val selectedDayInfo = remember(selectedDateStr) {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val fullDateFormat = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault())
+        val dayNameFormat = SimpleDateFormat("EEEE", Locale.getDefault())
+
         try {
-            val localDate = LocalDate.parse(selectedDateStr)
-            val isToday = selectedDateStr == todayDateStr
-            val dayName = if (isToday) "Today" else localDate.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
-            val monthName = localDate.month.name.lowercase().replaceFirstChar { it.uppercase() }
-            val fullDate = "${localDate.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }}, ${localDate.dayOfMonth} $monthName"
-            Pair(dayName, fullDate)
+            val date = dateFormat.parse(selectedDateStr)
+            if (date != null) {
+                val isToday = selectedDateStr == todayDateStr
+                val dayName = if (isToday) "Today" else dayNameFormat.format(date)
+                val fullDate = fullDateFormat.format(date)
+                Pair(dayName, fullDate)
+            } else {
+                Pair("Today", currentDate.split(",").first())
+            }
         } catch (e: Exception) {
             Pair("Today", currentDate.split(",").first())
         }
     }
 
+    // Generate week calendar data
     val weekDays = remember(scheduleHistory, medications) {
-        val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
-        val mondayOffset = today.dayOfWeek.ordinal
-        val startOfWeek = today.minus(mondayOffset, DateTimeUnit.DAY)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val today = Calendar.getInstance()
+        val startOfWeek = Calendar.getInstance().apply {
+            set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+        }
         val activeIds = medications.map { it.id }.toSet()
 
         (0..6).map { dayOffset ->
-            val day = startOfWeek.plus(dayOffset, DateTimeUnit.DAY)
+            val day = Calendar.getInstance().apply {
+                time = startOfWeek.time
+                add(Calendar.DAY_OF_YEAR, dayOffset)
+            }
 
-            val dayAbbr = when (day.dayOfWeek) {
-                DayOfWeek.MONDAY -> "Mo"
-                DayOfWeek.TUESDAY -> "Tu"
-                DayOfWeek.WEDNESDAY -> "We"
-                DayOfWeek.THURSDAY -> "Th"
-                DayOfWeek.FRIDAY -> "Fr"
-                DayOfWeek.SATURDAY -> "Sa"
-                DayOfWeek.SUNDAY -> "Su"
+            val dayAbbr = when (day.get(Calendar.DAY_OF_WEEK)) {
+                Calendar.MONDAY -> "Mo"
+                Calendar.TUESDAY -> "Tu"
+                Calendar.WEDNESDAY -> "We"
+                Calendar.THURSDAY -> "Th"
+                Calendar.FRIDAY -> "Fr"
+                Calendar.SATURDAY -> "Sa"
+                Calendar.SUNDAY -> "Su"
                 else -> ""
             }
 
-            val dateNum = day.dayOfMonth.toString()
-            val dayStr = day.toString()
-            val isToday = dayStr == today.toString()
+            val dateNum = day.get(Calendar.DAY_OF_MONTH).toString()
+            val dayStr = dateFormat.format(day.time)
+            val isToday = dayStr == dateFormat.format(today.time)
 
+            // Only count schedules belonging to currently active medications
             val daySchedules = scheduleHistory.filter { it.date == dayStr && it.medicationId in activeIds }
             val dayTaken = daySchedules.count { it.status == DoseStatus.TAKEN }
             val dayTotal = daySchedules.count { it.status != DoseStatus.UPCOMING }
             val dayAdherence = if (dayTotal > 0) (dayTaken * 100) / dayTotal else 0
 
+            // Return day abbreviation, date number, date string, isToday flag, and adherence
             mapOf(
                 "abbr" to dayAbbr,
                 "num" to dateNum,
@@ -263,6 +287,7 @@ fun HomeTab(
             .fillMaxSize()
             .background(Background)
     ) {
+        // Ambient gradient
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -285,6 +310,7 @@ fun HomeTab(
             contentPadding = PaddingValues(top = 56.dp)
         ) {
             item {
+                // Header with dynamic greeting and date
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -315,16 +341,26 @@ fun HomeTab(
                             fontSize = 22.sp,
                             color = TextPrimary
                         )
+                        if (localGreeting.isNotEmpty()) {
+                            Text(
+                                localGreeting,
+                                fontFamily = Poppins,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 13.sp,
+                                color = PrimaryGreen
+                            )
+                        }
                         Text(
                             currentDate,
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Medium,
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
                             color = TextSecondary
                         )
                     }
                 }
 
+                // This Week header
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -353,6 +389,7 @@ fun HomeTab(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
+                // Week calendar row - Live and dynamic
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -422,12 +459,19 @@ fun HomeTab(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Selected-day adherence stats (drives both the adherence card and status blocks)
                 val selTaken = selectedSchedule.count { it.status == DoseStatus.TAKEN }
                 val selMissed = selectedSchedule.count { it.status == DoseStatus.MISSED }
                 val selUpcoming = selectedSchedule.count { it.status == DoseStatus.UPCOMING }
                 val selCompleted = selTaken + selMissed
+                // Denominator is all scheduled doses, not just actioned ones.
+                // 1 taken out of 2 scheduled = 50%, not 100%.
                 val selAdherencePct = if (selectedSchedule.isNotEmpty()) (selTaken * 100) / selectedSchedule.size else 0
 
+                // Adherence card:
+                //  - past day  → show whenever doses exist (day is over; 0 taken = 0%)
+                //  - today     → show only once at least one dose is actioned
+                //  - future day→ hidden (nothing has happened yet)
                 val showAdherenceCard = selectedSchedule.isNotEmpty() &&
                     (selectedDateStr < todayDateStr || selCompleted > 0)
                 if (showAdherenceCard) {
@@ -491,6 +535,7 @@ fun HomeTab(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
+                // Status blocks
                 if (selectedSchedule.isNotEmpty()) {
                     Row(
                         modifier = Modifier
@@ -502,18 +547,21 @@ fun HomeTab(
                             label = "Taken",
                             count = selTaken,
                             color = PrimaryGreen,
+                            icon = Icons.Default.CheckCircle,
                             modifier = Modifier.weight(1f)
                         )
                         StatusBlock(
                             label = "Missed",
                             count = selMissed,
                             color = GhanaRed,
+                            icon = Icons.Default.Cancel,
                             modifier = Modifier.weight(1f)
                         )
                         StatusBlock(
                             label = "Upcoming",
                             count = selUpcoming,
-                            color = TextPrimary,
+                            color = Color(0xFF4A9EFF),
+                            icon = Icons.Default.Schedule,
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -521,6 +569,7 @@ fun HomeTab(
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 
+                // Today's schedule header
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -553,6 +602,7 @@ fun HomeTab(
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
+            // Empty state or session-grouped schedule list
             if (selectedSchedule.isEmpty()) {
                 item {
                     EmptyScheduleState(
@@ -592,16 +642,35 @@ fun HomeTab(
             }
         }
 
+        // Dose update dialog
+        val ctx = LocalContext.current
         editingSchedule?.let { schedule ->
             DoseUpdateDialog(
                 schedule = schedule,
                 onDismiss = { editingSchedule = null },
-                onMarkTaken = { medicationViewModel.markDoseTaken(schedule); editingSchedule = null },
-                onMarkMissed = { medicationViewModel.markDoseMissed(schedule); editingSchedule = null },
-                onMarkSkipped = { medicationViewModel.markDoseSkipped(schedule); editingSchedule = null }
+                onMarkTaken = {
+                    HapticFeedback.success(ctx)
+                    medicationViewModel.markDoseTaken(schedule)
+                    editingSchedule = null
+                },
+                onMarkMissed = {
+                    HapticFeedback.error(ctx)
+                    medicationViewModel.markDoseMissed(schedule)
+                    editingSchedule = null
+                },
+                onMarkSkipped = {
+                    HapticFeedback.light(ctx)
+                    medicationViewModel.markDoseSkipped(schedule)
+                    editingSchedule = null
+                },
+                onEditDetails = {
+                    editingSchedule = null
+                    navViewModel.navigateTo(EditMedication(schedule.medicationId))
+                }
             )
         }
 
+        // FAB
         FloatingActionButton(
             onClick = { navViewModel.navigateTo(AddMedication1) },
             modifier = Modifier
@@ -680,7 +749,13 @@ fun EmptyScheduleState(
 }
 
 @Composable
-fun StatusBlock(label: String, count: Int, color: Color, modifier: Modifier = Modifier) {
+fun StatusBlock(
+    label: String,
+    count: Int,
+    color: Color,
+    icon: androidx.compose.ui.graphics.vector.ImageVector? = null,
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = modifier
             .height(96.dp)
@@ -689,18 +764,20 @@ fun StatusBlock(label: String, count: Int, color: Color, modifier: Modifier = Mo
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            if (icon != null) {
+                Icon(
+                    icon,
+                    contentDescription = label,
+                    tint = color,
+                    modifier = Modifier.size(22.dp)
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+            }
             Text(
                 count.toString(),
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Bold,
-                fontSize = 28.sp,
-                color = color
-            )
-            Text(
-                label,
-                fontFamily = Poppins,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
+                fontSize = if (icon != null) 22.sp else 28.sp,
                 color = color
             )
         }
@@ -730,7 +807,19 @@ fun MedicationScheduleCard(
         DoseStatus.TAKEN -> "Taken"
         DoseStatus.MISSED -> "Missed"
         DoseStatus.SKIPPED -> "Skipped"
-        DoseStatus.UPCOMING -> ""
+        DoseStatus.UPCOMING -> "Upcoming"
+    }
+
+    // Choose icon based on medication unit
+    val medIcon = when {
+        schedule.unit.contains("injection", ignoreCase = true) ||
+        schedule.unit.contains("vial", ignoreCase = true) -> Icons.Default.Vaccines
+        schedule.unit.contains("liquid", ignoreCase = true) ||
+        schedule.unit.contains("syrup", ignoreCase = true) ||
+        schedule.unit.contains("ml", ignoreCase = true) -> Icons.Default.MedicalServices
+        schedule.unit.contains("capsule", ignoreCase = true) ||
+        schedule.unit.contains("tablet", ignoreCase = true) -> Icons.Default.Medication
+        else -> Icons.Default.MedicalServices
     }
 
     Column(modifier = modifier) {
@@ -764,6 +853,7 @@ fun MedicationScheduleCard(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Tapping any card opens the dose update dialog
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -771,7 +861,7 @@ fun MedicationScheduleCard(
                     brush = Brush.linearGradient(cardGradient),
                     shape = RoundedCornerShape(32.dp)
                 )
-                .clickable(enabled = schedule.status == DoseStatus.UPCOMING, onClick = onClick)
+                .clickable(onClick = onEdit)
                 .padding(20.dp)
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -783,7 +873,7 @@ fun MedicationScheduleCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        Icons.Default.MedicalServices,
+                        medIcon,
                         contentDescription = null,
                         tint = Color.White,
                         modifier = Modifier.size(28.dp)
@@ -795,7 +885,7 @@ fun MedicationScheduleCard(
                         schedule.medicationName,
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp,
+                        fontSize = 20.sp,
                         color = Color.White
                     )
                     Row(
@@ -817,96 +907,84 @@ fun MedicationScheduleCard(
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
+
+                    // Dosage quantity circles
+                    val doseCount = schedule.dose.coerceIn(1, 10)
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
+                        repeat(doseCount) {
+                            Box(
+                                modifier = Modifier
+                                    .size(14.dp)
+                                    .background(Color.White, CircleShape)
+                                    .border(1.dp, Color.White.copy(alpha = 0.6f), CircleShape)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             "${schedule.dose} ${schedule.unit}",
                             fontFamily = Poppins,
                             fontWeight = FontWeight.SemiBold,
-                            fontSize = 14.sp,
-                            color = Color.White,
-                            modifier = Modifier
-                                .background(
-                                    Color.White.copy(alpha = 0.15f),
-                                    RoundedCornerShape(8.dp)
-                                )
-                                .padding(horizontal = 10.dp, vertical = 4.dp)
+                            fontSize = 12.sp,
+                            color = Color.White.copy(alpha = 0.9f)
                         )
-                        if (schedule.status == DoseStatus.MISSED || schedule.status == DoseStatus.SKIPPED) {
-                            Text(
-                                statusText,
-                                fontFamily = Poppins,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 11.sp,
-                                color = Color.White,
-                                modifier = Modifier
-                                    .background(
-                                        Color.Black.copy(alpha = 0.2f),
-                                        RoundedCornerShape(8.dp)
-                                    )
-                                    .padding(horizontal = 8.dp, vertical = 4.dp)
-                            )
-                        }
                     }
                 }
             }
 
-            if (schedule.status == DoseStatus.TAKEN) {
-                Box(
-                    modifier = Modifier
-                        .size(36.dp)
-                        .align(Alignment.TopEnd)
-                        .background(Color.White.copy(alpha = 0.25f), CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        Icons.Default.Check,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(22.dp)
-                    )
+            // Status indicator (top-right)
+            when (schedule.status) {
+                DoseStatus.TAKEN -> {
+                    Box(
+                        modifier = Modifier
+                            .size(36.dp)
+                            .align(Alignment.TopEnd)
+                            .background(Color.White.copy(alpha = 0.25f), CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            Icons.Default.Check,
+                            contentDescription = "Taken",
+                            tint = Color.White,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
                 }
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .background(Color.White.copy(alpha = 0.2f), RoundedCornerShape(50.dp))
-                        .padding(horizontal = 10.dp, vertical = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Icon(
-                        Icons.Default.Check,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(12.dp)
-                    )
-                    Text(
-                        "Taken",
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 12.sp,
-                        color = Color.White
-                    )
+                DoseStatus.MISSED, DoseStatus.SKIPPED -> {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .background(Color.Black.copy(alpha = 0.25f), RoundedCornerShape(50.dp))
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            statusText,
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 11.sp,
+                            color = Color.White
+                        )
+                    }
                 }
+                DoseStatus.UPCOMING -> Unit
             }
 
-            if (schedule.status == DoseStatus.UPCOMING) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .align(Alignment.BottomEnd)
-                        .background(Color.White.copy(alpha = 0.2f), CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.VolumeUp,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
+            // Speaker icon (bottom-right) — always visible for upcoming, dimmed for others
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .align(Alignment.BottomEnd)
+                    .background(Color.White.copy(alpha = if (schedule.status == DoseStatus.UPCOMING) 0.25f else 0.1f), CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.AutoMirrored.Filled.VolumeUp,
+                    contentDescription = "Audio reminder",
+                    tint = Color.White.copy(alpha = if (schedule.status == DoseStatus.UPCOMING) 1f else 0.4f),
+                    modifier = Modifier.size(20.dp)
+                )
             }
         }
     }
@@ -966,7 +1044,8 @@ private fun DoseUpdateDialog(
     onDismiss: () -> Unit,
     onMarkTaken: () -> Unit,
     onMarkMissed: () -> Unit,
-    onMarkSkipped: () -> Unit
+    onMarkSkipped: () -> Unit,
+    onEditDetails: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -1011,13 +1090,11 @@ private fun DoseUpdateDialog(
                             .padding(vertical = 12.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            "Taken",
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 13.sp,
-                            color = PrimaryGreen
-                        )
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(Icons.Default.CheckCircle, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(18.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text("Taken", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = PrimaryGreen)
+                        }
                     }
                     Box(
                         modifier = Modifier
@@ -1028,13 +1105,11 @@ private fun DoseUpdateDialog(
                             .padding(vertical = 12.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            "Missed",
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 13.sp,
-                            color = GhanaRed
-                        )
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(Icons.Default.Cancel, contentDescription = null, tint = GhanaRed, modifier = Modifier.size(18.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text("Missed", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = GhanaRed)
+                        }
                     }
                     Box(
                         modifier = Modifier
@@ -1045,13 +1120,30 @@ private fun DoseUpdateDialog(
                             .padding(vertical = 12.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            "Skipped",
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 13.sp,
-                            color = GhanaYellowDark
-                        )
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(Icons.Default.Schedule, contentDescription = null, tint = GhanaYellowDark, modifier = Modifier.size(18.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text("Skipped", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = GhanaYellowDark)
+                        }
+                    }
+                }
+
+                // Edit medication details option
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(PrimaryGreen.copy(alpha = 0.05f), RoundedCornerShape(12.dp))
+                        .border(1.dp, PrimaryGreen.copy(alpha = 0.15f), RoundedCornerShape(12.dp))
+                        .clickable { onEditDetails() }
+                        .padding(vertical = 10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(Icons.Default.Edit, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(16.dp))
+                        Text("Edit Medication Details", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = PrimaryGreen)
                     }
                 }
             }
@@ -1059,12 +1151,7 @@ private fun DoseUpdateDialog(
         confirmButton = {},
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(
-                    "Cancel",
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.Medium,
-                    color = TextSecondary
-                )
+                Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary)
             }
         }
     )
