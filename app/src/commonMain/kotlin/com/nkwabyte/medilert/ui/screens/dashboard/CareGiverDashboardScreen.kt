@@ -41,8 +41,9 @@ import com.nkwabyte.medilert.viewmodel.CaregiverViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 import com.nkwabyte.medilert.viewmodel.TodayDoseInfo
 import com.nkwabyte.medilert.viewmodel.WeekDayInfo
-import java.text.SimpleDateFormat
-import java.util.*
+import kotlin.time.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun CareGiverDashboardScreen(
@@ -100,7 +101,12 @@ fun CareGiverHomeContent(
         ordered
     }
 
-    val today = remember { SimpleDateFormat("EEEE, d MMMM, yyyy", Locale.getDefault()).format(Date()) }
+    val today = remember {
+        val ldt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val dow = ldt.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
+        val mon = ldt.month.name.lowercase().replaceFirstChar { it.uppercase() }
+        "$dow, ${ldt.dayOfMonth} $mon, ${ldt.year}"
+    }
     val firstName = remember(user.name) { user.name.split(" ").firstOrNull() ?: "You" }
     val initials = remember(user.name) {
         user.name.split(" ").take(2).mapNotNull { it.firstOrNull()?.uppercaseChar() }.joinToString("")

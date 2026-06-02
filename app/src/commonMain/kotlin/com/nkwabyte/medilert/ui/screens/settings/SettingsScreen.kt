@@ -55,7 +55,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
+import kotlin.time.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -87,7 +89,6 @@ fun SettingsScreen(
     hideBackButton: Boolean = false,
     isCaregiver: Boolean = false
 ) {
-    val context = LocalContext.current
     val currentUser by appViewModel.currentUser.collectAsState()
     val userRole by appViewModel.userRole.collectAsState()
     val caregiver = isCaregiver || userRole == UserRole.DOCTOR || userRole == UserRole.PHARMACIST
@@ -124,16 +125,15 @@ fun SettingsScreen(
 
     val memberSince = remember(currentUser.createdAt) {
         if (currentUser.createdAt > 0) {
-            val calendar = java.util.Calendar.getInstance().apply {
-                timeInMillis = currentUser.createdAt
-            }
-            val month = when (calendar.get(java.util.Calendar.MONTH)) {
-                0 -> "Jan"; 1 -> "Feb"; 2 -> "Mar"; 3 -> "Apr"
-                4 -> "May"; 5 -> "Jun"; 6 -> "Jul"; 7 -> "Aug"
-                8 -> "Sep"; 9 -> "Oct"; 10 -> "Nov"; 11 -> "Dec"
+            val instant = Instant.fromEpochMilliseconds(currentUser.createdAt)
+            val dt = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+            val month = when (dt.monthNumber) {
+                1 -> "Jan"; 2 -> "Feb"; 3 -> "Mar"; 4 -> "Apr"
+                5 -> "May"; 6 -> "Jun"; 7 -> "Jul"; 8 -> "Aug"
+                9 -> "Sep"; 10 -> "Oct"; 11 -> "Nov"; 12 -> "Dec"
                 else -> ""
             }
-            "Member since $month ${calendar.get(java.util.Calendar.YEAR)}"
+            "Member since $month ${dt.year}"
         } else {
             "Member since 2026"
         }

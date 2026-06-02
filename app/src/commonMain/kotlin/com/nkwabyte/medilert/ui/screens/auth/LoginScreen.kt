@@ -30,6 +30,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.Close
@@ -61,8 +62,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import org.jetbrains.compose.resources.painterResource
+import com.nkwabyte.medilert.generated.resources.Res
+import com.nkwabyte.medilert.generated.resources.logo
+import com.nkwabyte.medilert.generated.resources.ic_google
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -71,7 +74,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.nkwabyte.medilert.R
 import com.nkwabyte.medilert.data.FirebaseResult
 import com.nkwabyte.medilert.data.service.UserService
 import com.nkwabyte.medilert.model.UserRole
@@ -133,7 +135,6 @@ fun LoginScreen(
     authViewModel: AuthViewModel = viewModel { AuthViewModel() },
     userService: UserService = UserService()
 ) {
-    val context = LocalContext.current
     val uiState by authViewModel.uiState.collectAsState()
 
     var email by remember { mutableStateOf("") }
@@ -249,7 +250,7 @@ fun LoginScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.logo),
+                        painter = painterResource(Res.drawable.logo),
                         contentDescription = "Logo",
                         modifier = Modifier.size(60.dp),
                         contentScale = ContentScale.Fit
@@ -344,7 +345,7 @@ fun LoginScreen(
                         ) {
                             if (rememberMe) {
                                 Icon(
-                                    painter = painterResource(android.R.drawable.checkbox_on_background),
+                                    Icons.Default.Check,
                                     contentDescription = null,
                                     tint = Color.White,
                                     modifier = Modifier.size(14.dp)
@@ -456,7 +457,7 @@ fun LoginScreen(
                                 errorMessage = "Please enter your email address."
                                 emailHasError = true
                             }
-                            !android.util.Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches() -> {
+                            !(email.trim().contains('@') && email.trim().contains('.')) -> {
                                 errorMessage = "Please enter a valid email address."
                                 emailHasError = true
                             }
@@ -547,7 +548,7 @@ fun LoginScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
-                            painter = painterResource(R.drawable.ic_google),
+                            painter = painterResource(Res.drawable.ic_google),
                             contentDescription = "Google",
                             modifier = Modifier.size(24.dp)
                         )

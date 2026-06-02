@@ -41,7 +41,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 
-import androidx.compose.ui.res.painterResource
+import org.jetbrains.compose.resources.painterResource
+import com.nkwabyte.medilert.generated.resources.Res
+import com.nkwabyte.medilert.generated.resources.img_splash
+import com.nkwabyte.medilert.generated.resources.logo
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -51,7 +54,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
-import com.nkwabyte.medilert.R
 import com.nkwabyte.medilert.data.FirebaseResult
 import com.nkwabyte.medilert.data.PreferencesManager
 import com.nkwabyte.medilert.data.service.UserService
@@ -128,7 +130,7 @@ fun SplashScreen(
 
         // Full-screen background photo
         Image(
-            painter = painterResource(id = R.drawable.img_splash),
+            painter = painterResource(Res.drawable.img_splash),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -158,7 +160,7 @@ fun SplashScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(Res.drawable.logo),
                 contentDescription = "Medilert",
                 modifier = Modifier.size(88.dp),
                 contentScale = ContentScale.Fit

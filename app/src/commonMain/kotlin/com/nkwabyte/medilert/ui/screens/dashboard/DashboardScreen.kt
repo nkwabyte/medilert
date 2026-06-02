@@ -89,17 +89,26 @@ import com.nkwabyte.medilert.util.HapticFeedback
 import com.nkwabyte.medilert.viewmodel.AppViewModel
 import com.nkwabyte.medilert.viewmodel.MedicationViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
-import androidx.compose.ui.platform.LocalContext
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import kotlin.time.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
 
 private fun sessionOf(scheduledTime: String): String {
     return try {
-        val cal = Calendar.getInstance()
-        cal.time = SimpleDateFormat("h:mm a", Locale.ENGLISH).parse(scheduledTime)!!
-        when (cal.get(Calendar.HOUR_OF_DAY)) {
+        val rawHour = scheduledTime.substringBefore(':').trim().toIntOrNull() ?: 0
+        val isPM = scheduledTime.contains("PM", ignoreCase = true)
+        val isAM = scheduledTime.contains("AM", ignoreCase = true)
+        val hour24 = when {
+            isPM && rawHour != 12 -> rawHour + 12
+            isAM && rawHour == 12 -> 0
+            else -> rawHour
+        }
+        when (hour24) {
             in 0..11 -> "Morning"
             in 12..17 -> "Afternoon"
             else -> "Evening"
@@ -163,17 +172,18 @@ fun HomeTab(
     medicationViewModel: MedicationViewModel = viewModel(),
     onViewAllHistory: () -> Unit = {}
 ) {
-    val context = LocalContext.current
     val currentUser by appViewModel.currentUser.collectAsState()
     val selectedLanguage by appViewModel.selectedLanguage.collectAsState()
     val scheduleHistory by medicationViewModel.scheduleHistory.collectAsState()
     val medications by medicationViewModel.medications.collectAsState()
 
-    val todayDateStr = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()) }
+    val todayDateStr = remember {
+        val ldt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        "${ldt.year}-${ldt.monthNumber.toString().padStart(2, '0')}-${ldt.dayOfMonth.toString().padStart(2, '0')}"
+    }
     var selectedDateStr by remember { mutableStateOf(todayDateStr) }
 
-    val calendar = remember { Calendar.getInstance() }
-    val currentHour = remember { calendar.get(Calendar.HOUR_OF_DAY) }
+    val currentHour = remember { Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).hour }
     val greeting = remember(currentHour) {
         when (currentHour) {
             in 0..11 -> "Good Morning"
@@ -190,8 +200,10 @@ fun HomeTab(
     }
 
     val currentDate = remember {
-        val dateFormat = SimpleDateFormat("EEEE, d MMMM, yyyy", Locale.getDefault())
-        dateFormat.format(Date())
+        val ldt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val dow = ldt.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
+        val mon = ldt.month.name.lowercase().replaceFirstChar { it.uppercase() }
+        "$dow, ${ldt.dayOfMonth} $mon, ${ldt.year}"
     }
 
     // Filter schedule for selected date, cross-referencing active medications to exclude
@@ -216,20 +228,18 @@ fun HomeTab(
 
     // Get formatted day name for selected date
     val selectedDayInfo = remember(selectedDateStr) {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val fullDateFormat = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault())
-        val dayNameFormat = SimpleDateFormat("EEEE", Locale.getDefault())
-
         try {
-            val date = dateFormat.parse(selectedDateStr)
-            if (date != null) {
-                val isToday = selectedDateStr == todayDateStr
-                val dayName = if (isToday) "Today" else dayNameFormat.format(date)
-                val fullDate = fullDateFormat.format(date)
-                Pair(dayName, fullDate)
-            } else {
-                Pair("Today", currentDate.split(",").first())
-            }
+            val parts = selectedDateStr.split("-")
+            val year = parts[0].toInt()
+            val month = parts[1].toInt()
+            val day = parts[2].toInt()
+            val isToday = selectedDateStr == todayDateStr
+            val ld = LocalDate(year, month, day)
+            val dayOfWeekName = ld.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
+            val monthName = ld.month.name.lowercase().replaceFirstChar { it.uppercase() }
+            val dayName = if (isToday) "Today" else dayOfWeekName
+            val fullDate = "$dayOfWeekName, $day $monthName"
+            Pair(dayName, fullDate)
         } catch (e: Exception) {
             Pair("Today", currentDate.split(",").first())
         }
@@ -237,33 +247,29 @@ fun HomeTab(
 
     // Generate week calendar data
     val weekDays = remember(scheduleHistory, medications) {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val today = Calendar.getInstance()
-        val startOfWeek = Calendar.getInstance().apply {
-            set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-        }
         val activeIds = medications.map { it.id }.toSet()
+        val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val todayDate = LocalDate(now.year, now.monthNumber, now.dayOfMonth)
+
+        // Find Monday of the current week
+        val daysSinceMonday = todayDate.dayOfWeek.ordinal // Monday=0 in kotlinx.datetime
+        val mondayDate = todayDate.minus(daysSinceMonday, DateTimeUnit.DAY)
 
         (0..6).map { dayOffset ->
-            val day = Calendar.getInstance().apply {
-                time = startOfWeek.time
-                add(Calendar.DAY_OF_YEAR, dayOffset)
-            }
-
-            val dayAbbr = when (day.get(Calendar.DAY_OF_WEEK)) {
-                Calendar.MONDAY -> "Mo"
-                Calendar.TUESDAY -> "Tu"
-                Calendar.WEDNESDAY -> "We"
-                Calendar.THURSDAY -> "Th"
-                Calendar.FRIDAY -> "Fr"
-                Calendar.SATURDAY -> "Sa"
-                Calendar.SUNDAY -> "Su"
+            val day = mondayDate.plus(dayOffset, DateTimeUnit.DAY)
+            val dayAbbr = when (day.dayOfWeek) {
+                DayOfWeek.MONDAY -> "Mo"
+                DayOfWeek.TUESDAY -> "Tu"
+                DayOfWeek.WEDNESDAY -> "We"
+                DayOfWeek.THURSDAY -> "Th"
+                DayOfWeek.FRIDAY -> "Fr"
+                DayOfWeek.SATURDAY -> "Sa"
+                DayOfWeek.SUNDAY -> "Su"
                 else -> ""
             }
-
-            val dateNum = day.get(Calendar.DAY_OF_MONTH).toString()
-            val dayStr = dateFormat.format(day.time)
-            val isToday = dayStr == dateFormat.format(today.time)
+            val dateNum = day.dayOfMonth.toString()
+            val dayStr = "${day.year}-${day.monthNumber.toString().padStart(2, '0')}-${day.dayOfMonth.toString().padStart(2, '0')}"
+            val isToday = day == todayDate
 
             // Only count schedules belonging to currently active medications
             val daySchedules = scheduleHistory.filter { it.date == dayStr && it.medicationId in activeIds }
@@ -643,23 +649,22 @@ fun HomeTab(
         }
 
         // Dose update dialog
-        val ctx = LocalContext.current
         editingSchedule?.let { schedule ->
             DoseUpdateDialog(
                 schedule = schedule,
                 onDismiss = { editingSchedule = null },
                 onMarkTaken = {
-                    HapticFeedback.success(ctx)
+                    HapticFeedback.success()
                     medicationViewModel.markDoseTaken(schedule)
                     editingSchedule = null
                 },
                 onMarkMissed = {
-                    HapticFeedback.error(ctx)
+                    HapticFeedback.error()
                     medicationViewModel.markDoseMissed(schedule)
                     editingSchedule = null
                 },
                 onMarkSkipped = {
-                    HapticFeedback.light(ctx)
+                    HapticFeedback.light()
                     medicationViewModel.markDoseSkipped(schedule)
                     editingSchedule = null
                 },

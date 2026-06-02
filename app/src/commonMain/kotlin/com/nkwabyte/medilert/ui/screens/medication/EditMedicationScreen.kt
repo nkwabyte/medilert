@@ -71,7 +71,6 @@ import com.nkwabyte.medilert.ui.theme.TextPrimary
 import com.nkwabyte.medilert.ui.theme.TextSecondary
 import com.nkwabyte.medilert.viewmodel.MedicationViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
-import java.util.Calendar
 
 private val frequencies = listOf(
     "Once daily",
@@ -176,10 +175,10 @@ fun EditMedicationScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        val selectedDate = datePickerState.selectedDateMillis?.let {
-                            val cal = Calendar.getInstance()
-                            cal.timeInMillis = it
-                            android.text.format.DateFormat.format("yyyy-MM-dd", cal).toString()
+                        val selectedDate = datePickerState.selectedDateMillis?.let { millis ->
+                            val totalDays = millis / 86_400_000L
+                            val ld = kotlinx.datetime.LocalDate.fromEpochDays(totalDays.toInt())
+                            "${ld.year}-${ld.monthNumber.toString().padStart(2, '0')}-${ld.dayOfMonth.toString().padStart(2, '0')}"
                         }
                         if (selectedDate != null) {
                             if (datePickerTarget == "start") {

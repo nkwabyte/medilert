@@ -77,22 +77,16 @@ fun CaregiverAddPatientScreen(
     var searchQuery by remember { mutableStateOf("") }
 
     LaunchedEffect(userRole) {
-        android.util.Log.d("PatientDir", "UI: LaunchedEffect triggered, userRole=$userRole")
+        println("PatientDir: UI: LaunchedEffect triggered, userRole=$userRole")
         caregiverViewModel.loadPatientDirectory(userRole)
     }
 
     LaunchedEffect(availablePatients) {
-        android.util.Log.d(
-            "PatientDir",
-            "UI: availablePatients updated, count=${availablePatients.size}"
-        )
+        println("PatientDir: UI: availablePatients updated, count=${availablePatients.size}")
     }
 
     LaunchedEffect(assignedPatients) {
-        android.util.Log.d(
-            "PatientDir",
-            "UI: assignedPatients updated, count=${assignedPatients.size}"
-        )
+        println("PatientDir: UI: assignedPatients updated, count=${assignedPatients.size}")
     }
 
 

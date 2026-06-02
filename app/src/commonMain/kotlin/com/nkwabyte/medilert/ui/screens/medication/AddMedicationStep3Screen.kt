@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -28,7 +27,6 @@ import com.nkwabyte.medilert.navigation.*
 import com.nkwabyte.medilert.ui.theme.*
 import com.nkwabyte.medilert.viewmodel.MedicationViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
-import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -270,11 +268,15 @@ fun EditReminderDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    val cal = Calendar.getInstance()
-                    cal.set(Calendar.HOUR_OF_DAY, timePickerState.hour)
-                    cal.set(Calendar.MINUTE, timePickerState.minute)
-                    cal.isLenient = false
-                    val time = android.text.format.DateFormat.format("hh:mm a", cal).toString()
+                    val hour = timePickerState.hour
+                    val minute = timePickerState.minute
+                    val amPm = if (hour < 12) "AM" else "PM"
+                    val hour12 = when {
+                        hour == 0 -> 12
+                        hour > 12 -> hour - 12
+                        else -> hour
+                    }
+                    val time = "${hour12.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} $amPm"
                     onConfirm(title, time)
                 }
             ) {
