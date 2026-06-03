@@ -1,5 +1,6 @@
 package com.nkwabyte.medilert.ui.screens.dashboard
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,19 +16,26 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nkwabyte.medilert.generated.resources.Res
+import com.nkwabyte.medilert.generated.resources.img_auth_forgot
+import com.nkwabyte.medilert.generated.resources.img_auth_login
+import com.nkwabyte.medilert.generated.resources.img_auth_setup
 import com.nkwabyte.medilert.model.DoseStatus
 import com.nkwabyte.medilert.model.User
 import com.nkwabyte.medilert.navigation.*
+import org.jetbrains.compose.resources.painterResource
 import com.nkwabyte.medilert.ui.components.BottomTabBar
 import com.nkwabyte.medilert.ui.components.DashboardTab
 import com.nkwabyte.medilert.ui.screens.medication.EmptyHistoryState
@@ -119,109 +127,127 @@ fun CareGiverHomeContent(
     Box(modifier = Modifier.fillMaxSize().background(Background)) {
         LazyColumn(
             modifier = Modifier.fillMaxSize().navigationBarsPadding().padding(bottom = 90.dp),
-            contentPadding = PaddingValues(top = 52.dp, bottom = 32.dp)
+            contentPadding = PaddingValues(top = 0.dp, bottom = 32.dp)
         ) {
             item {
-                // ── Header ────────────────────────────────────────────────────────
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Top
+                // ── Image header ──────────────────────────────────────────────
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(210.dp)
+                        .clip(RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp))
                 ) {
-                    Column(modifier = Modifier.weight(1f).padding(end = 16.dp)) {
-                        Text(
-                            "$firstName 👋",
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 22.sp,
-                            color = TextPrimary
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            "Monitoring:",
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 13.sp,
-                            color = TextSecondary
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-
-                        // Patient pill chips
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            assignedPatients.take(3).forEach { patient ->
-                                val isSelected = patient.id == selectedPatient?.id
-                                Box(
-                                    modifier = Modifier
-                                        .clickable { caregiverViewModel.selectPatient(patient.id) }
-                                        .background(
-                                            if (isSelected) DarkGreen else Color.Transparent,
-                                            RoundedCornerShape(50)
-                                        )
-                                        .border(
-                                            1.dp,
-                                            if (isSelected) DarkGreen else BorderLight,
-                                            RoundedCornerShape(50)
-                                        )
-                                        .padding(horizontal = 14.dp, vertical = 6.dp)
-                                ) {
-                                    Text(
-                                        patient.name.split(" ").firstOrNull() ?: patient.name,
-                                        fontFamily = Poppins,
-                                        fontWeight = FontWeight.SemiBold,
-                                        fontSize = 13.sp,
-                                        color = if (isSelected) Color.White else TextSecondary
-                                    )
-                                }
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .background(Color.Transparent, CircleShape)
-                                    .border(1.dp, BorderLight, CircleShape)
-                                    .clickable { onAddPatientClick() },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    Icons.Default.Add,
-                                    contentDescription = "Add patient",
-                                    tint = TextSecondary,
-                                    modifier = Modifier.size(18.dp)
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            today,
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 12.sp,
-                            color = TextSecondary
-                        )
-                    }
-
-                    // Profile avatar
+                    Image(
+                        painter = painterResource(Res.drawable.img_auth_login),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
                     Box(
                         modifier = Modifier
-                            .size(56.dp)
-                            .background(PrimaryGreen.copy(alpha = 0.12f), CircleShape)
-                            .border(2.dp, PrimaryGreen.copy(alpha = 0.25f), CircleShape),
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    0.00f to Color(0xFF071407).copy(alpha = 0.30f),
+                                    0.50f to Color(0xFF071407).copy(alpha = 0.52f),
+                                    1.00f to Color(0xFF071407).copy(alpha = 0.82f)
+                                )
+                            )
+                    )
+                    // Avatar with initials — top right
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .statusBarsPadding()
+                            .padding(end = 24.dp, top = 14.dp)
+                            .size(48.dp)
+                            .background(Color.White.copy(alpha = 0.2f), CircleShape)
+                            .border(2.dp, Color.White.copy(alpha = 0.35f), CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             initials.ifEmpty { "?" },
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
-                            color = PrimaryGreen
+                            fontFamily = Poppins, fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp, color = Color.White
+                        )
+                    }
+                    // Greeting + date — bottom left
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .statusBarsPadding()
+                            .padding(horizontal = 24.dp, vertical = 20.dp)
+                    ) {
+                        Text(
+                            "Hi, $firstName 👋",
+                            fontFamily = Poppins, fontWeight = FontWeight.Bold,
+                            fontSize = 22.sp, color = Color.White
+                        )
+                        Text(
+                            today,
+                            fontFamily = Poppins, fontWeight = FontWeight.Normal,
+                            fontSize = 12.sp, color = Color.White.copy(alpha = 0.65f)
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(28.dp))
+                // Monitoring chips
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 16.dp, bottom = 4.dp)
+                ) {
+                    Text(
+                        "Monitoring:",
+                        fontFamily = Poppins, fontWeight = FontWeight.Medium,
+                        fontSize = 13.sp, color = TextSecondary
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        assignedPatients.take(3).forEach { patient ->
+                            val isSelected = patient.id == selectedPatient?.id
+                            Box(
+                                modifier = Modifier
+                                    .clickable { caregiverViewModel.selectPatient(patient.id) }
+                                    .background(
+                                        if (isSelected) DarkGreen else Color.Transparent,
+                                        RoundedCornerShape(50)
+                                    )
+                                    .border(
+                                        1.dp,
+                                        if (isSelected) DarkGreen else BorderLight,
+                                        RoundedCornerShape(50)
+                                    )
+                                    .padding(horizontal = 14.dp, vertical = 6.dp)
+                            ) {
+                                Text(
+                                    patient.name.split(" ").firstOrNull() ?: patient.name,
+                                    fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
+                                    fontSize = 13.sp,
+                                    color = if (isSelected) Color.White else TextSecondary
+                                )
+                            }
+                        }
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .background(Color.Transparent, CircleShape)
+                                .border(1.dp, BorderLight, CircleShape)
+                                .clickable { onAddPatientClick() },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Default.Add, contentDescription = "Add patient",
+                                tint = TextSecondary, modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
 
                 if (assignedPatients.isEmpty()) {
                     NoPatientsHomeState(onAddPatientClick = onAddPatientClick)
@@ -267,12 +293,27 @@ fun CareGiverHomeContent(
                             modifier = Modifier
                                 .padding(horizontal = 24.dp)
                                 .fillMaxWidth()
-                                .background(
-                                    brush = Brush.linearGradient(listOf(DarkGreen, Color(0xFF0D3320))),
-                                    shape = RoundedCornerShape(28.dp)
-                                )
-                                .padding(horizontal = 24.dp, vertical = 28.dp)
+                                .clip(RoundedCornerShape(28.dp))
                         ) {
+                            Image(
+                                painter = painterResource(Res.drawable.img_auth_login),
+                                contentDescription = null,
+                                modifier = Modifier.matchParentSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .background(
+                                        Brush.linearGradient(
+                                            listOf(
+                                                DarkGreen.copy(alpha = 0.80f),
+                                                Color(0xFF0D3320).copy(alpha = 0.92f)
+                                            )
+                                        )
+                                    )
+                            )
+                            Box(modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp)) {
                             Column {
                                 Text(
                                     "$dayLabel's adherence",
@@ -308,6 +349,7 @@ fun CareGiverHomeContent(
                                     strokeWidth = 10.dp,
                                     strokeCap = StrokeCap.Round
                                 )
+                            }
                             }
                         }
 
@@ -492,23 +534,52 @@ private fun HistoryPatientListScreen(
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize().navigationBarsPadding().padding(bottom = 90.dp),
-                contentPadding = PaddingValues(top = 56.dp, bottom = 24.dp)
+                contentPadding = PaddingValues(top = 0.dp, bottom = 24.dp)
             ) {
                 item {
-                    Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)) {
-                        Text(
-                            "Patient History",
-                            fontFamily = Poppins, fontWeight = FontWeight.Bold,
-                            fontSize = 24.sp, color = TextPrimary
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .clip(RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp))
+                    ) {
+                        Image(
+                            painter = painterResource(Res.drawable.img_auth_setup),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
                         )
-                        Text(
-                            "Select a patient to view their dose history",
-                            fontFamily = Poppins, fontWeight = FontWeight.Medium,
-                            fontSize = 13.sp, color = TextSecondary
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    Brush.verticalGradient(
+                                        0.00f to Color(0xFF071407).copy(alpha = 0.30f),
+                                        0.50f to Color(0xFF071407).copy(alpha = 0.52f),
+                                        1.00f to Color(0xFF071407).copy(alpha = 0.82f)
+                                    )
+                                )
                         )
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.BottomStart)
+                                .statusBarsPadding()
+                                .padding(horizontal = 24.dp, vertical = 20.dp)
+                        ) {
+                            Text(
+                                "Patient History",
+                                fontFamily = Poppins, fontWeight = FontWeight.Bold,
+                                fontSize = 28.sp, color = Color.White
+                            )
+                            Text(
+                                "Select a patient to view their dose history",
+                                fontFamily = Poppins, fontWeight = FontWeight.Normal,
+                                fontSize = 13.sp, color = Color.White.copy(alpha = 0.72f)
+                            )
+                        }
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
                     OutlinedTextField(
                         value = searchQuery,
@@ -610,46 +681,93 @@ private fun HistoryPatientDetailScreen(
     Box(modifier = Modifier.fillMaxSize().background(Background)) {
         LazyColumn(
             modifier = Modifier.fillMaxSize().navigationBarsPadding().padding(bottom = 90.dp),
-            contentPadding = PaddingValues(top = 56.dp, bottom = 24.dp)
+            contentPadding = PaddingValues(top = 0.dp, bottom = 24.dp)
         ) {
             item {
-                // Back + patient name header
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                // ── Image header with patient name ────────────────────────────
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .clip(RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp))
                 ) {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = TextPrimary)
+                    Image(
+                        painter = painterResource(Res.drawable.img_auth_forgot),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    0.00f to Color(0xFF071407).copy(alpha = 0.30f),
+                                    0.50f to Color(0xFF071407).copy(alpha = 0.52f),
+                                    1.00f to Color(0xFF071407).copy(alpha = 0.82f)
+                                )
+                            )
+                    )
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .statusBarsPadding()
+                            .padding(start = 20.dp, top = 14.dp)
+                            .size(40.dp)
+                            .background(Color.Black.copy(alpha = 0.28f), CircleShape)
+                            .border(1.dp, Color.White.copy(alpha = 0.18f), CircleShape)
+                            .clickable { onBack() },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
                     }
-                    Text(
-                        patient.name,
-                        fontFamily = Poppins, fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp, color = TextPrimary
-                    )
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .statusBarsPadding()
+                            .padding(horizontal = 24.dp, vertical = 20.dp)
+                    ) {
+                        Text(
+                            patient.name,
+                            fontFamily = Poppins, fontWeight = FontWeight.Bold,
+                            fontSize = 24.sp, color = Color.White
+                        )
+                        Text(
+                            "Weekly adherence overview",
+                            fontFamily = Poppins, fontWeight = FontWeight.Normal,
+                            fontSize = 13.sp, color = Color.White.copy(alpha = 0.72f)
+                        )
+                    }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-                Column(modifier = Modifier.padding(horizontal = 24.dp)) {
-                    Text(
-                        "Weekly adherence overview",
-                        fontFamily = Poppins, fontWeight = FontWeight.Medium,
-                        fontSize = 13.sp, color = TextSecondary
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
+                // ── Adherence card with image background ──────────────────────
                 Box(
                     modifier = Modifier
                         .padding(horizontal = 24.dp)
                         .fillMaxWidth()
-                        .background(
-                            brush = Brush.linearGradient(listOf(PrimaryGreen, DarkGreen)),
-                            shape = RoundedCornerShape(28.dp)
-                        )
-                        .padding(24.dp)
+                        .clip(RoundedCornerShape(28.dp))
                 ) {
+                    Image(
+                        painter = painterResource(Res.drawable.img_auth_forgot),
+                        contentDescription = null,
+                        modifier = Modifier.matchParentSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .background(
+                                Brush.linearGradient(
+                                    listOf(
+                                        PrimaryGreen.copy(alpha = 0.80f),
+                                        DarkGreen.copy(alpha = 0.92f)
+                                    )
+                                )
+                            )
+                    )
+                    Box(modifier = Modifier.padding(24.dp)) {
                     Column {
                         Text("Weekly", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 18.sp, color = Color.White.copy(alpha = 0.9f))
                         Text("adherence", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 18.sp, color = Color.White.copy(alpha = 0.9f))
@@ -666,6 +784,7 @@ private fun HistoryPatientDetailScreen(
                             strokeCap = StrokeCap.Round
                         )
                         Text("${weeklyStats.adherence}%", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
+                    }
                     }
                 }
 
