@@ -62,9 +62,9 @@ import com.nkwabyte.medilert.viewmodel.NavViewModel
 
 @Composable
 fun CaregiverAddPatientScreen(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel(),
-    caregiverViewModel: CaregiverViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() },
+    caregiverViewModel: CaregiverViewModel = viewModel { CaregiverViewModel() }
 ) {
     val userRole by appViewModel.userRole.collectAsState()
     val currentUser by appViewModel.currentUser.collectAsState()

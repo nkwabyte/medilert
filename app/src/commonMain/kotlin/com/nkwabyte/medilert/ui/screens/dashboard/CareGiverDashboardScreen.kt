@@ -47,9 +47,9 @@ import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun CareGiverDashboardScreen(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel(),
-    caregiverViewModel: CaregiverViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() },
+    caregiverViewModel: CaregiverViewModel = viewModel { CaregiverViewModel() }
 ) {
     val activeTab by caregiverViewModel.activeTab.collectAsState()
     val currentUser by appViewModel.currentUser.collectAsState()
@@ -78,7 +78,7 @@ fun CareGiverDashboardScreen(
 @Composable
 fun CareGiverHomeContent(
     user: User = User(),
-    caregiverViewModel: CaregiverViewModel = viewModel(),
+    caregiverViewModel: CaregiverViewModel = viewModel { CaregiverViewModel() },
     onViewAll: () -> Unit = {},
     onAddPatientClick: () -> Unit = {}
 ) {
@@ -448,7 +448,7 @@ fun CareGiverHomeContent(
 
 @Composable
 fun CareGiverHistoryContent(
-    caregiverViewModel: CaregiverViewModel = viewModel()
+    caregiverViewModel: CaregiverViewModel = viewModel { CaregiverViewModel() }
 ) {
     val assignedPatients by caregiverViewModel.assignedPatients.collectAsState()
     var selectedHistoryPatient by remember { mutableStateOf<User?>(null) }

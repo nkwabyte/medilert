@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,12 +19,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.AccessTime
@@ -63,9 +67,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nkwabyte.medilert.model.DoseStatus
 import com.nkwabyte.medilert.model.MedicationSchedule
+import com.nkwabyte.medilert.generated.resources.Res
+import com.nkwabyte.medilert.generated.resources.img_auth_signup
 import com.nkwabyte.medilert.navigation.AddMedication1
 import com.nkwabyte.medilert.navigation.EditMedication
 import com.nkwabyte.medilert.navigation.ProfilePage
+import org.jetbrains.compose.resources.painterResource
 import com.nkwabyte.medilert.ui.components.BottomTabBar
 import com.nkwabyte.medilert.ui.components.DashboardTab
 import com.nkwabyte.medilert.ui.screens.medication.MedicationHistoryScreen
@@ -118,11 +125,11 @@ private fun sessionOf(scheduledTime: String): String {
 
 @Composable
 fun DashboardScreen(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel(),
-    medicationViewModel: MedicationViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() },
+    medicationViewModel: MedicationViewModel = viewModel { MedicationViewModel() }
 ) {
-    var activeTab by remember { mutableStateOf(DashboardTab.HOME) }
+    val activeTab by appViewModel.activeDashboardTab.collectAsState()
 
     Box(
         modifier = Modifier
@@ -140,7 +147,7 @@ fun DashboardScreen(
                     navViewModel = navViewModel,
                     appViewModel = appViewModel,
                     medicationViewModel = medicationViewModel,
-                    onViewAllHistory = { activeTab = DashboardTab.HISTORY }
+                    onViewAllHistory = { appViewModel.setDashboardTab(DashboardTab.HISTORY) }
                 )
 
                 DashboardTab.HISTORY -> MedicationHistoryScreen(
@@ -159,7 +166,7 @@ fun DashboardScreen(
 
         BottomTabBar(
             activeTab = activeTab,
-            onTabSelected = { activeTab = it },
+            onTabSelected = { appViewModel.setDashboardTab(it) },
             modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
@@ -167,9 +174,9 @@ fun DashboardScreen(
 
 @Composable
 fun HomeTab(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel(),
-    medicationViewModel: MedicationViewModel = viewModel(),
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() },
+    medicationViewModel: MedicationViewModel = viewModel { MedicationViewModel() },
     onViewAllHistory: () -> Unit = {}
 ) {
     val currentUser by appViewModel.currentUser.collectAsState()
@@ -293,76 +300,87 @@ fun HomeTab(
             .fillMaxSize()
             .background(Background)
     ) {
-        // Ambient gradient
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp)
-                .background(
-                    brush = Brush.verticalGradient(
-                        listOf(
-                            PrimaryGreen.copy(alpha = 0.05f),
-                            Color.Transparent
-                        )
-                    )
-                )
-        )
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .navigationBarsPadding()
                 .padding(bottom = 90.dp),
-            contentPadding = PaddingValues(top = 56.dp)
+            contentPadding = PaddingValues(top = 0.dp)
         ) {
             item {
-                // Header with dynamic greeting and date
-                Row(
+                // ── Greeting header — image + gradient ────────────────────
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 16.dp),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
+                        .height(210.dp)
+                        .clip(RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp))
                 ) {
+                    Image(
+                        painter = painterResource(Res.drawable.img_auth_signup),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                    // Dark-green gradient — heavier at bottom so text pops
                     Box(
                         modifier = Modifier
-                            .size(56.dp)
-                            .background(PrimaryGreen, CircleShape)
-                            .clickable { navViewModel.navigateTo(ProfilePage) },
-                        contentAlignment = Alignment.Center
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    0.00f to Color(0xFF071407).copy(alpha = 0.30f),
+                                    0.50f to Color(0xFF071407).copy(alpha = 0.52f),
+                                    1.00f to Color(0xFF071407).copy(alpha = 0.82f)
+                                )
+                            )
+                    )
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .statusBarsPadding()
+                            .padding(horizontal = 24.dp, vertical = 20.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            Icons.Default.Person,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(28.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column {
-                        Text(
-                            "$greeting, $userName",
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 22.sp,
-                            color = TextPrimary
-                        )
-                        if (localGreeting.isNotEmpty()) {
-                            Text(
-                                localGreeting,
-                                fontFamily = Poppins,
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 13.sp,
-                                color = PrimaryGreen
+                        Box(
+                            modifier = Modifier
+                                .size(52.dp)
+                                .background(Color.White.copy(alpha = 0.2f), CircleShape)
+                                .border(2.dp, Color.White.copy(alpha = 0.35f), CircleShape)
+                                .clickable { navViewModel.navigateTo(ProfilePage) },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Default.Person,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(26.dp)
                             )
                         }
-                        Text(
-                            currentDate,
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 12.sp,
-                            color = TextSecondary
-                        )
+                        Spacer(modifier = Modifier.width(14.dp))
+                        Column {
+                            Text(
+                                "$greeting, $userName",
+                                fontFamily = Poppins,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 20.sp,
+                                color = Color.White
+                            )
+                            if (localGreeting.isNotEmpty()) {
+                                Text(
+                                    localGreeting,
+                                    fontFamily = Poppins,
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 13.sp,
+                                    color = Color.White.copy(alpha = 0.80f)
+                                )
+                            }
+                            Text(
+                                currentDate,
+                                fontFamily = Poppins,
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 12.sp,
+                                color = Color.White.copy(alpha = 0.65f)
+                            )
+                        }
                     }
                 }
 

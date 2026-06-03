@@ -1,5 +1,6 @@
 package com.nkwabyte.medilert.ui.screens.settings
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,6 +21,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
@@ -34,7 +37,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material.icons.filled.Shield
-import androidx.compose.material.icons.filled.TextFields
+
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -63,8 +66,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nkwabyte.medilert.model.UserRole
+import com.nkwabyte.medilert.generated.resources.Res
+import com.nkwabyte.medilert.generated.resources.img_auth_login
 import com.nkwabyte.medilert.navigation.AppVersion
 import com.nkwabyte.medilert.navigation.LanguageSettings
+import org.jetbrains.compose.resources.painterResource
 import com.nkwabyte.medilert.navigation.Login
 import com.nkwabyte.medilert.navigation.PrivacyPolicy
 import com.nkwabyte.medilert.navigation.ProfilePage
@@ -84,8 +90,8 @@ import com.nkwabyte.medilert.viewmodel.NavViewModel
 
 @Composable
 fun SettingsScreen(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel(),
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() },
     hideBackButton: Boolean = false,
     isCaregiver: Boolean = false
 ) {
@@ -96,13 +102,13 @@ fun SettingsScreen(
     var soundAlerts by remember { mutableStateOf(false) }
     var vibration by remember { mutableStateOf(true) }
     val darkMode by appViewModel.isDarkMode.collectAsState()
-    val textSize by appViewModel.textSize.collectAsState()
+
     var missedAlerts by remember { mutableStateOf(true) }
     var lowAdherence by remember { mutableStateOf(true) }
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showToneDialog by remember { mutableStateOf(false) }
     var selectedTone by remember { mutableStateOf("Default") }
-    var showTextSizeDialog by remember { mutableStateOf(false) }
+
 
     // Compute user display info
     val fullName = remember(currentUser.name) {
@@ -201,17 +207,35 @@ fun SettingsScreen(
                     Spacer(modifier = Modifier.size(40.dp))
                 }
 
-                // Profile card
+                // Profile card — image with brand-tinted gradient overlay
                 Box(
                     modifier = Modifier
                         .padding(horizontal = 24.dp)
                         .fillMaxWidth()
-                        .background(
-                            brush = Brush.linearGradient(listOf(PrimaryGreen, DarkGreen)),
-                            shape = RoundedCornerShape(28.dp)
-                        )
-                        .padding(24.dp)
+                        .clip(RoundedCornerShape(28.dp))
                 ) {
+                    // Background photo
+                    Image(
+                        painter = painterResource(Res.drawable.img_auth_login),
+                        contentDescription = null,
+                        modifier = Modifier.matchParentSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                    // Brand gradient overlay — tinted but light enough to reveal the photo
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .background(
+                                Brush.linearGradient(
+                                    listOf(
+                                        PrimaryGreen.copy(alpha = 0.52f),
+                                        DarkGreen.copy(alpha = 0.68f)
+                                    )
+                                )
+                            )
+                    )
+                    // Card content (unchanged)
+                    Box(modifier = Modifier.padding(24.dp)) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -291,6 +315,7 @@ fun SettingsScreen(
                                 }
                             }
                         }
+                    }
                     }
                 }
 
@@ -392,10 +417,6 @@ fun SettingsScreen(
                         icon = Icons.Default.Language, title = "Language",
                         subtitle = appViewModel.selectedLanguage.collectAsState().value,
                         onClick = { navViewModel.navigateTo(LanguageSettings) })
-                    SettingsDivider()
-                    SettingsRow(
-                        icon = Icons.Default.TextFields, title = "Text Size", subtitle = textSize,
-                        onClick = { showTextSizeDialog = true })
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -479,40 +500,6 @@ fun SettingsScreen(
                     Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
-            shape = RoundedCornerShape(24.dp)
-        )
-    }
-
-    if (showTextSizeDialog) {
-        val sizes = listOf("Small", "Medium", "Large", "XLarge")
-        AlertDialog(
-            onDismissRequest = { showTextSizeDialog = false },
-            containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
-            title = { Text("Text Size", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp) },
-            text = {
-                androidx.compose.foundation.layout.Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    sizes.forEach { size ->
-                        androidx.compose.foundation.layout.Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(
-                                    if (textSize == size) PrimaryGreen.copy(alpha = 0.08f) else androidx.compose.ui.graphics.Color.Transparent,
-                                    RoundedCornerShape(12.dp)
-                                )
-                                .border(1.dp, if (textSize == size) PrimaryGreen.copy(alpha = 0.3f) else BorderLight, RoundedCornerShape(12.dp))
-                                .clickable { appViewModel.setTextSize(size); showTextSizeDialog = false }
-                                .padding(horizontal = 16.dp, vertical = 14.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(size, fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp, color = TextPrimary)
-                            if (textSize == size) Icon(Icons.Default.ChevronRight, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(20.dp))
-                        }
-                    }
-                }
-            },
-            confirmButton = {},
-            dismissButton = { androidx.compose.material3.TextButton(onClick = { showTextSizeDialog = false }) { Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary) } },
             shape = RoundedCornerShape(24.dp)
         )
     }

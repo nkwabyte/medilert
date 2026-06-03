@@ -6,23 +6,17 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
@@ -54,21 +48,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nkwabyte.medilert.generated.resources.Res
+import com.nkwabyte.medilert.generated.resources.ic_google
+import com.nkwabyte.medilert.generated.resources.img_auth_signup
+import com.nkwabyte.medilert.generated.resources.logo
 import com.nkwabyte.medilert.navigation.Login
 import com.nkwabyte.medilert.navigation.PersonalInfo
-import com.nkwabyte.medilert.ui.theme.Background
+import com.nkwabyte.medilert.ui.components.AuthScreenShell
 import com.nkwabyte.medilert.ui.theme.BorderLight
 import com.nkwabyte.medilert.ui.theme.BorderMedium
-import com.nkwabyte.medilert.ui.theme.Divider
 import com.nkwabyte.medilert.ui.theme.GhanaRed
-import com.nkwabyte.medilert.ui.theme.GhanaYellow
 import com.nkwabyte.medilert.ui.theme.MediumGreen
 import com.nkwabyte.medilert.ui.theme.Poppins
 import com.nkwabyte.medilert.ui.theme.PrimaryGreen
@@ -81,9 +80,6 @@ import com.nkwabyte.medilert.viewmodel.NavViewModel
 import com.nkwabyte.medilert.viewmodel.SignupViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
-import com.nkwabyte.medilert.generated.resources.Res
-import com.nkwabyte.medilert.generated.resources.ic_google
-import com.nkwabyte.medilert.generated.resources.logo
 
 @Composable
 fun SignUpScreen(
@@ -94,6 +90,7 @@ fun SignUpScreen(
     val uiState by authViewModel.uiState.collectAsState()
     val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+
     var fullName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf("") }
@@ -106,51 +103,37 @@ fun SignUpScreen(
         val phoneValidationError = PhoneUtils.validateGhanaPhoneNumber(phoneNumber)
         if (phoneValidationError != null) {
             scope.launch {
-                snackBarHostState.showSnackbar(
-                    message = phoneValidationError,
-                    duration = SnackbarDuration.Short
-                )
+                snackBarHostState.showSnackbar(message = phoneValidationError, duration = SnackbarDuration.Short)
             }
             return@handler
         }
-
         if (!PhoneUtils.isEmail(email.trim())) {
             scope.launch {
-                snackBarHostState.showSnackbar(
-                    message = "Please enter a valid email address",
-                    duration = SnackbarDuration.Short
-                )
+                snackBarHostState.showSnackbar(message = "Please enter a valid email address", duration = SnackbarDuration.Short)
             }
             return@handler
         }
-
         authViewModel.registerWithEmail(email.trim(), password)
     }
 
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
             val formattedPhone = PhoneUtils.formatGhanaPhoneNumber(phoneNumber) ?: phoneNumber
-
             signupViewModel.setBasicInfo(fullName, email.trim())
             signupViewModel.setPhone(formattedPhone)
-
             if (uiState.incompleteRegistration) {
                 snackBarHostState.showSnackbar(
                     message = "Welcome back! Let's complete your account setup.",
                     duration = SnackbarDuration.Short
                 )
             }
-
             navViewModel.navigateTo(PersonalInfo)
         }
     }
 
     LaunchedEffect(uiState.errorMessage) {
         uiState.errorMessage?.let { errorMsg ->
-            snackBarHostState.showSnackbar(
-                message = errorMsg,
-                duration = SnackbarDuration.Long
-            )
+            snackBarHostState.showSnackbar(message = errorMsg, duration = SnackbarDuration.Long)
             authViewModel.clearError()
         }
     }
@@ -170,327 +153,174 @@ fun SignUpScreen(
             }
         }
     ) { paddingValues ->
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
-            .background(Background)) {
+        AuthScreenShell(
+            imageRes = Res.drawable.img_auth_signup,
+            onBack = { navViewModel.popBack() },
+            formModifier = Modifier.padding(paddingValues)
+        ) {
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Logo
             Box(
                 modifier = Modifier
-                    .size(300.dp)
-                    .offset(x = 100.dp, y = (-80).dp)
-                    .background(
-                        brush = Brush.radialGradient(
-                            listOf(
-                                PrimaryGreen.copy(alpha = 0.05f),
-                                Color.Transparent
-                            )
-                        ), shape = CircleShape
-                    )
-            )
-            Box(
-                modifier = Modifier
-                    .size(300.dp)
-                    .offset(x = (-80).dp, y = 500.dp)
-                    .background(
-                        brush = Brush.radialGradient(
-                            listOf(
-                                GhanaYellow.copy(alpha = 0.08f),
-                                Color.Transparent
-                            )
-                        ), shape = CircleShape
-                    )
+                    .size(88.dp)
+                    .background(Surface, RoundedCornerShape(28.dp))
+                    .border(1.dp, BorderLight, RoundedCornerShape(28.dp))
+                    .align(Alignment.CenterHorizontally),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(Res.drawable.logo),
+                    contentDescription = "Logo",
+                    modifier = Modifier.size(52.dp),
+                    contentScale = ContentScale.Fit
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text("Create Account", fontFamily = Poppins, fontWeight = FontWeight.Bold,
+                fontSize = 28.sp, color = TextPrimary)
+            Text("Join us and take control of your health",
+                fontFamily = Poppins, fontWeight = FontWeight.Normal,
+                fontSize = 14.sp, color = TextSecondary)
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            AuthInputField(
+                label = "Full Name", value = fullName, onValueChange = { fullName = it },
+                placeholder = "Enter your full name",
+                leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, tint = TextSecondary) }
             )
 
-            Column(modifier = Modifier.fillMaxSize()) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 52.dp, bottom = 8.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .background(Surface, CircleShape)
-                            .border(1.dp, BorderLight, CircleShape)
-                            .clickable { navViewModel.popBack() },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            Icons.Default.ChevronLeft,
-                            contentDescription = "Back",
-                            tint = TextPrimary
-                        )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            AuthInputField(
+                label = "Email", value = email, onValueChange = { email = it },
+                placeholder = "Enter your email",
+                leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = TextSecondary) },
+                keyboardType = KeyboardType.Email
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            AuthInputField(
+                label = "Phone Number", value = phoneNumber, onValueChange = { phoneNumber = it },
+                placeholder = "0XXXXXXXXX or 9 digits",
+                leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null, tint = TextSecondary) },
+                keyboardType = KeyboardType.Phone
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            AuthInputField(
+                label = "Password", value = password, onValueChange = { password = it },
+                placeholder = "Create password",
+                leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = TextSecondary) },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardType = KeyboardType.Password,
+                trailingIcon = {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                            contentDescription = null, tint = TextSecondary)
                     }
                 }
+            )
 
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 32.dp)
-                        .padding(bottom = 40.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+            Spacer(modifier = Modifier.height(16.dp))
+
+            AuthInputField(
+                label = "Repeat Password", value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                placeholder = "Confirm password",
+                leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = TextSecondary) },
+                visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardType = KeyboardType.Password,
+                trailingIcon = {
+                    IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                        Icon(if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                            contentDescription = null, tint = TextSecondary)
+                    }
+                }
+            )
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            // Register button
+            Button(
+                onClick = handleRegister,
+                enabled = !uiState.isLoading && fullName.isNotBlank() && email.isNotBlank()
+                        && phoneNumber.isNotBlank() && password.isNotBlank() && password == confirmPassword,
+                modifier = Modifier.fillMaxWidth().height(64.dp),
+                shape = RoundedCornerShape(24.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                contentPadding = PaddingValues(0.dp)
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                        .background(Brush.horizontalGradient(listOf(PrimaryGreen, MediumGreen)), RoundedCornerShape(24.dp)),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(100.dp)
-                            .background(Surface, RoundedCornerShape(28.dp))
-                            .border(1.dp, BorderLight, RoundedCornerShape(28.dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = painterResource(Res.drawable.logo),
-                            contentDescription = "Logo",
-                            modifier = Modifier.size(60.dp),
-                            contentScale = ContentScale.Fit
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Text(
-                        "Create Account",
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 32.sp,
-                        color = TextPrimary
-                    )
-
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    AuthInputField(
-                        label = "Full Name", value = fullName, onValueChange = { fullName = it },
-                        placeholder = "Enter your full name",
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.Person,
-                                contentDescription = null,
-                                tint = TextSecondary
-                            )
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    AuthInputField(
-                        label = "Email",
-                        value = email,
-                        onValueChange = { email = it },
-                        placeholder = "Enter your email",
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.Email,
-                                contentDescription = null,
-                                tint = TextSecondary
-                            )
-                        },
-                        keyboardType = KeyboardType.Email
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    AuthInputField(
-                        label = "Phone Number",
-                        value = phoneNumber,
-                        onValueChange = { phoneNumber = it },
-                        placeholder = "0XXXXXXXXX or 9 digits",
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.Phone,
-                                contentDescription = null,
-                                tint = TextSecondary
-                            )
-                        },
-                        keyboardType = KeyboardType.Phone
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    AuthInputField(
-                        label = "Password", value = password, onValueChange = { password = it },
-                        placeholder = "Create password",
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.Lock,
-                                contentDescription = null,
-                                tint = TextSecondary
-                            )
-                        },
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        keyboardType = KeyboardType.Password,
-                        trailingIcon = {
-                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Icon(
-                                    if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                    contentDescription = null,
-                                    tint = TextSecondary
-                                )
-                            }
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    AuthInputField(
-                        label = "Repeat Password",
-                        value = confirmPassword,
-                        onValueChange = { confirmPassword = it },
-                        placeholder = "Confirm password",
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.Lock,
-                                contentDescription = null,
-                                tint = TextSecondary
-                            )
-                        },
-                        visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        keyboardType = KeyboardType.Password,
-                        trailingIcon = {
-                            IconButton(onClick = {
-                                confirmPasswordVisible = !confirmPasswordVisible
-                            }) {
-                                Icon(
-                                    if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                                    contentDescription = null,
-                                    tint = TextSecondary
-                                )
-                            }
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    Button(
-                        onClick = handleRegister,
-                        enabled = !uiState.isLoading && fullName.isNotBlank() && email.isNotBlank()
-                                && phoneNumber.isNotBlank() && password.isNotBlank() && password == confirmPassword,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(64.dp),
-                        shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                        contentPadding = PaddingValues(0.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(
-                                    brush = Brush.horizontalGradient(
-                                        listOf(
-                                            PrimaryGreen,
-                                            MediumGreen
-                                        )
-                                    ), shape = RoundedCornerShape(24.dp)
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            if (uiState.isLoading) {
-                                CircularProgressIndicator(
-                                    color = Color.White,
-                                    modifier = Modifier.size(24.dp),
-                                    strokeWidth = 2.dp
-                                )
-                            } else {
-                                Text(
-                                    "Get Started",
-                                    fontFamily = Poppins,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 18.sp,
-                                    color = Color.White
-                                )
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        HorizontalDivider(modifier = Modifier.weight(1f), color = BorderMedium)
-                        Text(
-                            "  Or sign up with  ",
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 13.sp,
-                            color = TextSecondary
-                        )
-                        HorizontalDivider(modifier = Modifier.weight(1f), color = BorderMedium)
-                    }
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Button(
-                        onClick = { authViewModel.signInWithGoogle() },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(64.dp),
-                        shape = RoundedCornerShape(24.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Surface,
-                            contentColor = TextPrimary
-                        ),
-                        contentPadding = PaddingValues(0.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .border(1.dp, BorderLight, RoundedCornerShape(24.dp))
-                                .background(Surface, RoundedCornerShape(24.dp))
-                                .padding(horizontal = 24.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                painter = painterResource(Res.drawable.ic_google),
-                                contentDescription = "Google",
-                                modifier = Modifier.size(24.dp)
-                            )
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Text(
-                                "Continue with Google",
-                                fontFamily = Poppins,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 16.sp,
-                                color = TextPrimary
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            "Already have an account? ",
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 15.sp,
-                            color = TextSecondary
-                        )
-                        Text(
-                            "Sign In",
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 15.sp,
-                            color = PrimaryGreen,
-                            modifier = Modifier
-                                .clickable { navViewModel.navigateTo(Login) }
-                                .padding(vertical = 8.dp, horizontal = 8.dp)
-                        )
+                    if (uiState.isLoading) {
+                        CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+                    } else {
+                        Text("Get Started", fontFamily = Poppins, fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp, color = Color.White)
                     }
                 }
             }
 
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 8.dp)
-                    .width(140.dp)
-                    .height(5.dp)
-                    .background(Divider, RoundedCornerShape(50.dp))
-            )
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+                HorizontalDivider(modifier = Modifier.weight(1f), color = BorderMedium)
+                Text("  Or sign up with  ", fontFamily = Poppins, fontWeight = FontWeight.Medium,
+                    fontSize = 13.sp, color = TextSecondary)
+                HorizontalDivider(modifier = Modifier.weight(1f), color = BorderMedium)
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Google Sign-Up
+            Button(
+                onClick = { authViewModel.signInWithGoogle() },
+                modifier = Modifier.fillMaxWidth().height(64.dp),
+                shape = RoundedCornerShape(24.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Surface, contentColor = TextPrimary),
+                contentPadding = PaddingValues(0.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxSize()
+                        .border(1.dp, BorderLight, RoundedCornerShape(24.dp))
+                        .background(Surface, RoundedCornerShape(24.dp))
+                        .padding(horizontal = 24.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(painter = painterResource(Res.drawable.ic_google),
+                        contentDescription = "Google", modifier = Modifier.size(24.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text("Continue with Google", fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
+                        fontSize = 16.sp, color = TextPrimary)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    buildAnnotatedString {
+                        withStyle(SpanStyle(fontFamily = Poppins, fontWeight = FontWeight.Medium,
+                            fontSize = 15.sp, color = TextSecondary)) { append("Already have an account?  ") }
+                        withStyle(SpanStyle(fontFamily = Poppins, fontWeight = FontWeight.Bold,
+                            fontSize = 15.sp, color = PrimaryGreen)) { append("Sign In") }
+                    },
+                    modifier = Modifier.clickable { navViewModel.navigateTo(Login) }.padding(vertical = 8.dp)
+                )
+            }
         }
     }
 }

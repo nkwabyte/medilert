@@ -6,6 +6,7 @@ import com.nkwabyte.medilert.data.service.AuthService
 import com.nkwabyte.medilert.data.service.UserService
 import com.nkwabyte.medilert.model.User
 import com.nkwabyte.medilert.model.UserRole
+import com.nkwabyte.medilert.ui.components.DashboardTab
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,6 +42,9 @@ class AppViewModel(
     private val _isDarkMode = MutableStateFlow(false)
     val isDarkMode: StateFlow<Boolean> = _isDarkMode.asStateFlow()
 
+    private val _activeDashboardTab = MutableStateFlow(DashboardTab.HOME)
+    val activeDashboardTab: StateFlow<DashboardTab> = _activeDashboardTab.asStateFlow()
+
     private val _fontScale = MutableStateFlow(1f)
     val fontScale: StateFlow<Float> = _fontScale.asStateFlow()
 
@@ -63,6 +67,8 @@ class AppViewModel(
             }
         }
     }
+
+    fun setDashboardTab(tab: DashboardTab) { _activeDashboardTab.value = tab }
 
     fun setUserRole(role: UserRole) { _userRole.value = role }
     fun setLanguage(lang: String) { _selectedLanguage.value = lang }
@@ -146,6 +152,7 @@ class AppViewModel(
             _voiceEnabled.value = false
             _tempPin.value = ""
             _textSize.value = "Medium"
+            _activeDashboardTab.value = DashboardTab.HOME
             _isLoggedIn.value = false
         }
     }

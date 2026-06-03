@@ -1,5 +1,6 @@
 package com.nkwabyte.medilert.ui.screens.medication
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,13 +16,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nkwabyte.medilert.generated.resources.Res
+import com.nkwabyte.medilert.generated.resources.img_auth_setup
+import org.jetbrains.compose.resources.painterResource
 import com.nkwabyte.medilert.model.DoseStatus
 import com.nkwabyte.medilert.model.MedicationSchedule
 import com.nkwabyte.medilert.ui.theme.*
@@ -91,63 +97,81 @@ fun MedicationHistoryScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize().background(Background)) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .background(
-                    brush = Brush.verticalGradient(
-                        listOf(
-                            PrimaryGreen.copy(alpha = 0.05f),
-                            Color.Transparent
-                        )
-                    )
-                )
-        )
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .navigationBarsPadding()
                 .padding(bottom = if (hideBackButton) 90.dp else 0.dp),
-            contentPadding = PaddingValues(top = 56.dp, bottom = 24.dp)
+            contentPadding = PaddingValues(top = 0.dp, bottom = 24.dp)
         ) {
             item {
-                Row(
+                // ── Image header ──────────────────────────────────────────
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                        .height(200.dp)
+                        .clip(RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp))
                 ) {
+                    Image(
+                        painter = painterResource(Res.drawable.img_auth_setup),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    0.00f to Color(0xFF071407).copy(alpha = 0.30f),
+                                    0.50f to Color(0xFF071407).copy(alpha = 0.52f),
+                                    1.00f to Color(0xFF071407).copy(alpha = 0.82f)
+                                )
+                            )
+                    )
+
+                    // Optional back button — top left
                     if (!hideBackButton) {
                         Box(
                             modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .statusBarsPadding()
+                                .padding(start = 20.dp, top = 14.dp)
                                 .size(40.dp)
-                                .background(Surface, CircleShape)
-                                .border(1.dp, BorderLight, CircleShape)
+                                .background(Color.Black.copy(alpha = 0.28f), CircleShape)
+                                .border(1.dp, Color.White.copy(alpha = 0.18f), CircleShape)
                                 .clickable { navViewModel.popBack() },
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
-                                Icons.Default.ChevronLeft,
-                                contentDescription = "Back",
-                                tint = TextPrimary
-                            )
+                            Icon(Icons.Default.ChevronLeft, contentDescription = "Back", tint = Color.White)
                         }
-                    } else {
-                        Spacer(modifier = Modifier.size(40.dp))
                     }
 
-                    Text(
-                        "History",
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                        color = TextPrimary
-                    )
-                    Spacer(modifier = Modifier.size(40.dp))
+                    // Title — bottom left
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .statusBarsPadding()
+                            .padding(horizontal = 24.dp, vertical = 20.dp)
+                    ) {
+                        Text(
+                            "History",
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 28.sp,
+                            color = Color.White
+                        )
+                        Text(
+                            "Your medication journey",
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 13.sp,
+                            color = Color.White.copy(alpha = 0.72f)
+                        )
+                    }
                 }
+
+                Spacer(modifier = Modifier.height(20.dp))
 
                 if (scheduleHistory.isNotEmpty()) {
                     Box(

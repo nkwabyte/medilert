@@ -24,17 +24,13 @@ import com.nkwabyte.medilert.viewmodel.AppViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 
 private val languages = listOf(
-    Triple("en", "English", "English"),
-    Triple("tw", "Akan / Twi", "Twi"),
-    Triple("ga", "Ga", "Ga"),
-    Triple("ee", "Ewe", "Ewe"),
-    Triple("dag", "Dagbani", "Dagbani")
+    Triple("en", "English", "English")
 )
 
 @Composable
 fun LanguageSettingsScreen(
-    navViewModel: NavViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel()
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() }
 ) {
     val currentLang by appViewModel.selectedLanguage.collectAsState()
     var selectedLang by remember { mutableStateOf(languages.firstOrNull { it.second == currentLang }?.first ?: "en") }
