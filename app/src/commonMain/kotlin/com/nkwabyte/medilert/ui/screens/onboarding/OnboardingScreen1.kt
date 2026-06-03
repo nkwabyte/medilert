@@ -1,102 +1,183 @@
 package com.nkwabyte.medilert.ui.screens.onboarding
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nkwabyte.medilert.generated.resources.Res
+import com.nkwabyte.medilert.generated.resources.img_onboarding1
+import com.nkwabyte.medilert.generated.resources.logo
 import com.nkwabyte.medilert.navigation.Login
 import com.nkwabyte.medilert.navigation.Onboarding2
-import com.nkwabyte.medilert.ui.components.TopBarStripe
-import com.nkwabyte.medilert.ui.theme.Background
-import com.nkwabyte.medilert.ui.theme.GhanaYellow
 import com.nkwabyte.medilert.ui.theme.Poppins
-import com.nkwabyte.medilert.ui.theme.PrimaryGreen
 import com.nkwabyte.medilert.viewmodel.NavViewModel
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun OnboardingScreen1(navViewModel: NavViewModel = viewModel { NavViewModel() }) {
-    Box(modifier = Modifier.fillMaxSize().background(Background)) {
-        TopBarStripe(modifier = Modifier.align(Alignment.TopCenter))
+    val contentAlpha = remember { Animatable(0f) }
 
-        Box(modifier = Modifier.size(300.dp).align(Alignment.TopEnd).background(Brush.radialGradient(listOf(PrimaryGreen.copy(alpha = 0.05f), Color.Transparent)), CircleShape))
-        Box(modifier = Modifier.size(250.dp).align(Alignment.BottomStart).background(Brush.radialGradient(listOf(GhanaYellow.copy(alpha = 0.08f), Color.Transparent)), CircleShape))
+    LaunchedEffect(Unit) {
+        contentAlpha.animateTo(1f, animationSpec = tween(700))
+    }
 
+    Box(modifier = Modifier.fillMaxSize()) {
+
+        Image(
+            painter = painterResource(Res.drawable.img_onboarding1),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        0.0f to Color(0xFF071407).copy(alpha = 0.10f),
+                        0.35f to Color(0xFF071407).copy(alpha = 0.45f),
+                        0.60f to Color(0xFF071407).copy(alpha = 0.80f),
+                        1.0f to Color(0xFF071407).copy(alpha = 0.97f)
+                    )
+                )
+        )
+
+        // Logo at top
         Column(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .statusBarsPadding()
+                .padding(top = 28.dp)
+                .alpha(contentAlpha.value),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(60.dp))
+            Image(
+                painter = painterResource(Res.drawable.logo),
+                contentDescription = "Medilert",
+                modifier = Modifier.size(60.dp),
+                contentScale = ContentScale.Fit
+            )
+        }
 
-            Box(
-                modifier = Modifier.size(200.dp).background(PrimaryGreen.copy(alpha = 0.08f), RoundedCornerShape(40.dp)),
-                contentAlignment = Alignment.Center
+        // Bottom content
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .navigationBarsPadding()
+                .padding(horizontal = 28.dp)
+                .padding(bottom = 44.dp)
+                .alpha(contentAlpha.value),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Page indicator — dot 1 active
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Box(modifier = Modifier.size(100.dp).background(PrimaryGreen.copy(alpha = 0.15f), CircleShape), contentAlignment = Alignment.Center) {
-                        Icon(imageVector = Icons.Default.Notifications, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(60.dp))
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(48.dp))
-
-            Text(text = "Never Miss a Dose", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 28.sp, color = Color.Black, textAlign = TextAlign.Center)
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Set smart reminders for your medications and get notified at the right time, every time.", fontFamily = Poppins, fontWeight = FontWeight.Normal, fontSize = 16.sp, color = Color(0xFF6B7280), textAlign = TextAlign.Center, lineHeight = 26.sp)
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                Box(modifier = Modifier.width(24.dp).height(8.dp).background(PrimaryGreen, RoundedCornerShape(50.dp)))
+                Box(
+                    modifier = Modifier
+                        .width(24.dp)
+                        .height(8.dp)
+                        .background(Color.White, RoundedCornerShape(50.dp))
+                )
                 Spacer(modifier = Modifier.width(6.dp))
-                Box(modifier = Modifier.size(8.dp).background(Color(0xFFE5E7EB), CircleShape))
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Button(onClick = { navViewModel.navigateTo(Onboarding2) }, modifier = Modifier.fillMaxWidth().height(60.dp), shape = RoundedCornerShape(50.dp), colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen)) {
-                Text(text = "Next", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 18.sp, color = Color.White)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            TextButton(onClick = { navViewModel.navigateAndClearStack(Login) }) {
-                Text(text = "Skip", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = PrimaryGreen)
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .background(Color.White.copy(alpha = 0.35f), CircleShape)
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
-        }
 
-        Box(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp)) {
-            Box(modifier = Modifier.width(140.dp).height(5.dp).background(Color(0xFFE4E4E4), RoundedCornerShape(50.dp)))
+            Text(
+                "Never Miss a Dose",
+                fontFamily = Poppins,
+                fontWeight = FontWeight.Bold,
+                fontSize = 28.sp,
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                lineHeight = 36.sp
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                "Set smart reminders for your medications\nand get notified at the right time, every time.",
+                fontFamily = Poppins,
+                fontWeight = FontWeight.Normal,
+                fontSize = 15.sp,
+                color = Color.White.copy(alpha = 0.75f),
+                textAlign = TextAlign.Center,
+                lineHeight = 23.sp
+            )
+
+            Spacer(modifier = Modifier.height(36.dp))
+
+            Button(
+                onClick = { navViewModel.navigateTo(Onboarding2) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(58.dp),
+                shape = RoundedCornerShape(50.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+                contentPadding = PaddingValues(0.dp)
+            ) {
+                Text(
+                    "NEXT",
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = Color(0xFF0D3320),
+                    letterSpacing = 1.5.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(
+                "Skip",
+                fontFamily = Poppins,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 15.sp,
+                color = Color.White.copy(alpha = 0.65f),
+                modifier = Modifier.clickable { navViewModel.navigateAndClearStack(Login) }
+            )
         }
     }
 }

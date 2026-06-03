@@ -82,6 +82,7 @@ import com.nkwabyte.medilert.viewmodel.SignupViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import com.nkwabyte.medilert.generated.resources.Res
+import com.nkwabyte.medilert.generated.resources.ic_google
 import com.nkwabyte.medilert.generated.resources.logo
 
 @Composable
@@ -442,20 +443,11 @@ fun SignUpScreen(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .background(Color(0xFF4285F4), CircleShape),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    "G",
-                                    fontFamily = Poppins,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 14.sp,
-                                    color = Color.White
-                                )
-                            }
+                            Image(
+                                painter = painterResource(Res.drawable.ic_google),
+                                contentDescription = "Google",
+                                modifier = Modifier.size(24.dp)
+                            )
                             Spacer(modifier = Modifier.width(12.dp))
                             Text(
                                 "Continue with Google",
