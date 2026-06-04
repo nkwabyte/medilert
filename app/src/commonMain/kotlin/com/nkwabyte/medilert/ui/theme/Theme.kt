@@ -16,49 +16,49 @@ val LocalFontScale = compositionLocalOf { 1f }
 internal expect fun loadPoppins(): FontFamily
 
 private val LightColorScheme = lightColorScheme(
-    primary = PrimaryGreen,
-    onPrimary = Surface,
-    primaryContainer = LightGreen,
-    onPrimaryContainer = Surface,
-    secondary = GhanaYellow,
-    onSecondary = TextPrimary,
-    secondaryContainer = GhanaYellowDark,
-    onSecondaryContainer = TextPrimary,
-    tertiary = GhanaRed,
-    onTertiary = Surface,
-    background = Background,
-    onBackground = TextPrimary,
-    surface = Surface,
-    onSurface = TextPrimary,
-    surfaceVariant = SurfaceVariant,
-    onSurfaceVariant = TextSecondary,
-    error = GhanaRed,
-    onError = Surface,
-    outline = BorderMedium,
-    outlineVariant = BorderLight
+    primary               = PrimaryGreen,
+    onPrimary             = LightSurface,
+    primaryContainer      = LightGreen,
+    onPrimaryContainer    = LightSurface,
+    secondary             = GhanaYellow,
+    onSecondary           = LightTextPrimary,
+    secondaryContainer    = GhanaYellowDark,
+    onSecondaryContainer  = LightTextPrimary,
+    tertiary              = GhanaRed,
+    onTertiary            = LightSurface,
+    background            = LightBackground,
+    onBackground          = LightTextPrimary,
+    surface               = LightSurface,
+    onSurface             = LightTextPrimary,
+    surfaceVariant        = LightSurfaceVar,
+    onSurfaceVariant      = LightTextSecondary,
+    error                 = GhanaRed,
+    onError               = LightSurface,
+    outline               = LightBorderMedium,
+    outlineVariant        = LightBorderLight
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = PrimaryGreen,
-    onPrimary = DarkSurface,
-    primaryContainer = DarkGreen,
-    onPrimaryContainer = DarkTextPrimary,
-    secondary = GhanaYellow,
-    onSecondary = DarkBackground,
-    secondaryContainer = GhanaYellowDark,
-    onSecondaryContainer = DarkBackground,
-    tertiary = GhanaRed,
-    onTertiary = DarkSurface,
-    background = DarkBackground,
-    onBackground = DarkTextPrimary,
-    surface = DarkSurface,
-    onSurface = DarkTextPrimary,
-    surfaceVariant = DarkSurfaceVar,
-    onSurfaceVariant = DarkTextSecond,
-    error = GhanaRed,
-    onError = DarkSurface,
-    outline = DarkBorderMed,
-    outlineVariant = DarkBorderLight
+    primary               = PrimaryGreen,
+    onPrimary             = DarkSurface,
+    primaryContainer      = DarkGreen,
+    onPrimaryContainer    = DarkTextPrimary,
+    secondary             = GhanaYellow,
+    onSecondary           = DarkBackground,
+    secondaryContainer    = GhanaYellowDark,
+    onSecondaryContainer  = DarkBackground,
+    tertiary              = GhanaRed,
+    onTertiary            = DarkSurface,
+    background            = DarkBackground,
+    onBackground          = DarkTextPrimary,
+    surface               = DarkSurface,
+    onSurface             = DarkTextPrimary,
+    surfaceVariant        = DarkSurfaceVar,
+    onSurfaceVariant      = DarkTextSecond,
+    error                 = GhanaRed,
+    onError               = DarkSurface,
+    outline               = DarkBorderMed,
+    outlineVariant        = DarkBorderLight
 )
 
 @Composable
@@ -68,12 +68,14 @@ fun MedilertTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val medilertColors = if (darkTheme) darkMedilertColors() else lightMedilertColors()
     val font = loadPoppins()
     poppinsFont = font
     val currentDensity = LocalDensity.current
 
     CompositionLocalProvider(
         LocalFontScale provides fontScale,
+        LocalMedilertColors provides medilertColors,
         LocalDensity provides Density(
             density = currentDensity.density,
             fontScale = currentDensity.fontScale * fontScale

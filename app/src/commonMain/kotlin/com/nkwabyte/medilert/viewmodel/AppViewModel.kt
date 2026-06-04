@@ -2,6 +2,7 @@ package com.nkwabyte.medilert.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nkwabyte.medilert.data.platform.uploadImageToCloudinary
 import com.nkwabyte.medilert.data.service.AuthService
 import com.nkwabyte.medilert.data.service.UserService
 import com.nkwabyte.medilert.model.User
@@ -47,6 +48,9 @@ class AppViewModel(
 
     private val _fontScale = MutableStateFlow(1f)
     val fontScale: StateFlow<Float> = _fontScale.asStateFlow()
+
+    private val _isUploadingPhoto = MutableStateFlow(false)
+    val isUploadingPhoto: StateFlow<Boolean> = _isUploadingPhoto.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -140,6 +144,23 @@ class AppViewModel(
                 updates["updatedAt"] = Clock.System.now().toEpochMilliseconds()
                 userService.updateProfile(updates)
             }
+        }
+    }
+
+    fun uploadProfilePhoto(imageBytes: ByteArray) {
+        viewModelScope.launch {
+            _isUploadingPhoto.value = true
+            val url = uploadImageToCloudinary(imageBytes)
+            if (url != null) {
+                userService.updateProfile(mapOf("photoUrl" to url))
+            }
+            _isUploadingPhoto.value = false
+        }
+    }
+
+    fun removeProfilePhoto() {
+        viewModelScope.launch {
+            userService.updateProfile(mapOf("photoUrl" to ""))
         }
     }
 

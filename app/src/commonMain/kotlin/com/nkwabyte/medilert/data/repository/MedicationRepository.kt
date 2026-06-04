@@ -8,6 +8,7 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 class MedicationRepository {
@@ -23,19 +24,23 @@ class MedicationRepository {
         firestore.collection("users").document(forUid).collection("schedules")
 
     fun medicationsFlow(): Flow<List<Medication>> =
-        medsCollection().snapshots.map { snapshot ->
-            snapshot.documents.mapNotNull {
-                try { it.data<Medication>() } catch (_: Exception) { null }
+        medsCollection().snapshots
+            .map { snapshot ->
+                snapshot.documents.mapNotNull {
+                    try { it.data<Medication>() } catch (_: Exception) { null }
+                }
             }
-        }
+            .catch { emit(emptyList()) }
 
     fun doseRecordsFlow(): Flow<List<MedicationSchedule>> =
-        doseCollection().snapshots.map { snapshot ->
-            snapshot.documents.mapNotNull {
-                try { it.data<MedicationSchedule>() } catch (_: Exception) { null }
-            }.filter { it.status != DoseStatus.UPCOMING }
-             .sortedByDescending { it.date }
-        }
+        doseCollection().snapshots
+            .map { snapshot ->
+                snapshot.documents.mapNotNull {
+                    try { it.data<MedicationSchedule>() } catch (_: Exception) { null }
+                }.filter { it.status != DoseStatus.UPCOMING }
+                 .sortedByDescending { it.date }
+            }
+            .catch { emit(emptyList()) }
 
     suspend fun addMedication(medication: Medication): FirebaseResult<Unit> {
         return try {

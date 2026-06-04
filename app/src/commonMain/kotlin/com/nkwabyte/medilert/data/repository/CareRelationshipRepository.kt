@@ -11,6 +11,7 @@ import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
 import kotlin.time.Clock
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 class CareRelationshipRepository {
@@ -61,19 +62,23 @@ class CareRelationshipRepository {
     }
 
     fun assignedPatientsFlow(caregiverId: String): Flow<List<CareAssignment>> =
-        assignments.where { "caregiverId" equalTo caregiverId }.snapshots.map { snapshot ->
-            snapshot.documents.mapNotNull {
-                try { it.data<CareAssignment>() } catch (_: Exception) { null }
+        assignments.where { "caregiverId" equalTo caregiverId }.snapshots
+            .map { snapshot ->
+                snapshot.documents.mapNotNull {
+                    try { it.data<CareAssignment>() } catch (_: Exception) { null }
+                }
             }
-        }
+            .catch { emit(emptyList()) }
 
     fun allPatientsFlow(): Flow<List<User>> =
-        firestore.collection("users").where { "role" equalTo "PATIENT" }.snapshots.map { snapshot ->
-            snapshot.documents.mapNotNull {
-                try { it.data<User>() } catch (_: Exception) { null }
-            }.filter { it.id != uid }
-             .sortedBy { it.name.lowercase() }
-        }
+        firestore.collection("users").where { "role" equalTo "PATIENT" }.snapshots
+            .map { snapshot ->
+                snapshot.documents.mapNotNull {
+                    try { it.data<User>() } catch (_: Exception) { null }
+                }.filter { it.id != uid }
+                 .sortedBy { it.name.lowercase() }
+            }
+            .catch { emit(emptyList()) }
 
     suspend fun getPatientProfile(patientId: String): FirebaseResult<User> {
         return try {
@@ -98,16 +103,20 @@ class CareRelationshipRepository {
     }
 
     fun patientDoseRecordsFlow(patientId: String): Flow<List<MedicationSchedule>> =
-        userDoc(patientId).collection("schedules").snapshots.map { snapshot ->
-            snapshot.documents.mapNotNull {
-                try { it.data<MedicationSchedule>() } catch (_: Exception) { null }
-            }.filter { it.status != DoseStatus.UPCOMING }
-        }
+        userDoc(patientId).collection("schedules").snapshots
+            .map { snapshot ->
+                snapshot.documents.mapNotNull {
+                    try { it.data<MedicationSchedule>() } catch (_: Exception) { null }
+                }.filter { it.status != DoseStatus.UPCOMING }
+            }
+            .catch { emit(emptyList()) }
 
     fun patientMedicationsFlow(patientId: String): Flow<List<Medication>> =
-        userDoc(patientId).collection("medications").snapshots.map { snapshot ->
-            snapshot.documents.mapNotNull {
-                try { it.data<Medication>() } catch (_: Exception) { null }
+        userDoc(patientId).collection("medications").snapshots
+            .map { snapshot ->
+                snapshot.documents.mapNotNull {
+                    try { it.data<Medication>() } catch (_: Exception) { null }
+                }
             }
-        }
+            .catch { emit(emptyList()) }
 }
