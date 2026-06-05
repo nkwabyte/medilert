@@ -87,12 +87,14 @@ import com.nkwabyte.medilert.ui.theme.Surface
 import com.nkwabyte.medilert.ui.theme.TextPrimary
 import com.nkwabyte.medilert.ui.theme.TextSecondary
 import com.nkwabyte.medilert.viewmodel.AppViewModel
+import com.nkwabyte.medilert.viewmodel.AuthViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 
 @Composable
 fun SettingsScreen(
     navViewModel: NavViewModel = viewModel { NavViewModel() },
     appViewModel: AppViewModel = viewModel { AppViewModel() },
+    authViewModel: AuthViewModel = viewModel { AuthViewModel() },
     hideBackButton: Boolean = false,
     isCaregiver: Boolean = false
 ) {
@@ -503,6 +505,7 @@ fun SettingsScreen(
                 Button(onClick = {
                     showLogoutDialog = false
                     appViewModel.logout()
+                    authViewModel.resetState()
                     navViewModel.navigateAndClearStack(Login)
                 }, colors = ButtonDefaults.buttonColors(containerColor = GhanaRed)) {
                     Text("Log Out", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)

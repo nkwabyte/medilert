@@ -1,5 +1,6 @@
 package com.nkwabyte.medilert.ui.screens.medication
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -44,11 +46,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nkwabyte.medilert.generated.resources.Res
+import com.nkwabyte.medilert.generated.resources.img_auth_signup
 import com.nkwabyte.medilert.model.UserRole
 import com.nkwabyte.medilert.navigation.AppDestination
 import com.nkwabyte.medilert.navigation.CareGiverDashboard
@@ -68,6 +73,7 @@ import com.nkwabyte.medilert.viewmodel.NavViewModel
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -92,137 +98,61 @@ fun AddMedicationStep4Screen(
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
             confirmButton = {
-                TextButton(
-                    onClick = {
-                        val selectedDate = datePickerState.selectedDateMillis?.let {
-                            Instant.fromEpochMilliseconds(it).toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
-                        }
-                        if (selectedDate != null) {
-                            if (datePickerTarget == "start") {
-                                startDate = selectedDate
-                            } else {
-                                endDate = selectedDate
-                            }
-                        }
-                        showDatePicker = false
+                TextButton(onClick = {
+                    val selectedDate = datePickerState.selectedDateMillis?.let {
+                        Instant.fromEpochMilliseconds(it).toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
                     }
-                ) {
-                    Text("OK")
-                }
+                    if (selectedDate != null) {
+                        if (datePickerTarget == "start") startDate = selectedDate else endDate = selectedDate
+                    }
+                    showDatePicker = false
+                }) { Text("OK") }
             },
-            dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) {
-                    Text("Cancel")
-                }
-            }
-        ) {
-            DatePicker(state = datePickerState)
-        }
+            dismissButton = { TextButton(onClick = { showDatePicker = false }) { Text("Cancel") } }
+        ) { DatePicker(state = datePickerState) }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Background)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp)
-                .background(
-                    brush = Brush.verticalGradient(
-                        listOf(
-                            PrimaryGreen.copy(alpha = 0.05f),
-                            Color.Transparent
-                        )
-                    )
-                )
-        )
+    Box(modifier = Modifier.fillMaxSize().background(Background)) {
 
         Column(modifier = Modifier.fillMaxSize()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .padding(top = 52.dp, bottom = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            // Photo header
+            Box(modifier = Modifier.fillMaxWidth().height(220.dp)) {
+                Image(
+                    painter = painterResource(Res.drawable.img_auth_signup),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
                 Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(Surface, CircleShape)
-                        .border(1.dp, BorderLight, CircleShape)
-                        .clickable { navViewModel.popBack() },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        Icons.Default.ChevronLeft,
-                        contentDescription = "Back",
-                        tint = TextPrimary
+                    modifier = Modifier.fillMaxSize().background(
+                        Brush.verticalGradient(0.35f to Color.Transparent, 1.00f to Background)
                     )
-                }
-
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    repeat(4) {
-                        Box(
-                            modifier = Modifier
-                                .width(if (it == 3) 32.dp else 6.dp)
-                                .height(6.dp)
-                                .background(PrimaryGreen, RoundedCornerShape(50.dp))
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.size(40.dp))
+                )
             }
 
+            // Scrollable form
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 24.dp)
-                    .padding(bottom = 120.dp)
+                modifier = Modifier.weight(1f).verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp).padding(bottom = 120.dp)
             ) {
                 Text(
                     "Additional Details",
-                    fontFamily = Poppins,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
-                    color = TextPrimary,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, bottom = 24.dp)
+                    fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 24.sp, color = TextPrimary,
+                    textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 24.dp)
                 )
 
+                // Start Date
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        "Start Date",
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp,
-                        color = TextPrimary,
-                        modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
-                    )
+                    Text("Start Date", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
                     Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(64.dp)
-                            .background(Surface, RoundedCornerShape(20.dp))
-                            .border(1.dp, BorderLight, RoundedCornerShape(20.dp))
-                            .clickable {
-                                datePickerTarget = "start"
-                                showDatePicker = true
-                            }
-                            .padding(horizontal = 24.dp),
+                        modifier = Modifier.fillMaxWidth().height(64.dp)
+                            .background(Surface, RoundedCornerShape(20.dp)).border(1.dp, BorderLight, RoundedCornerShape(20.dp))
+                            .clickable { datePickerTarget = "start"; showDatePicker = true }.padding(horizontal = 24.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Text(
                             text = if (startDate.isNotEmpty()) startDate else "Select start date",
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 18.sp,
+                            fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 18.sp,
                             color = if (startDate.isNotEmpty()) TextPrimary else TextHint
                         )
                     }
@@ -230,33 +160,18 @@ fun AddMedicationStep4Screen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                // End Date
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        "End Date (Optional)",
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp,
-                        color = TextPrimary,
-                        modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
-                    )
+                    Text("End Date (Optional)", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
                     Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(64.dp)
-                            .background(Surface, RoundedCornerShape(20.dp))
-                            .border(1.dp, BorderLight, RoundedCornerShape(20.dp))
-                            .clickable {
-                                datePickerTarget = "end"
-                                showDatePicker = true
-                            }
-                            .padding(horizontal = 24.dp),
+                        modifier = Modifier.fillMaxWidth().height(64.dp)
+                            .background(Surface, RoundedCornerShape(20.dp)).border(1.dp, BorderLight, RoundedCornerShape(20.dp))
+                            .clickable { datePickerTarget = "end"; showDatePicker = true }.padding(horizontal = 24.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Text(
                             text = if (endDate.isNotEmpty()) endDate else "Select end date",
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 18.sp,
+                            fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 18.sp,
                             color = if (endDate.isNotEmpty()) TextPrimary else TextHint
                         )
                     }
@@ -264,183 +179,119 @@ fun AddMedicationStep4Screen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                // Current Supply
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        "Current Supply (pills)",
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp,
-                        color = TextPrimary,
-                        modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
-                    )
+                    Text("Current Supply (pills)", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Surface, RoundedCornerShape(20.dp))
-                            .border(1.dp, BorderLight, RoundedCornerShape(20.dp))
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        modifier = Modifier.fillMaxWidth().background(Surface, RoundedCornerShape(20.dp)).border(1.dp, BorderLight, RoundedCornerShape(20.dp)).padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
-                            modifier = Modifier
-                                .size(44.dp)
-                                .background(
-                                    PrimaryGreen.copy(alpha = 0.1f),
-                                    RoundedCornerShape(12.dp)
-                                )
-                                .clickable {
-                                    if (totalPills.toIntOrNull()?.let { it > 1 } == true)
-                                        totalPills = (totalPills.toInt() - 1).toString()
-                                }, contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                Icons.Default.Remove,
-                                contentDescription = null,
-                                tint = PrimaryGreen
-                            )
-                        }
-                        Text(
-                            totalPills,
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 28.sp,
-                            color = TextPrimary
-                        )
+                            modifier = Modifier.size(44.dp).background(PrimaryGreen.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
+                                .clickable { if (totalPills.toIntOrNull()?.let { it > 1 } == true) totalPills = (totalPills.toInt() - 1).toString() },
+                            contentAlignment = Alignment.Center
+                        ) { Icon(Icons.Default.Remove, contentDescription = null, tint = PrimaryGreen) }
+                        Text(totalPills, fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 28.sp, color = TextPrimary)
                         Box(
-                            modifier = Modifier
-                                .size(44.dp)
-                                .background(PrimaryGreen, RoundedCornerShape(12.dp))
+                            modifier = Modifier.size(44.dp).background(PrimaryGreen, RoundedCornerShape(12.dp))
                                 .clickable { totalPills = (totalPills.toInt() + 1).toString() },
                             contentAlignment = Alignment.Center
-                        ) {
-                            Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
-                        }
+                        ) { Icon(Icons.Default.Add, contentDescription = null, tint = Color.White) }
                     }
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                // Side Effects
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        "Known Side Effects",
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp,
-                        color = TextPrimary,
-                        modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
-                    )
+                    Text("Known Side Effects", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
                     OutlinedTextField(
                         value = sideEffects, onValueChange = { sideEffects = it },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(100.dp),
-                        placeholder = {
-                            Text(
-                                "E.g. nausea, dizziness",
-                                fontFamily = Poppins,
-                                color = TextHint,
-                                fontSize = 14.sp
-                            )
-                        },
+                        modifier = Modifier.fillMaxWidth().height(100.dp),
+                        placeholder = { Text("E.g. nausea, dizziness", fontFamily = Poppins, color = TextHint, fontSize = 14.sp) },
                         shape = RoundedCornerShape(20.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedContainerColor = Surface,
-                            focusedContainerColor = Surface,
-                            unfocusedBorderColor = BorderLight,
-                            focusedBorderColor = PrimaryGreen
+                            unfocusedContainerColor = Surface, focusedContainerColor = Surface,
+                            unfocusedBorderColor = BorderLight, focusedBorderColor = PrimaryGreen
                         )
                     )
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                // Notes
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        "Notes",
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp,
-                        color = TextPrimary,
-                        modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
-                    )
+                    Text("Notes", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
                     OutlinedTextField(
                         value = notes, onValueChange = { notes = it },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(100.dp),
-                        placeholder = {
-                            Text(
-                                "Any additional notes...",
-                                fontFamily = Poppins,
-                                color = TextHint,
-                                fontSize = 14.sp
-                            )
-                        },
+                        modifier = Modifier.fillMaxWidth().height(100.dp),
+                        placeholder = { Text("Any additional notes...", fontFamily = Poppins, color = TextHint, fontSize = 14.sp) },
                         shape = RoundedCornerShape(20.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedContainerColor = Surface,
-                            focusedContainerColor = Surface,
-                            unfocusedBorderColor = BorderLight,
-                            focusedBorderColor = PrimaryGreen
+                            unfocusedContainerColor = Surface, focusedContainerColor = Surface,
+                            unfocusedBorderColor = BorderLight, focusedBorderColor = PrimaryGreen
                         )
                     )
                 }
+
                 Spacer(modifier = Modifier.height(24.dp))
+
                 Button(
                     onClick = {
-                        val updatedMedication = draftMedication.copy(
-                            currentInventory = totalPills.toInt(),
-                            sideEffects = sideEffects,
-                            notes = notes,
-                            startDate = startDate,
-                            endDate = endDate
+                        medicationViewModel.updateDraftMedication(
+                            draftMedication.copy(currentInventory = totalPills.toInt(), sideEffects = sideEffects, notes = notes, startDate = startDate, endDate = endDate)
                         )
-                        medicationViewModel.updateDraftMedication(updatedMedication)
                         medicationViewModel.saveDraftMedication()
-                        val dest: AppDestination =
-                            if (userRole == UserRole.PATIENT || userRole == UserRole.GUARDIAN) Dashboard else CareGiverDashboard
+                        val dest: AppDestination = if (userRole == UserRole.PATIENT || userRole == UserRole.GUARDIAN) Dashboard else CareGiverDashboard
                         navViewModel.navigateAndClearStack(dest)
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(60.dp),
+                    modifier = Modifier.fillMaxWidth().height(60.dp),
                     shape = RoundedCornerShape(50.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                     contentPadding = PaddingValues(0.dp)
                 ) {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                brush = Brush.horizontalGradient(
-                                    listOf(
-                                        PrimaryGreen,
-                                        MediumGreen
-                                    )
-                                ), shape = RoundedCornerShape(50.dp)
-                            ),
+                        modifier = Modifier.fillMaxSize().background(
+                            Brush.horizontalGradient(listOf(PrimaryGreen, MediumGreen)), RoundedCornerShape(50.dp)
+                        ),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            "Save Medication",
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp,
-                            color = Color.White
-                        )
+                        Text("Save Medication", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 20.sp, color = Color.White)
                     }
                 }
             }
         }
 
-        Box(
+        // Floating nav row — back button + step indicator (all filled = final step)
+        Row(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 8.dp)
-                .width(140.dp)
-                .height(5.dp)
-                .background(Divider, RoundedCornerShape(50.dp))
+                .statusBarsPadding()
+                .padding(horizontal = 20.dp, vertical = 14.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier.size(40.dp)
+                    .background(Color.Black.copy(alpha = 0.28f), CircleShape)
+                    .border(1.dp, Color.White.copy(alpha = 0.18f), CircleShape)
+                    .clickable { navViewModel.popBack() },
+                contentAlignment = Alignment.Center
+            ) { Icon(Icons.Default.ChevronLeft, contentDescription = "Back", tint = Color.White) }
+
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                repeat(4) {
+                    Box(modifier = Modifier.width(if (it == 3) 32.dp else 6.dp).height(6.dp).background(Color.White, RoundedCornerShape(50.dp)))
+                }
+            }
+
+            Spacer(modifier = Modifier.size(40.dp))
+        }
+
+        // Home indicator
+        Box(
+            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp)
+                .width(140.dp).height(5.dp).background(Divider, RoundedCornerShape(50.dp))
         )
     }
 }

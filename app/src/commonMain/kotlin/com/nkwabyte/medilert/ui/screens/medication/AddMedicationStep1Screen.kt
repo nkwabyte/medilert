@@ -1,5 +1,6 @@
 package com.nkwabyte.medilert.ui.screens.medication
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,18 +18,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nkwabyte.medilert.generated.resources.Res
+import com.nkwabyte.medilert.generated.resources.img_auth_setup
 import com.nkwabyte.medilert.model.Medication
 import com.nkwabyte.medilert.navigation.*
 import com.nkwabyte.medilert.ui.screens.auth.AuthInputField
 import com.nkwabyte.medilert.ui.theme.*
 import com.nkwabyte.medilert.viewmodel.MedicationViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
+import org.jetbrains.compose.resources.painterResource
 
 private val medicationIcons = listOf<ImageVector>(
     Icons.Default.MedicalServices, Icons.Default.Medication, Icons.Default.Science, Icons.Default.Vaccines
@@ -47,30 +52,27 @@ fun AddMedicationStep1Screen(
     var showUnitPicker by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize().background(Background)) {
-        Box(modifier = Modifier.fillMaxWidth().height(300.dp).background(brush = Brush.verticalGradient(listOf(PrimaryGreen.copy(alpha = 0.05f), Color.Transparent))))
 
         Column(modifier = Modifier.fillMaxSize()) {
-            // Top bar
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(top = 52.dp, bottom = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
-            ) {
+            // Photo header
+            Box(modifier = Modifier.fillMaxWidth().height(220.dp)) {
+                Image(
+                    painter = painterResource(Res.drawable.img_auth_setup),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
                 Box(
-                    modifier = Modifier.size(40.dp).background(Surface, CircleShape).border(1.dp, BorderLight, CircleShape).clickable { navViewModel.popBack() },
-                    contentAlignment = Alignment.Center
-                ) { Icon(Icons.Default.ChevronLeft, contentDescription = "Back", tint = TextPrimary) }
-
-                // Step indicator
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Box(modifier = Modifier.width(32.dp).height(6.dp).background(PrimaryGreen, RoundedCornerShape(50.dp)))
-                    repeat(3) { Box(modifier = Modifier.size(6.dp, 6.dp).background(BorderMedium, CircleShape)) }
-                }
-
-                Spacer(modifier = Modifier.size(40.dp))
+                    modifier = Modifier.fillMaxSize().background(
+                        Brush.verticalGradient(0.35f to Color.Transparent, 1.00f to Background)
+                    )
+                )
             }
 
+            // Scrollable form
             Column(
-                modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 120.dp)
+                modifier = Modifier.weight(1f).verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp).padding(bottom = 120.dp)
             ) {
                 Text(
                     "What medication do you want to add?",
@@ -135,12 +137,9 @@ fun AddMedicationStep1Screen(
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = {
-                        val updatedMedication = draftMedication.copy(
-                            name = medName,
-                            unit = selectedUnit,
-                            icon = selectedIcon
+                        medicationViewModel.updateDraftMedication(
+                            draftMedication.copy(name = medName, unit = selectedUnit, icon = selectedIcon)
                         )
-                        medicationViewModel.updateDraftMedication(updatedMedication)
                         navViewModel.navigateTo(AddMedication2)
                     },
                     modifier = Modifier.fillMaxWidth().height(60.dp),
@@ -149,5 +148,36 @@ fun AddMedicationStep1Screen(
                 ) { Text("Continue", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = TextPrimary) }
             }
         }
+
+        // Floating nav row — back button + step indicator
+        Row(
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(horizontal = 20.dp, vertical = 14.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier.size(40.dp)
+                    .background(Color.Black.copy(alpha = 0.28f), CircleShape)
+                    .border(1.dp, Color.White.copy(alpha = 0.18f), CircleShape)
+                    .clickable { navViewModel.popBack() },
+                contentAlignment = Alignment.Center
+            ) { Icon(Icons.Default.ChevronLeft, contentDescription = "Back", tint = Color.White) }
+
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Box(modifier = Modifier.width(32.dp).height(6.dp).background(Color.White, RoundedCornerShape(50.dp)))
+                repeat(3) { Box(modifier = Modifier.size(6.dp).background(Color.White.copy(alpha = 0.45f), CircleShape)) }
+            }
+
+            Spacer(modifier = Modifier.size(40.dp))
+        }
+
+        // Home indicator
+        Box(
+            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp)
+                .width(140.dp).height(5.dp).background(Divider, RoundedCornerShape(50.dp))
+        )
     }
 }

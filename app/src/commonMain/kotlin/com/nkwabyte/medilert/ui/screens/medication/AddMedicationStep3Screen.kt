@@ -1,5 +1,6 @@
 package com.nkwabyte.medilert.ui.screens.medication
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,17 +17,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nkwabyte.medilert.generated.resources.Res
+import com.nkwabyte.medilert.generated.resources.img_onboarding1
 import com.nkwabyte.medilert.model.MedicationIntake
 import com.nkwabyte.medilert.navigation.*
 import com.nkwabyte.medilert.ui.theme.*
 import com.nkwabyte.medilert.viewmodel.MedicationViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
+import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,28 +54,14 @@ fun AddMedicationStep3Screen(
             frequency.contains("Four") -> 4
             else -> 1
         }
-
         if (newIntakeCount != intakes.size) {
             val newIntakes = mutableListOf<MedicationIntake>()
             for (i in 0 until newIntakeCount) {
                 if (i < intakes.size) {
                     newIntakes.add(intakes[i])
                 } else {
-                    // Add new default intake
-                    val defaultTime = when(i) {
-                        0 -> "08:00 AM"
-                        1 -> "12:00 PM"
-                        2 -> "06:00 PM"
-                        3 -> "10:00 PM"
-                        else -> "08:00 AM"
-                    }
-                    val defaultTitle = when(i) {
-                        0 -> "Morning"
-                        1 -> "Afternoon"
-                        2 -> "Evening"
-                        3 -> "Night"
-                        else -> ""
-                    }
+                    val defaultTime = when (i) { 0 -> "08:00 AM"; 1 -> "12:00 PM"; 2 -> "06:00 PM"; else -> "10:00 PM" }
+                    val defaultTitle = when (i) { 0 -> "Morning"; 1 -> "Afternoon"; 2 -> "Evening"; else -> "Night" }
                     newIntakes.add(MedicationIntake(title = defaultTitle, time = defaultTime, dose = draftMedication.dose))
                 }
             }
@@ -97,60 +88,54 @@ fun AddMedicationStep3Screen(
         }
     }
 
-
     Box(modifier = Modifier.fillMaxSize().background(Background)) {
-        Box(modifier = Modifier.fillMaxWidth().height(300.dp).background(brush = Brush.verticalGradient(listOf(PrimaryGreen.copy(alpha = 0.05f), Color.Transparent))))
 
         Column(modifier = Modifier.fillMaxSize()) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(top = 52.dp, bottom = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
-            ) {
+            // Photo header
+            Box(modifier = Modifier.fillMaxWidth().height(220.dp)) {
+                Image(
+                    painter = painterResource(Res.drawable.img_onboarding1),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
                 Box(
-                    modifier = Modifier.size(40.dp).background(Surface, CircleShape).border(1.dp, BorderLight, CircleShape).clickable { navViewModel.popBack() },
-                    contentAlignment = Alignment.Center
-                ) { Icon(Icons.Default.ChevronLeft, contentDescription = "Back", tint = TextPrimary) }
-
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    repeat(4) { i ->
-                        if (i <= 2) Box(modifier = Modifier.width(if (i == 2) 32.dp else 6.dp).height(6.dp).background(PrimaryGreen, RoundedCornerShape(50.dp)))
-                        else Box(modifier = Modifier.size(6.dp).background(BorderMedium, CircleShape))
-                    }
-                }
-
-                Spacer(modifier = Modifier.size(40.dp))
+                    modifier = Modifier.fillMaxSize().background(
+                        Brush.verticalGradient(0.35f to Color.Transparent, 1.00f to Background)
+                    )
+                )
             }
 
-            Column(modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 120.dp)) {
-                Text("Set reminder times", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 24.sp, color = TextPrimary,
-                    textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 8.dp))
-                Text("Based on: $frequency", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp, color = TextSecondary,
-                    textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp))
+            // Scrollable form
+            Column(
+                modifier = Modifier.weight(1f).verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp).padding(bottom = 120.dp)
+            ) {
+                Text(
+                    "Set reminder times",
+                    fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 24.sp, color = TextPrimary,
+                    textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 8.dp)
+                )
+                Text(
+                    "Based on: $frequency",
+                    fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp, color = TextSecondary,
+                    textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)
+                )
 
                 intakes.forEachIndexed { index, intake ->
                     TimeSlotCard(
                         label = intake.title.ifEmpty { "Reminder ${index + 1}" },
                         time = intake.time,
-                        onClick = {
-                            selectedIntakeIndex.value = index
-                            showEditReminderDialog.value = true
-                        }
+                        onClick = { selectedIntakeIndex.value = index; showEditReminderDialog.value = true }
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Add/Remove buttons
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                     Button(
-                        onClick = {
-                            val newIntake = MedicationIntake(time = "08:00 AM", dose = draftMedication.dose)
-                            intakes = intakes + newIntake
-                        },
+                        onClick = { intakes = intakes + MedicationIntake(time = "08:00 AM", dose = draftMedication.dose) },
                         colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen.copy(alpha = 0.1f)),
                         shape = RoundedCornerShape(12.dp)
                     ) {
@@ -160,11 +145,7 @@ fun AddMedicationStep3Screen(
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                     Button(
-                        onClick = {
-                            if (intakes.size > 1) {
-                                intakes = intakes.dropLast(1)
-                            }
-                        },
+                        onClick = { if (intakes.size > 1) intakes = intakes.dropLast(1) },
                         colors = ButtonDefaults.buttonColors(containerColor = GhanaRed.copy(alpha = 0.1f)),
                         shape = RoundedCornerShape(12.dp)
                     ) {
@@ -176,7 +157,6 @@ fun AddMedicationStep3Screen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // With food toggle
                 Row(
                     modifier = Modifier.fillMaxWidth().background(Surface, RoundedCornerShape(20.dp)).border(1.dp, BorderLight, RoundedCornerShape(20.dp)).padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
@@ -190,11 +170,9 @@ fun AddMedicationStep3Screen(
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = {
-                        val updatedMedication = draftMedication.copy(
-                            intakes = intakes,
-                            instructions = if (withFood) "Take with food" else ""
+                        medicationViewModel.updateDraftMedication(
+                            draftMedication.copy(intakes = intakes, instructions = if (withFood) "Take with food" else "")
                         )
-                        medicationViewModel.updateDraftMedication(updatedMedication)
                         navViewModel.navigateTo(AddMedication4)
                     },
                     modifier = Modifier.fillMaxWidth().height(60.dp),
@@ -204,89 +182,37 @@ fun AddMedicationStep3Screen(
             }
         }
 
-        Box(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp).width(140.dp).height(5.dp).background(Divider, RoundedCornerShape(50.dp)))
-    }
-}
-
-@Composable
-fun TimeSlotCard(label: String, time: String, onClick: () -> Unit) {
-    val dotColor = when (label) {
-        "Morning" -> GhanaRed
-        "Afternoon" -> GhanaYellow
-        "Evening" -> PrimaryGreen
-        else -> PrimaryGreen
-    }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Surface, RoundedCornerShape(20.dp))
-            .border(1.dp, BorderLight, RoundedCornerShape(20.dp))
-            .clickable { onClick() }
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Box(modifier = Modifier.size(10.dp).background(dotColor, CircleShape))
-            Column {
-                Text(label, fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, color = TextPrimary)
-                Text(time, fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 13.sp, color = TextSecondary)
-            }
-        }
-        Box(
-            modifier = Modifier.background(PrimaryGreen.copy(alpha = 0.1f), RoundedCornerShape(10.dp)).padding(horizontal = 12.dp, vertical = 6.dp)
+        // Floating nav row — back button + step indicator
+        Row(
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(horizontal = 20.dp, vertical = 14.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Change", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = PrimaryGreen)
-        }
-    }
-}
+            Box(
+                modifier = Modifier.size(40.dp)
+                    .background(Color.Black.copy(alpha = 0.28f), CircleShape)
+                    .border(1.dp, Color.White.copy(alpha = 0.18f), CircleShape)
+                    .clickable { navViewModel.popBack() },
+                contentAlignment = Alignment.Center
+            ) { Icon(Icons.Default.ChevronLeft, contentDescription = "Back", tint = Color.White) }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun EditReminderDialog(
-    onCancel: () -> Unit,
-    onConfirm: (String, String) -> Unit,
-    initialTitle: String,
-    timePickerState: TimePickerState
-) {
-    var title by remember { mutableStateOf(initialTitle) }
-
-    AlertDialog(
-        onDismissRequest = onCancel,
-        title = { Text("Edit Reminder") },
-        text = {
-            Column {
-                OutlinedTextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("Reminder Name") },
-                    singleLine = true
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                TimePicker(state = timePickerState)
-            }
-        },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    val hour = timePickerState.hour
-                    val minute = timePickerState.minute
-                    val amPm = if (hour < 12) "AM" else "PM"
-                    val hour12 = when {
-                        hour == 0 -> 12
-                        hour > 12 -> hour - 12
-                        else -> hour
-                    }
-                    val time = "${hour12.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} $amPm"
-                    onConfirm(title, time)
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                repeat(4) { i ->
+                    if (i <= 2) Box(modifier = Modifier.width(if (i == 2) 32.dp else 6.dp).height(6.dp).background(Color.White, RoundedCornerShape(50.dp)))
+                    else Box(modifier = Modifier.size(6.dp).background(Color.White.copy(alpha = 0.45f), CircleShape))
                 }
-            ) {
-                Text("OK")
             }
-        },
-        dismissButton = {
-            TextButton(onClick = onCancel) {
-                Text("Cancel")
-            }
+
+            Spacer(modifier = Modifier.size(40.dp))
         }
-    )
+
+        // Home indicator
+        Box(
+            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp)
+                .width(140.dp).height(5.dp).background(Divider, RoundedCornerShape(50.dp))
+        )
+    }
 }

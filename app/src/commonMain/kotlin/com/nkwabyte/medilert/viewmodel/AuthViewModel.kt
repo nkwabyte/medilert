@@ -143,6 +143,10 @@ class AuthViewModel(
         _uiState.value = _uiState.value.copy(errorMessage = null)
     }
 
+    fun resetState() {
+        _uiState.value = AuthUiState()
+    }
+
     fun getLastLoginEmail(): String? = prefsManager.getLastLoginEmail()
     fun isRememberMeEnabled(): Boolean = prefsManager.isRememberMeEnabled()
 }
