@@ -11,7 +11,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -215,4 +227,75 @@ fun AddMedicationStep3Screen(
                 .width(140.dp).height(5.dp).background(Divider, RoundedCornerShape(50.dp))
         )
     }
+}
+
+@Composable
+fun TimeSlotCard(label: String, time: String, onClick: () -> Unit) {
+    val dotColor = when (label) {
+        "Morning" -> GhanaRed
+        "Afternoon" -> GhanaYellow
+        "Evening" -> PrimaryGreen
+        else -> PrimaryGreen
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Surface, RoundedCornerShape(20.dp))
+            .border(1.dp, BorderLight, RoundedCornerShape(20.dp))
+            .clickable { onClick() }
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Box(modifier = Modifier.size(10.dp).background(dotColor, CircleShape))
+            Column {
+                Text(label, fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, color = TextPrimary)
+                Text(time, fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 13.sp, color = TextSecondary)
+            }
+        }
+        Box(
+            modifier = Modifier.background(PrimaryGreen.copy(alpha = 0.1f), RoundedCornerShape(10.dp)).padding(horizontal = 12.dp, vertical = 6.dp)
+        ) {
+            Text("Change", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = PrimaryGreen)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditReminderDialog(
+    onCancel: () -> Unit,
+    onConfirm: (String, String) -> Unit,
+    initialTitle: String,
+    timePickerState: TimePickerState
+) {
+    var title by remember { mutableStateOf(initialTitle) }
+
+    AlertDialog(
+        onDismissRequest = onCancel,
+        title = { Text("Edit Reminder") },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Reminder Name") },
+                    singleLine = true
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                TimePicker(state = timePickerState)
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                val hour = timePickerState.hour
+                val minute = timePickerState.minute
+                val amPm = if (hour < 12) "AM" else "PM"
+                val hour12 = when { hour == 0 -> 12; hour > 12 -> hour - 12; else -> hour }
+                val time = "${hour12.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} $amPm"
+                onConfirm(title, time)
+            }) { Text("OK") }
+        },
+        dismissButton = { TextButton(onClick = onCancel) { Text("Cancel") } }
+    )
 }
