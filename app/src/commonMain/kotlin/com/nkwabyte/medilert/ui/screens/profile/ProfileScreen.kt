@@ -1,5 +1,6 @@
 package com.nkwabyte.medilert.ui.screens.profile
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,13 +15,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nkwabyte.medilert.data.platform.decodeToImageBitmap
 import com.nkwabyte.medilert.model.UserRole
 import com.nkwabyte.medilert.navigation.*
 import com.nkwabyte.medilert.ui.screens.auth.AuthInputField
@@ -38,8 +42,9 @@ fun ProfileScreen(
     navViewModel: NavViewModel = viewModel { NavViewModel() },
     appViewModel: AppViewModel = viewModel { AppViewModel() }
 ) {
-    val currentUser by appViewModel.currentUser.collectAsState()
-    val userRole by appViewModel.userRole.collectAsState()
+    val currentUser      by appViewModel.currentUser.collectAsState()
+    val userRole         by appViewModel.userRole.collectAsState()
+    val photoBytes       by appViewModel.profilePhotoBytes.collectAsState()
     val isCaregiver = userRole != UserRole.PATIENT
 
     var fullName by remember { mutableStateOf("") }
@@ -123,10 +128,22 @@ fun ProfileScreen(
                 modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(top = 16.dp, bottom = 40.dp)
             ) {
                 Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                    val avatarBitmap = remember(photoBytes) { photoBytes?.decodeToImageBitmap() }
                     Box(
                         modifier = Modifier.size(100.dp).background(PrimaryGreen.copy(alpha = 0.15f), CircleShape).border(3.dp, PrimaryGreen.copy(alpha = 0.3f), CircleShape),
                         contentAlignment = Alignment.Center
-                    ) { Icon(Icons.Default.Person, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(52.dp)) }
+                    ) {
+                        if (avatarBitmap != null) {
+                            Image(
+                                bitmap = avatarBitmap,
+                                contentDescription = "Profile photo",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize().clip(CircleShape)
+                            )
+                        } else {
+                            Icon(Icons.Default.Person, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(52.dp))
+                        }
+                    }
 
                     Box(
                         modifier = Modifier.size(32.dp).align(Alignment.BottomEnd).background(PrimaryGreen, CircleShape).clickable { navViewModel.navigateTo(ProfilePhotoView) },

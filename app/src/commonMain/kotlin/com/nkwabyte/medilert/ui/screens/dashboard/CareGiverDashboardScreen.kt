@@ -32,6 +32,7 @@ import com.nkwabyte.medilert.generated.resources.Res
 import com.nkwabyte.medilert.generated.resources.img_auth_forgot
 import com.nkwabyte.medilert.generated.resources.img_auth_login
 import com.nkwabyte.medilert.generated.resources.img_auth_setup
+import com.nkwabyte.medilert.data.platform.decodeToImageBitmap
 import com.nkwabyte.medilert.model.DoseStatus
 import com.nkwabyte.medilert.model.User
 import com.nkwabyte.medilert.navigation.*
@@ -61,11 +62,13 @@ fun CareGiverDashboardScreen(
 ) {
     val activeTab by caregiverViewModel.activeTab.collectAsState()
     val currentUser by appViewModel.currentUser.collectAsState()
+    val photoBytes by appViewModel.profilePhotoBytes.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize().background(Background)) {
         when (activeTab) {
             DashboardTab.HOME -> CareGiverHomeContent(
                 user = currentUser,
+                photoBytes = photoBytes,
                 caregiverViewModel = caregiverViewModel,
                 onViewAll = { caregiverViewModel.setActiveTab(DashboardTab.HISTORY) },
                 onAddPatientClick = { navViewModel.navigateTo(CaregiverAddPatient) }
@@ -86,6 +89,7 @@ fun CareGiverDashboardScreen(
 @Composable
 fun CareGiverHomeContent(
     user: User = User(),
+    photoBytes: ByteArray? = null,
     caregiverViewModel: CaregiverViewModel = viewModel { CaregiverViewModel() },
     onViewAll: () -> Unit = {},
     onAddPatientClick: () -> Unit = {}
@@ -154,7 +158,8 @@ fun CareGiverHomeContent(
                                 )
                             )
                     )
-                    // Avatar with initials — top right
+                    // Avatar — photo if available, initials otherwise
+                    val avatarBitmap = remember(photoBytes) { photoBytes?.decodeToImageBitmap() }
                     Box(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
@@ -162,14 +167,24 @@ fun CareGiverHomeContent(
                             .padding(end = 24.dp, top = 14.dp)
                             .size(48.dp)
                             .background(Color.White.copy(alpha = 0.2f), CircleShape)
-                            .border(2.dp, Color.White.copy(alpha = 0.35f), CircleShape),
+                            .border(2.dp, Color.White.copy(alpha = 0.35f), CircleShape)
+                            .clip(CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            initials.ifEmpty { "?" },
-                            fontFamily = Poppins, fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp, color = Color.White
-                        )
+                        if (avatarBitmap != null) {
+                            Image(
+                                bitmap = avatarBitmap,
+                                contentDescription = "Profile photo",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        } else {
+                            Text(
+                                initials.ifEmpty { "?" },
+                                fontFamily = Poppins, fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp, color = Color.White
+                            )
+                        }
                     }
                     // Greeting + date — bottom left
                     Column(

@@ -32,11 +32,12 @@ fun ProfilePhotoViewScreen(
     navViewModel: NavViewModel = viewModel { NavViewModel() },
     appViewModel: AppViewModel = viewModel { AppViewModel() }
 ) {
-    val currentUser    by appViewModel.currentUser.collectAsState()
-    val isUploading    by appViewModel.isUploadingPhoto.collectAsState()
+    val currentUser      by appViewModel.currentUser.collectAsState()
+    val isUploading      by appViewModel.isUploadingPhoto.collectAsState()
+    val storedPhotoBytes by appViewModel.profilePhotoBytes.collectAsState()
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    // Bytes of the image just picked; null = show existing photo or placeholder
+    // Bytes of the image just picked; null = fall back to storedPhotoBytes or placeholder
     var localBytes by remember { mutableStateOf<ByteArray?>(null) }
 
     val picker = rememberImagePicker { bytes ->
@@ -44,7 +45,8 @@ fun ProfilePhotoViewScreen(
         appViewModel.uploadProfilePhoto(bytes)
     }
 
-    val hasPhoto = localBytes != null || currentUser.photoUrl.isNotBlank()
+    val displayBytes = localBytes ?: storedPhotoBytes
+    val hasPhoto = displayBytes != null || currentUser.photoUrl.isNotBlank()
 
     Box(modifier = Modifier.fillMaxSize().background(TextPrimary)) {
 
@@ -60,7 +62,7 @@ fun ProfilePhotoViewScreen(
 
         // ── Photo area ───────────────────────────────────────────────────────
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            val previewBitmap = remember(localBytes) { localBytes?.decodeToImageBitmap() }
+            val previewBitmap = remember(displayBytes) { displayBytes?.decodeToImageBitmap() }
 
             if (previewBitmap != null) {
                 Image(

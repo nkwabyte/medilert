@@ -6,9 +6,10 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.memcpy
 import kotlinx.cinterop.usePinned
 import org.jetbrains.skia.Image as SkiaImage
+import platform.darwin.NSObject
+import platform.posix.memcpy
 import platform.UIKit.*
 
 // Retained while a picker is active to prevent ARC from deallocating the delegate.

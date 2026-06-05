@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import com.nkwabyte.medilert.data.platform.decodeToImageBitmap
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
@@ -97,6 +98,7 @@ fun SettingsScreen(
 ) {
     val currentUser by appViewModel.currentUser.collectAsState()
     val userRole by appViewModel.userRole.collectAsState()
+    val photoBytes by appViewModel.profilePhotoBytes.collectAsState()
     val caregiver = isCaregiver || userRole == UserRole.DOCTOR || userRole == UserRole.PHARMACIST
     var remindersOn by remember { mutableStateOf(true) }
     var soundAlerts by remember { mutableStateOf(false) }
@@ -240,6 +242,7 @@ fun SettingsScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
+                        val avatarBitmap = remember(photoBytes) { photoBytes?.decodeToImageBitmap() }
                         Box(
                             modifier = Modifier
                                 .size(84.dp)
@@ -251,15 +254,25 @@ fun SettingsScreen(
                                     3.dp,
                                     Color.White.copy(alpha = 0.2f),
                                     RoundedCornerShape(24.dp)
-                                ),
+                                )
+                                .clip(RoundedCornerShape(24.dp)),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
-                                Icons.Default.Person,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.size(44.dp)
-                            )
+                            if (avatarBitmap != null) {
+                                Image(
+                                    bitmap = avatarBitmap,
+                                    contentDescription = "Profile photo",
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            } else {
+                                Icon(
+                                    Icons.Default.Person,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.size(44.dp)
+                                )
+                            }
                         }
 
                         Column(modifier = Modifier.weight(1f)) {

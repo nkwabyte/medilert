@@ -2,6 +2,10 @@ package com.nkwabyte.medilert.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nkwabyte.medilert.data.platform.clearProfilePhotoBytes
+import com.nkwabyte.medilert.data.platform.downloadImageBytes
+import com.nkwabyte.medilert.data.platform.loadProfilePhotoBytes
+import com.nkwabyte.medilert.data.platform.saveProfilePhotoBytes
 import com.nkwabyte.medilert.data.platform.uploadImageToCloudinary
 import com.nkwabyte.medilert.data.service.AuthService
 import com.nkwabyte.medilert.data.service.UserService
@@ -52,7 +56,13 @@ class AppViewModel(
     private val _isUploadingPhoto = MutableStateFlow(false)
     val isUploadingPhoto: StateFlow<Boolean> = _isUploadingPhoto.asStateFlow()
 
+    private val _profilePhotoBytes = MutableStateFlow<ByteArray?>(null)
+    val profilePhotoBytes: StateFlow<ByteArray?> = _profilePhotoBytes.asStateFlow()
+
     init {
+        // Restore photo from local cache immediately so it's available before auth resolves
+        _profilePhotoBytes.value = loadProfilePhotoBytes()
+
         viewModelScope.launch {
             authService.authStateFlow.collect { firebaseUser ->
                 _isLoggedIn.value = firebaseUser != null
@@ -67,6 +77,16 @@ class AppViewModel(
                 user?.let {
                     _currentUser.value = it
                     _userRole.value = it.role
+                    // Only try network download if no local cache exists
+                    if (it.photoUrl.isNotBlank() && _profilePhotoBytes.value == null) {
+                        viewModelScope.launch {
+                            val bytes = downloadImageBytes(it.photoUrl)
+                            if (bytes != null) {
+                                _profilePhotoBytes.value = bytes
+                                saveProfilePhotoBytes(bytes)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -150,9 +170,14 @@ class AppViewModel(
     fun uploadProfilePhoto(imageBytes: ByteArray) {
         viewModelScope.launch {
             _isUploadingPhoto.value = true
+            _profilePhotoBytes.value = imageBytes
+            saveProfilePhotoBytes(imageBytes)
             val url = uploadImageToCloudinary(imageBytes)
             if (url != null) {
                 userService.updateProfile(mapOf("photoUrl" to url))
+            } else {
+                _profilePhotoBytes.value = null
+                clearProfilePhotoBytes()
             }
             _isUploadingPhoto.value = false
         }
@@ -160,6 +185,8 @@ class AppViewModel(
 
     fun removeProfilePhoto() {
         viewModelScope.launch {
+            _profilePhotoBytes.value = null
+            clearProfilePhotoBytes()
             userService.updateProfile(mapOf("photoUrl" to ""))
         }
     }
@@ -174,6 +201,8 @@ class AppViewModel(
             _tempPin.value = ""
             _textSize.value = "Medium"
             _activeDashboardTab.value = DashboardTab.HOME
+            _profilePhotoBytes.value = null
+            clearProfilePhotoBytes()
             _isLoggedIn.value = false
         }
     }
