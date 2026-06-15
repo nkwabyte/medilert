@@ -91,7 +91,6 @@ import com.nkwabyte.medilert.ui.theme.Surface
 import com.nkwabyte.medilert.ui.theme.SurfaceVariant
 import com.nkwabyte.medilert.ui.theme.TextPrimary
 import com.nkwabyte.medilert.ui.theme.TextSecondary
-import com.nkwabyte.medilert.data.platform.decodeToImageBitmap
 import com.nkwabyte.medilert.util.GhanaianPhrases
 import com.nkwabyte.medilert.util.HapticFeedback
 import com.nkwabyte.medilert.viewmodel.AppViewModel
@@ -342,7 +341,6 @@ fun HomeTab(
                             .padding(horizontal = 24.dp, vertical = 20.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        val avatarBitmap = remember(photoBytes) { photoBytes?.decodeToImageBitmap() }
                         Box(
                             modifier = Modifier
                                 .size(52.dp)
@@ -352,9 +350,9 @@ fun HomeTab(
                                 .clickable { navViewModel.navigateTo(ProfilePage) },
                             contentAlignment = Alignment.Center
                         ) {
-                            if (avatarBitmap != null) {
-                                Image(
-                                    bitmap = avatarBitmap,
+                            if (photoBytes != null) {
+                                coil3.compose.AsyncImage(
+                                    model = photoBytes,
                                     contentDescription = "Profile photo",
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier.fillMaxSize()

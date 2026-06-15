@@ -2,8 +2,7 @@ package com.nkwabyte.medilert.data.platform
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.toComposeImageBitmap
+
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.usePinned
@@ -56,8 +55,6 @@ actual fun rememberImagePicker(onImagePicked: (ByteArray) -> Unit): ImagePicker 
     return picker
 }
 
-actual fun ByteArray.decodeToImageBitmap(): ImageBitmap =
-    SkiaImage.makeFromEncoded(this).toComposeImageBitmap()
 
 @Suppress("CONFLICTING_OVERLOADS")
 private class PickerDelegate(

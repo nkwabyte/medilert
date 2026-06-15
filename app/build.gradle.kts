@@ -71,6 +71,9 @@ kotlin {
 
             // Multiplatform Settings with no-arg factory (works on all platforms)
             implementation(libs.multiplatform.settings.no.arg)
+            
+            // Coil — Compose image loading
+            implementation(libs.coil.compose)
         }
 
         androidMain.dependencies {
@@ -95,8 +98,6 @@ kotlin {
             implementation(libs.androidx.credentials.play.services)
             implementation(libs.google.identity.googleid)
 
-            // Coil — Compose image loading (profile photos, etc.)
-            implementation(libs.coil.compose)
         }
 
         iosMain.dependencies {

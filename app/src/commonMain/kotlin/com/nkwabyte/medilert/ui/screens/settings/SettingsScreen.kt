@@ -23,7 +23,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import com.nkwabyte.medilert.data.platform.decodeToImageBitmap
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
@@ -244,7 +243,7 @@ fun SettingsScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        val avatarBitmap = remember(photoBytes) { photoBytes?.decodeToImageBitmap() }
+                        val avatarBitmap = photoBytes
                         Box(
                             modifier = Modifier
                                 .size(84.dp)
@@ -261,8 +260,8 @@ fun SettingsScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             if (avatarBitmap != null) {
-                                Image(
-                                    bitmap = avatarBitmap,
+                                coil3.compose.AsyncImage(
+                                    model = avatarBitmap,
                                     contentDescription = "Profile photo",
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier.fillMaxSize()

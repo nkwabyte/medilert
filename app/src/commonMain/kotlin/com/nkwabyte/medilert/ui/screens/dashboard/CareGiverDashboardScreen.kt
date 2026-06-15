@@ -32,7 +32,6 @@ import com.nkwabyte.medilert.generated.resources.Res
 import com.nkwabyte.medilert.generated.resources.img_auth_forgot
 import com.nkwabyte.medilert.generated.resources.img_auth_login
 import com.nkwabyte.medilert.generated.resources.img_auth_setup
-import com.nkwabyte.medilert.data.platform.decodeToImageBitmap
 import com.nkwabyte.medilert.model.DoseStatus
 import com.nkwabyte.medilert.model.User
 import com.nkwabyte.medilert.navigation.*
@@ -159,7 +158,6 @@ fun CareGiverHomeContent(
                             )
                     )
                     // Avatar — photo if available, initials otherwise
-                    val avatarBitmap = remember(photoBytes) { photoBytes?.decodeToImageBitmap() }
                     Box(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
@@ -171,9 +169,9 @@ fun CareGiverHomeContent(
                             .clip(CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
-                        if (avatarBitmap != null) {
-                            Image(
-                                bitmap = avatarBitmap,
+                        if (photoBytes != null) {
+                            coil3.compose.AsyncImage(
+                                model = photoBytes,
                                 contentDescription = "Profile photo",
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier.fillMaxSize()

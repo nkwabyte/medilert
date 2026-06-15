@@ -21,7 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.nkwabyte.medilert.data.platform.decodeToImageBitmap
 import com.nkwabyte.medilert.data.platform.rememberImagePicker
 import com.nkwabyte.medilert.ui.theme.*
 import com.nkwabyte.medilert.viewmodel.AppViewModel
@@ -40,7 +39,25 @@ fun ProfilePhotoViewScreen(
     // Bytes of the image just picked; null = fall back to storedPhotoBytes or placeholder
     var localBytes by remember { mutableStateOf<ByteArray?>(null) }
 
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
     val picker = rememberImagePicker { bytes ->
+        val maxSize = 20 * 1024 * 1024 // 20 MB limit
+        if (bytes.size > maxSize) {
+            errorMessage = "Image is too large. Please select an image under 20 MB."
+            return@rememberImagePicker
+        }
+
+        // Validate magic bytes for JPEG or PNG
+        val isJpeg = bytes.size > 2 && bytes[0] == 0xFF.toByte() && bytes[1] == 0xD8.toByte()
+        val isPng = bytes.size > 8 && bytes[0] == 0x89.toByte() && bytes[1] == 0x50.toByte() && bytes[2] == 0x4E.toByte() && bytes[3] == 0x47.toByte()
+
+        if (!isJpeg && !isPng) {
+            errorMessage = "Only JPEG and PNG images are allowed."
+            return@rememberImagePicker
+        }
+
+        errorMessage = null
         localBytes = bytes
         appViewModel.uploadProfilePhoto(bytes)
     }
@@ -62,11 +79,9 @@ fun ProfilePhotoViewScreen(
 
         // ── Photo area ───────────────────────────────────────────────────────
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            val previewBitmap = remember(displayBytes) { displayBytes?.decodeToImageBitmap() }
-
-            if (previewBitmap != null) {
-                Image(
-                    bitmap = previewBitmap,
+            if (displayBytes != null) {
+                coil3.compose.AsyncImage(
+                    model = displayBytes,
                     contentDescription = "Profile photo",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -197,6 +212,30 @@ fun ProfilePhotoViewScreen(
             dismissButton = {
                 OutlinedButton(onClick = { showDeleteDialog = false }) {
                     Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                }
+            },
+            shape = RoundedCornerShape(24.dp)
+        )
+    }
+
+    if (errorMessage != null) {
+        AlertDialog(
+            onDismissRequest = { errorMessage = null },
+            title = {
+                Text("Invalid Image", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = GhanaRed)
+            },
+            text = {
+                Text(
+                    errorMessage!!,
+                    fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = { errorMessage = null },
+                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen)
+                ) {
+                    Text("OK", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             shape = RoundedCornerShape(24.dp)

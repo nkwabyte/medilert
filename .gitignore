@@ -18,6 +18,7 @@ local.properties
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
+stack_trace.txt
 
 # ── Kotlin Multiplatform build artifacts ────────────────────────────────────
 .kotlin/

@@ -24,7 +24,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.nkwabyte.medilert.data.platform.decodeToImageBitmap
+
 import com.nkwabyte.medilert.model.UserRole
 import com.nkwabyte.medilert.navigation.*
 import com.nkwabyte.medilert.ui.screens.auth.AuthInputField
@@ -128,14 +128,13 @@ fun ProfileScreen(
                 modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(top = 16.dp, bottom = 40.dp)
             ) {
                 Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                    val avatarBitmap = remember(photoBytes) { photoBytes?.decodeToImageBitmap() }
                     Box(
                         modifier = Modifier.size(100.dp).background(PrimaryGreen.copy(alpha = 0.15f), CircleShape).border(3.dp, PrimaryGreen.copy(alpha = 0.3f), CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
-                        if (avatarBitmap != null) {
-                            Image(
-                                bitmap = avatarBitmap,
+                        if (photoBytes != null) {
+                            coil3.compose.AsyncImage(
+                                model = photoBytes,
                                 contentDescription = "Profile photo",
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier.fillMaxSize().clip(CircleShape)

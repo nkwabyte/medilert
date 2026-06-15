@@ -6,8 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
+
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.FileProvider
 import java.io.File
@@ -67,5 +66,3 @@ actual fun rememberImagePicker(onImagePicked: (ByteArray) -> Unit): ImagePicker 
     }
 }
 
-actual fun ByteArray.decodeToImageBitmap(): ImageBitmap =
-    BitmapFactory.decodeByteArray(this, 0, size).asImageBitmap()

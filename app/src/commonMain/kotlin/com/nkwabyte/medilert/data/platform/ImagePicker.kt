@@ -11,4 +11,3 @@ expect class ImagePicker {
 @Composable
 expect fun rememberImagePicker(onImagePicked: (ByteArray) -> Unit): ImagePicker
 
-expect fun ByteArray.decodeToImageBitmap(): ImageBitmap
