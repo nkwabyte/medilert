@@ -42,9 +42,9 @@ fun ProfilePhotoViewScreen(
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     val picker = rememberImagePicker { bytes ->
-        val maxSize = 20 * 1024 * 1024 // 20 MB limit
+        val maxSize = 2 * 1024 * 1024 // 2 MB limit
         if (bytes.size > maxSize) {
-            errorMessage = "Image is too large. Please select an image under 20 MB."
+            errorMessage = "Image is too large. Please select an image under 2 MB."
             return@rememberImagePicker
         }
 
