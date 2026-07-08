@@ -30,7 +30,9 @@ data class UserPreferences(
     val notificationsEnabled: Boolean = true,
     val soundEnabled: Boolean = true,
     val vibrationEnabled: Boolean = true,
-    val fontSize: String = "medium"
+    val fontSize: String = "medium",
+    val missedAlertsEnabled: Boolean = true,
+    val lowAdherenceEnabled: Boolean = true
 )
 
 @Serializable

@@ -127,7 +127,9 @@ class AppViewModel(
         theme: String? = null,
         language: String? = null,
         fontSize: String? = null,
-        voiceEnabled: Boolean? = null
+        voiceEnabled: Boolean? = null,
+        missedAlertsEnabled: Boolean? = null,
+        lowAdherenceEnabled: Boolean? = null
     ) {
         viewModelScope.launch {
             val updates = mutableMapOf<String, Any>()
@@ -138,6 +140,8 @@ class AppViewModel(
             language?.let { updates["preferences.language"] = it }
             fontSize?.let { updates["preferences.fontSize"] = it }
             voiceEnabled?.let { updates["preferences.voiceEnabled"] = it }
+            missedAlertsEnabled?.let { updates["preferences.missedAlertsEnabled"] = it }
+            lowAdherenceEnabled?.let { updates["preferences.lowAdherenceEnabled"] = it }
             if (updates.isNotEmpty()) userService.updateProfile(updates)
         }
     }

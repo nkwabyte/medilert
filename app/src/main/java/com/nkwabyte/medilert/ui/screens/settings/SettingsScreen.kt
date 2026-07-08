@@ -78,7 +78,9 @@ import com.nkwabyte.medilert.ui.theme.Surface
 import com.nkwabyte.medilert.ui.theme.TextPrimary
 import com.nkwabyte.medilert.ui.theme.TextSecondary
 import com.nkwabyte.medilert.viewmodel.AppViewModel
+import com.nkwabyte.medilert.viewmodel.AuthViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
+import com.nkwabyte.medilert.util.SoundPlayer
 
 @Composable
 fun SettingsScreen(
@@ -362,7 +364,12 @@ fun SettingsScreen(
                         rightElement = {
                             MedSwitch(
                                 checked = vibration,
-                                onCheckedChange = { vibration = it })
+                                onCheckedChange = { 
+                                    vibration = it 
+                                    if (it) {
+                                        com.nkwabyte.medilert.util.HapticFeedback.success()
+                                    }
+                                })
                         })
                     SettingsDivider()
                     SettingsRow(
@@ -544,7 +551,11 @@ fun SettingsScreen(
                                     else BorderLight,
                                     RoundedCornerShape(12.dp)
                                 )
-                                .clickable { selectedTone = tone; showToneDialog = false }
+                                .clickable { 
+                                    selectedTone = tone
+                                    showToneDialog = false 
+                                    SoundPlayer.playNotificationSound(tone)
+                                }
                                 .padding(horizontal = 16.dp, vertical = 14.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically

@@ -7,23 +7,31 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		092E624766FA5997EAEA4851 /* clear_announce_tones.wav in Resources */ = {isa = PBXBuildFile; fileRef = BF40B96CB1EACA33535D227F /* clear_announce_tones.wav */; };
 		22D30BD9166C8BCC23605852 /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A00CD5192F776C6B6961A8A /* Pods_iosApp.framework */; };
+		532E62D6FB45768256952300 /* bell_notification.wav in Resources */ = {isa = PBXBuildFile; fileRef = 08861869BDA9244A0084E03F /* bell_notification.wav */; };
+		5345F94F1198FC228885216D /* happy_bells_notification.wav in Resources */ = {isa = PBXBuildFile; fileRef = F6B99D4C4E33A87D0ECD0900 /* happy_bells_notification.wav */; };
 		AA00000001 /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000011 /* iOSApp.swift */; };
 		AA00000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000012 /* ContentView.swift */; };
 		AA00000003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA00000015 /* Assets.xcassets */; };
 		BC3DCBD52FC07AA700E6598A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BC3DCBD42FC07AA700E6598A /* GoogleService-Info.plist */; };
+		D46620BD507C8064FC9A9810 /* urgent_simple_tone_loop.wav in Resources */ = {isa = PBXBuildFile; fileRef = 964BD845E067A4EF613FD136 /* urgent_simple_tone_loop.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		01980011E13302BF9B8E7298 /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
+		08861869BDA9244A0084E03F /* bell_notification.wav */ = {isa = PBXFileReference; includeInIndex = 1; path = bell_notification.wav; sourceTree = "<group>"; };
 		2C1DB84EA6BE0C14E1151313 /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
 		4A00CD5192F776C6B6961A8A /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		964BD845E067A4EF613FD136 /* urgent_simple_tone_loop.wav */ = {isa = PBXFileReference; includeInIndex = 1; path = urgent_simple_tone_loop.wav; sourceTree = "<group>"; };
 		AA00000010 /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA00000011 /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
 		AA00000012 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AA00000014 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA00000015 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BC3DCBD42FC07AA700E6598A /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		BF40B96CB1EACA33535D227F /* clear_announce_tones.wav */ = {isa = PBXFileReference; includeInIndex = 1; path = clear_announce_tones.wav; sourceTree = "<group>"; };
+		F6B99D4C4E33A87D0ECD0900 /* happy_bells_notification.wav */ = {isa = PBXFileReference; includeInIndex = 1; path = happy_bells_notification.wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +52,18 @@
 				4A00CD5192F776C6B6961A8A /* Pods_iosApp.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		58BD246BF8C9EAAF142EECC6 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				964BD845E067A4EF613FD136 /* urgent_simple_tone_loop.wav */,
+				08861869BDA9244A0084E03F /* bell_notification.wav */,
+				BF40B96CB1EACA33535D227F /* clear_announce_tones.wav */,
+				F6B99D4C4E33A87D0ECD0900 /* happy_bells_notification.wav */,
+			);
+			name = Sounds;
+			path = Sounds;
 			sourceTree = "<group>";
 		};
 		8DF5BDDE4F37CF217FDC363F /* Pods */ = {
@@ -71,6 +91,7 @@
 				AA00000011 /* iOSApp.swift */,
 				AA00000012 /* ContentView.swift */,
 				AA00000014 /* Info.plist */,
+				58BD246BF8C9EAAF142EECC6 /* Sounds */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -147,6 +168,10 @@
 			files = (
 				AA00000003 /* Assets.xcassets in Resources */,
 				BC3DCBD52FC07AA700E6598A /* GoogleService-Info.plist in Resources */,
+				D46620BD507C8064FC9A9810 /* urgent_simple_tone_loop.wav in Resources */,
+				532E62D6FB45768256952300 /* bell_notification.wav in Resources */,
+				092E624766FA5997EAEA4851 /* clear_announce_tones.wav in Resources */,
+				5345F94F1198FC228885216D /* happy_bells_notification.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

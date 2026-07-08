@@ -88,6 +88,7 @@ import com.nkwabyte.medilert.ui.theme.TextSecondary
 import com.nkwabyte.medilert.viewmodel.AppViewModel
 import com.nkwabyte.medilert.viewmodel.AuthViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
+import com.nkwabyte.medilert.util.SoundPlayer
 
 @Composable
 fun SettingsScreen(
@@ -101,16 +102,16 @@ fun SettingsScreen(
     val userRole by appViewModel.userRole.collectAsState()
     val photoBytes by appViewModel.profilePhotoBytes.collectAsState()
     val caregiver = isCaregiver || userRole == UserRole.DOCTOR || userRole == UserRole.PHARMACIST
-    var remindersOn by remember { mutableStateOf(true) }
-    var soundAlerts by remember { mutableStateOf(false) }
-    var vibration by remember { mutableStateOf(true) }
+    val remindersOn = currentUser.preferences.notificationsEnabled
+    val soundAlerts = currentUser.preferences.soundEnabled
+    val vibration = currentUser.preferences.vibrationEnabled
     val darkMode by appViewModel.isDarkMode.collectAsState()
 
-    var missedAlerts by remember { mutableStateOf(true) }
-    var lowAdherence by remember { mutableStateOf(true) }
+    val missedAlerts = currentUser.preferences.missedAlertsEnabled
+    val lowAdherence = currentUser.preferences.lowAdherenceEnabled
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showToneDialog by remember { mutableStateOf(false) }
-    var selectedTone by remember { mutableStateOf("Default") }
+    var selectedTone by remember { mutableStateOf("Urgent Loop") }
 
 
     // Compute user display info
@@ -360,7 +361,7 @@ fun SettingsScreen(
                             rightElement = {
                                 MedSwitch(
                                     checked = missedAlerts,
-                                    onCheckedChange = { missedAlerts = it })
+                                    onCheckedChange = { appViewModel.updatePreferences(missedAlertsEnabled = it) })
                             })
                         SettingsDivider()
                         SettingsRow(
@@ -370,7 +371,7 @@ fun SettingsScreen(
                             rightElement = {
                                 MedSwitch(
                                     checked = lowAdherence,
-                                    onCheckedChange = { lowAdherence = it })
+                                    onCheckedChange = { appViewModel.updatePreferences(lowAdherenceEnabled = it) })
                             })
                     } else {
                         SettingsRow(
@@ -380,7 +381,7 @@ fun SettingsScreen(
                             rightElement = {
                                 MedSwitch(
                                     checked = remindersOn,
-                                    onCheckedChange = { remindersOn = it })
+                                    onCheckedChange = { appViewModel.updatePreferences(notificationsEnabled = it) })
                             })
                         SettingsDivider()
                     }
@@ -391,7 +392,7 @@ fun SettingsScreen(
                         rightElement = {
                             MedSwitch(
                                 checked = soundAlerts,
-                                onCheckedChange = { soundAlerts = it })
+                                onCheckedChange = { appViewModel.updatePreferences(soundEnabled = it) })
                         })
                     SettingsDivider()
                     SettingsRow(
@@ -401,7 +402,12 @@ fun SettingsScreen(
                         rightElement = {
                             MedSwitch(
                                 checked = vibration,
-                                onCheckedChange = { vibration = it })
+                                onCheckedChange = { 
+                                    appViewModel.updatePreferences(vibrationEnabled = it)
+                                    if (it) {
+                                        com.nkwabyte.medilert.util.HapticFeedback.success()
+                                    }
+                                })
                         })
                     SettingsDivider()
                     SettingsRow(
@@ -520,7 +526,7 @@ fun SettingsScreen(
     }
 
     if (showToneDialog) {
-        val tones = listOf("Default", "Bell", "Chime", "Ding", "Soft Alert")
+        val tones = listOf("Urgent Loop", "Bell", "Clear Tones", "Happy Bells")
         AlertDialog(
             onDismissRequest = { showToneDialog = false },
             containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
@@ -546,7 +552,11 @@ fun SettingsScreen(
                                     else BorderLight,
                                     RoundedCornerShape(12.dp)
                                 )
-                                .clickable { selectedTone = tone; showToneDialog = false }
+                                .clickable { 
+                                    selectedTone = tone
+                                    showToneDialog = false 
+                                    SoundPlayer.playNotificationSound(tone)
+                                }
                                 .padding(horizontal = 16.dp, vertical = 14.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically

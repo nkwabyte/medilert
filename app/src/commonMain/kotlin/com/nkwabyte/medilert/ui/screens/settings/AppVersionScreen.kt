@@ -29,6 +29,7 @@ import com.nkwabyte.medilert.generated.resources.img_splash
 import com.nkwabyte.medilert.generated.resources.logo
 import com.nkwabyte.medilert.ui.theme.*
 import com.nkwabyte.medilert.viewmodel.NavViewModel
+import com.nkwabyte.medilert.util.getPlatformName
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -122,7 +123,7 @@ fun AppVersionScreen(navViewModel: NavViewModel = viewModel { NavViewModel() }) 
                 listOf(
                     "Version"   to "1.0.0",
                     "Build"     to "2026.03.14",
-                    "Platform"  to "Android",
+                    "Platform"  to getPlatformName(),
                     "Developer" to "Nkwabyte Technologies",
                     "Contact"   to "support@medilert.com"
                 ).forEach { (label, value) ->

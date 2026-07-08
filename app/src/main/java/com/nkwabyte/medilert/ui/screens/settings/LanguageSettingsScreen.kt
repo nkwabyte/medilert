@@ -23,6 +23,7 @@ import com.nkwabyte.medilert.ui.screens.setup.LanguageOption
 import com.nkwabyte.medilert.ui.theme.*
 import com.nkwabyte.medilert.viewmodel.AppViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
+import android.widget.Toast
 
 private val languages = listOf(
     Triple("en", "English", "English"),
@@ -61,7 +62,13 @@ fun LanguageSettingsScreen(
                 Text("Select your language", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary)
                 Spacer(modifier = Modifier.height(24.dp))
                 languages.forEach { (code, name, native) ->
-                    LanguageOption(name = name, native = native, isSelected = selectedLang == code) { selectedLang = code }
+                    LanguageOption(name = name, native = native, isSelected = selectedLang == code) {
+                        if (code == "en") {
+                            selectedLang = code
+                        } else {
+                            Toast.makeText(context, "$name is coming soon", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                     Spacer(modifier = Modifier.height(12.dp))
                 }
             }

@@ -24,7 +24,10 @@ import com.nkwabyte.medilert.viewmodel.AppViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 
 private val languages = listOf(
-    Triple("en", "English", "English")
+    Triple("en", "English", "English"),
+    Triple("tw", "Akan / Twi", "Twi"),
+    Triple("ga", "Ga", "Ga"),
+    Triple("ee", "Ewe", "Ewe")
 )
 
 @Composable
@@ -34,6 +37,8 @@ fun LanguageSettingsScreen(
 ) {
     val currentLang by appViewModel.selectedLanguage.collectAsState()
     var selectedLang by remember { mutableStateOf(languages.firstOrNull { it.second == currentLang }?.first ?: "en") }
+    var showComingSoonDialog by remember { mutableStateOf(false) }
+    var comingSoonLangName by remember { mutableStateOf("") }
 
     Box(modifier = Modifier.fillMaxSize().background(Background)) {
         Box(modifier = Modifier.fillMaxWidth().height(200.dp).background(brush = Brush.verticalGradient(listOf(PrimaryGreen.copy(alpha = 0.05f), Color.Transparent))))
@@ -55,7 +60,14 @@ fun LanguageSettingsScreen(
                 Text("Select your language", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary)
                 Spacer(modifier = Modifier.height(24.dp))
                 languages.forEach { (code, name, native) ->
-                    LanguageOption(name = name, native = native, isSelected = selectedLang == code) { selectedLang = code }
+                    LanguageOption(name = name, native = native, isSelected = selectedLang == code) {
+                        if (code == "en") {
+                            selectedLang = code
+                        } else {
+                            comingSoonLangName = name
+                            showComingSoonDialog = true
+                        }
+                    }
                     Spacer(modifier = Modifier.height(12.dp))
                 }
             }
@@ -80,5 +92,21 @@ fun LanguageSettingsScreen(
             }
         }
         Box(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp).width(140.dp).height(5.dp).background(Divider, RoundedCornerShape(50.dp)))
+
+        if (showComingSoonDialog) {
+            AlertDialog(
+                onDismissRequest = { showComingSoonDialog = false },
+                title = { Text("Coming Soon", fontFamily = Poppins, fontWeight = FontWeight.Bold) },
+                text = { Text("$comingSoonLangName is coming soon and will be available in a future update.", fontFamily = Poppins) },
+                confirmButton = {
+                    TextButton(onClick = { showComingSoonDialog = false }) {
+                        Text("OK", color = PrimaryGreen, fontFamily = Poppins, fontWeight = FontWeight.Bold)
+                    }
+                },
+                containerColor = Surface,
+                titleContentColor = TextPrimary,
+                textContentColor = TextSecondary
+            )
+        }
     }
 }
