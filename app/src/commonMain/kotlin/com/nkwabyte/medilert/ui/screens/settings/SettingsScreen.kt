@@ -528,7 +528,10 @@ fun SettingsScreen(
     if (showToneDialog) {
         val tones = listOf("Urgent Loop", "Bell", "Clear Tones", "Happy Bells")
         AlertDialog(
-            onDismissRequest = { showToneDialog = false },
+            onDismissRequest = { 
+                SoundPlayer.stopNotificationSound()
+                showToneDialog = false 
+            },
             containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
             title = {
                 Text("Notification Tone", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
@@ -554,7 +557,6 @@ fun SettingsScreen(
                                 )
                                 .clickable { 
                                     selectedTone = tone
-                                    showToneDialog = false 
                                     SoundPlayer.playNotificationSound(tone)
                                 }
                                 .padding(horizontal = 16.dp, vertical = 14.dp),
@@ -580,9 +582,19 @@ fun SettingsScreen(
                     }
                 }
             },
-            confirmButton = {},
+            confirmButton = {
+                androidx.compose.material3.TextButton(onClick = { 
+                    SoundPlayer.stopNotificationSound()
+                    showToneDialog = false 
+                }) {
+                    Text("OK", fontFamily = Poppins, fontWeight = FontWeight.Bold, color = PrimaryGreen)
+                }
+            },
             dismissButton = {
-                androidx.compose.material3.TextButton(onClick = { showToneDialog = false }) {
+                androidx.compose.material3.TextButton(onClick = { 
+                    SoundPlayer.stopNotificationSound()
+                    showToneDialog = false 
+                }) {
                     Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary)
                 }
             },

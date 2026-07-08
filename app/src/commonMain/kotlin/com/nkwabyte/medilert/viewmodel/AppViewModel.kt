@@ -142,6 +142,21 @@ class AppViewModel(
             voiceEnabled?.let { updates["preferences.voiceEnabled"] = it }
             missedAlertsEnabled?.let { updates["preferences.missedAlertsEnabled"] = it }
             lowAdherenceEnabled?.let { updates["preferences.lowAdherenceEnabled"] = it }
+
+            val currentPrefs = _currentUser.value.preferences
+            val updatedPrefs = currentPrefs.copy(
+                notificationsEnabled = notificationsEnabled ?: currentPrefs.notificationsEnabled,
+                soundEnabled = soundEnabled ?: currentPrefs.soundEnabled,
+                vibrationEnabled = vibrationEnabled ?: currentPrefs.vibrationEnabled,
+                theme = theme ?: currentPrefs.theme,
+                language = language ?: currentPrefs.language,
+                fontSize = fontSize ?: currentPrefs.fontSize,
+                voiceEnabled = voiceEnabled ?: currentPrefs.voiceEnabled,
+                missedAlertsEnabled = missedAlertsEnabled ?: currentPrefs.missedAlertsEnabled,
+                lowAdherenceEnabled = lowAdherenceEnabled ?: currentPrefs.lowAdherenceEnabled
+            )
+            _currentUser.value = _currentUser.value.copy(preferences = updatedPrefs)
+
             if (updates.isNotEmpty()) userService.updateProfile(updates)
         }
     }

@@ -5,6 +5,8 @@ import com.nkwabyte.medilert.MedilertApplication
 import com.nkwabyte.medilert.R
 
 actual object SoundPlayer {
+    private var currentPlayer: MediaPlayer? = null
+
     actual fun playNotificationSound(tone: String) {
         try {
             val resId = when (tone) {
@@ -15,21 +17,31 @@ actual object SoundPlayer {
                 else -> R.raw.urgent_simple_tone_loop
             }
             val context = MedilertApplication.appContext
+            
+            stopNotificationSound()
             val mediaPlayer = MediaPlayer.create(context, resId)
+            currentPlayer = mediaPlayer
             mediaPlayer?.isLooping = true
             mediaPlayer?.start()
 
             // Stop and release after 30 seconds
             android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                try {
-                    if (mediaPlayer?.isPlaying == true) {
-                        mediaPlayer.stop()
-                    }
-                    mediaPlayer?.release()
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                if (currentPlayer == mediaPlayer) {
+                    stopNotificationSound()
                 }
             }, 30000)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    actual fun stopNotificationSound() {
+        try {
+            if (currentPlayer?.isPlaying == true) {
+                currentPlayer?.stop()
+            }
+            currentPlayer?.release()
+            currentPlayer = null
         } catch (e: Exception) {
             e.printStackTrace()
         }

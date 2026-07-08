@@ -35,13 +35,17 @@ actual object SoundPlayer {
                 val delayTime = dispatch_time(DISPATCH_TIME_NOW, 30_000_000_000)
                 dispatch_after(delayTime, dispatch_get_main_queue()) {
                     if (currentPlayer == player) {
-                        currentPlayer?.stop()
-                        currentPlayer = null
+                        stopNotificationSound()
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
+    }
+
+    actual fun stopNotificationSound() {
+        currentPlayer?.stop()
+        currentPlayer = null
     }
 }
