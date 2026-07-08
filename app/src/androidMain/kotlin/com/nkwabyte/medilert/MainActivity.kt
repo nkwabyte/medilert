@@ -1,5 +1,10 @@
 package com.nkwabyte.medilert
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.media.AudioAttributes
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,10 +25,31 @@ import com.nkwabyte.medilert.viewmodel.AppViewModel
 
 class MainActivity : ComponentActivity() {
 
+    private fun createNotificationChannel() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val channel = NotificationChannel(
+                "medilert_reminders",
+                "Medication Reminders",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply { 
+                description = "Reminders to take your medication on time" 
+                val soundUri = Uri.parse("android.resource://$packageName/${R.raw.urgent_simple_tone_loop}")
+                val audioAttributes = AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                    .build()
+                setSound(soundUri, audioAttributes)
+            }
+            manager.createNotificationChannel(channel)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        createNotificationChannel()
 
         AndroidActivityHolder.activity = this
 
