@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.medication
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -155,14 +157,14 @@ fun MedicationHistoryScreen(
                             .padding(horizontal = 24.dp, vertical = 20.dp)
                     ) {
                         Text(
-                            "History",
+                            "History".tr(),
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Bold,
                             fontSize = 28.sp,
                             color = Color.White
                         )
                         Text(
-                            "Your medication journey",
+                            "Your medication journey".tr(),
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Normal,
                             fontSize = 13.sp,
@@ -186,14 +188,14 @@ fun MedicationHistoryScreen(
                     ) {
                         Column {
                             Text(
-                                "Weekly",
+                                "Weekly".tr(),
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 18.sp,
                                 color = Color.White.copy(alpha = 0.9f)
                             )
                             Text(
-                                "adherence",
+                                "adherence".tr(),
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 18.sp,
@@ -277,7 +279,7 @@ fun MedicationHistoryScreen(
                         .padding(horizontal = 24.dp),
                     placeholder = {
                         Text(
-                            "Search medications...",
+                            "Search medications...".tr(),
                             fontFamily = Poppins,
                             fontSize = 14.sp,
                             color = TextHint
@@ -472,12 +474,12 @@ fun MedicationHistoryScreen(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen)
                 ) {
-                    Text("OK", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                    Text("OK".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             dismissButton = {
                 OutlinedButton(onClick = { showDatePicker = false }) {
-                    Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                    Text("Cancel".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             shape = RoundedCornerShape(24.dp)

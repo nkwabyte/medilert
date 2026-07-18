@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.auth
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -179,9 +181,9 @@ fun SignUpScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text("Create Account", fontFamily = Poppins, fontWeight = FontWeight.Bold,
+            Text("Create Account".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold,
                 fontSize = 28.sp, color = TextPrimary)
-            Text("Join us and take control of your health",
+            Text("Join us and take control of your health".tr(),
                 fontFamily = Poppins, fontWeight = FontWeight.Normal,
                 fontSize = 14.sp, color = TextSecondary)
 
@@ -264,7 +266,7 @@ fun SignUpScreen(
                     if (uiState.isLoading) {
                         CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                     } else {
-                        Text("Get Started", fontFamily = Poppins, fontWeight = FontWeight.Bold,
+                        Text("Get Started".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold,
                             fontSize = 18.sp, color = Color.White)
                     }
                 }
@@ -274,7 +276,7 @@ fun SignUpScreen(
 
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                 HorizontalDivider(modifier = Modifier.weight(1f), color = BorderMedium)
-                Text("  Or sign up with  ", fontFamily = Poppins, fontWeight = FontWeight.Medium,
+                Text("  Or sign up with  ".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium,
                     fontSize = 13.sp, color = TextSecondary)
                 HorizontalDivider(modifier = Modifier.weight(1f), color = BorderMedium)
             }
@@ -300,7 +302,7 @@ fun SignUpScreen(
                     Image(painter = painterResource(Res.drawable.ic_google),
                         contentDescription = "Google", modifier = Modifier.size(24.dp))
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text("Continue with Google", fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
+                    Text("Continue with Google".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp, color = TextPrimary)
                 }
             }

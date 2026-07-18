@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.profile
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -117,7 +119,7 @@ fun ProfilePhotoViewScreen(
         // ── Upload status label ───────────────────────────────────────────────
         if (isUploading) {
             Text(
-                "Uploading…",
+                "Uploading…".tr(),
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Medium,
                 fontSize = 13.sp,
@@ -152,7 +154,7 @@ fun ProfilePhotoViewScreen(
                 ) {
                     Icon(Icons.Default.CameraAlt, contentDescription = null, modifier = Modifier.size(20.dp))
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Camera", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
+                    Text("Camera".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
                 }
                 Button(
                     onClick = { picker.pickFromGallery() },
@@ -163,7 +165,7 @@ fun ProfilePhotoViewScreen(
                 ) {
                     Icon(Icons.Default.Image, contentDescription = null, modifier = Modifier.size(20.dp))
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Gallery", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
+                    Text("Gallery".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
                 }
             }
 
@@ -178,7 +180,7 @@ fun ProfilePhotoViewScreen(
                 ) {
                     Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(20.dp))
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Remove Photo", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
+                    Text("Remove Photo".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
                 }
             }
         }
@@ -188,11 +190,11 @@ fun ProfilePhotoViewScreen(
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
             title = {
-                Text("Remove Photo", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text("Remove Photo".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             },
             text = {
                 Text(
-                    "Are you sure you want to remove your profile photo?",
+                    "Are you sure you want to remove your profile photo?".tr(),
                     fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp
                 )
             },
@@ -206,12 +208,12 @@ fun ProfilePhotoViewScreen(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = GhanaRed)
                 ) {
-                    Text("Remove", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                    Text("Remove".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             dismissButton = {
                 OutlinedButton(onClick = { showDeleteDialog = false }) {
-                    Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                    Text("Cancel".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             shape = RoundedCornerShape(24.dp)
@@ -222,7 +224,7 @@ fun ProfilePhotoViewScreen(
         AlertDialog(
             onDismissRequest = { errorMessage = null },
             title = {
-                Text("Invalid Image", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = GhanaRed)
+                Text("Invalid Image".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = GhanaRed)
             },
             text = {
                 Text(
@@ -235,7 +237,7 @@ fun ProfilePhotoViewScreen(
                     onClick = { errorMessage = null },
                     colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen)
                 ) {
-                    Text("OK", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                    Text("OK".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             shape = RoundedCornerShape(24.dp)

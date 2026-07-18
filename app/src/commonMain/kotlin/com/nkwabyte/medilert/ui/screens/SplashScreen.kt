@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -191,7 +193,7 @@ fun SplashScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                "Managing your health,\none reminder at a time.",
+                "Managing your health,\none reminder at a time.".tr(),
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp,
@@ -203,7 +205,7 @@ fun SplashScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                "Stay on track with your medications and\nnever miss a dose again.",
+                "Stay on track with your medications and\nnever miss a dose again.".tr(),
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Normal,
                 fontSize = 14.sp,
@@ -238,7 +240,7 @@ fun SplashScreen(
                             contentPadding = PaddingValues(0.dp)
                         ) {
                             Text(
-                                "GET STARTED",
+                                "GET STARTED".tr(),
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp,
@@ -272,7 +274,7 @@ fun SplashScreen(
 
                         // Privacy note
                         Text(
-                            "By proceeding, you agree to our Terms and Privacy Policy.",
+                            "By proceeding, you agree to our Terms and Privacy Policy.".tr(),
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Normal,
                             fontSize = 11.sp,

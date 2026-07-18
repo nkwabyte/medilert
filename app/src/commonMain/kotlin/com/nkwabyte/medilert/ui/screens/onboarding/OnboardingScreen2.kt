@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.onboarding
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -127,7 +129,7 @@ fun OnboardingScreen2(navViewModel: NavViewModel = viewModel { NavViewModel() })
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                "Track Your Progress",
+                "Track Your Progress".tr(),
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp,
@@ -139,7 +141,7 @@ fun OnboardingScreen2(navViewModel: NavViewModel = viewModel { NavViewModel() })
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                "Monitor your medication adherence, view history\nand stay on top of your health journey.",
+                "Monitor your medication adherence, view history\nand stay on top of your health journey.".tr(),
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Normal,
                 fontSize = 15.sp,
@@ -163,7 +165,7 @@ fun OnboardingScreen2(navViewModel: NavViewModel = viewModel { NavViewModel() })
                 contentPadding = PaddingValues(0.dp)
             ) {
                 Text(
-                    "GET STARTED",
+                    "GET STARTED".tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
@@ -175,7 +177,7 @@ fun OnboardingScreen2(navViewModel: NavViewModel = viewModel { NavViewModel() })
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                "Back",
+                "Back".tr(),
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 15.sp,

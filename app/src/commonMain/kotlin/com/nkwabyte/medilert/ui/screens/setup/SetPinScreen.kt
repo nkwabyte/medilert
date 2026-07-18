@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.setup
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -101,7 +103,7 @@ fun SetPinScreen(
                 }
 
                 Text(
-                    "Skip",
+                    "Skip".tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,
@@ -120,7 +122,7 @@ fun SetPinScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    "Set PIN",
+                    "Set PIN".tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
@@ -129,7 +131,7 @@ fun SetPinScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    "Create a 4-digit PIN to secure your account",
+                    "Create a 4-digit PIN to secure your account".tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 15.sp,
@@ -160,7 +162,7 @@ fun SetPinScreen(
                 )
 
                 Text(
-                    "Use your device keyboard to enter PIN",
+                    "Use your device keyboard to enter PIN".tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 13.sp,
@@ -191,7 +193,7 @@ fun SetPinScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = GhanaYellow)
                 ) {
                     Text(
-                        "Continue",
+                        "Continue".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 20.sp,

@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.auth
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -61,13 +63,13 @@ fun NewPasswordScreen(navViewModel: NavViewModel = viewModel { NavViewModel() })
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            "Set New Password",
+            "Set New Password".tr(),
             fontFamily = Poppins, fontWeight = FontWeight.Bold,
             fontSize = 28.sp, color = TextPrimary
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            "Your new password must be different from previous passwords",
+            "Your new password must be different from previous passwords".tr(),
             fontFamily = Poppins, fontWeight = FontWeight.Normal,
             fontSize = 14.sp, color = TextSecondary, lineHeight = 22.sp
         )
@@ -118,7 +120,7 @@ fun NewPasswordScreen(navViewModel: NavViewModel = viewModel { NavViewModel() })
                     .background(Brush.horizontalGradient(listOf(PrimaryGreen, MediumGreen)), RoundedCornerShape(24.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Reset Password", fontFamily = Poppins, fontWeight = FontWeight.Bold,
+                Text("Reset Password".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold,
                     fontSize = 18.sp, color = Color.White)
             }
         }

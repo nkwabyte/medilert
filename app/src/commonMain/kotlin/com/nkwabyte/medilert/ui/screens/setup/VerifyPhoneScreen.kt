@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.setup
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -102,10 +104,10 @@ fun VerifyPhoneScreen(
         ) {
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text("Verify Phone", fontFamily = Poppins, fontWeight = FontWeight.Bold,
+            Text("Verify Phone".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold,
                 fontSize = 28.sp, color = TextPrimary)
             Spacer(modifier = Modifier.height(8.dp))
-            Text("We'll send a verification code to your phone number",
+            Text("We'll send a verification code to your phone number".tr(),
                 fontFamily = Poppins, fontWeight = FontWeight.Normal,
                 fontSize = 15.sp, color = TextSecondary, lineHeight = 23.sp)
 
@@ -148,7 +150,7 @@ fun VerifyPhoneScreen(
                     if (uiState.isLoading) {
                         CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                     } else {
-                        Text("Send Code", fontFamily = Poppins, fontWeight = FontWeight.Bold,
+                        Text("Send Code".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold,
                             fontSize = 18.sp, color = Color.White)
                     }
                 }

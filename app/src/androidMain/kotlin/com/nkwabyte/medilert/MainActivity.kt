@@ -69,14 +69,19 @@ class MainActivity : ComponentActivity() {
             val appViewModel: AppViewModel = viewModel { AppViewModel() }
             val isDarkMode by appViewModel.isDarkMode.collectAsState()
             val fontScale  by appViewModel.fontScale.collectAsState()
+            val selectedLanguage by appViewModel.selectedLanguage.collectAsState()
 
             MedilertTheme(darkTheme = isDarkMode, fontScale = fontScale) {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .safeDrawingPadding()
+                androidx.compose.runtime.CompositionLocalProvider(
+                    com.nkwabyte.medilert.util.LocalAppLanguage provides selectedLanguage
                 ) {
-                    AppNavigation()
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .safeDrawingPadding()
+                    ) {
+                        AppNavigation()
+                    }
                 }
             }
         }

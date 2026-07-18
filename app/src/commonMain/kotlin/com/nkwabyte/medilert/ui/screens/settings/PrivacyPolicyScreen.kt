@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.settings
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -83,14 +85,14 @@ fun PrivacyPolicyScreen(navViewModel: NavViewModel = viewModel { NavViewModel() 
                         .padding(horizontal = 24.dp, vertical = 20.dp)
                 ) {
                     Text(
-                        "Privacy Policy",
+                        "Privacy Policy".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
                         fontSize = 28.sp,
                         color = Color.White
                     )
                     Text(
-                        "Your data, protected",
+                        "Your data, protected".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Normal,
                         fontSize = 13.sp,

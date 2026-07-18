@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.profile
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -120,7 +122,7 @@ fun ProfileScreen(
                     modifier = Modifier.size(40.dp).background(Surface, CircleShape).border(1.dp, BorderLight, CircleShape).clickable { navViewModel.popBack() },
                     contentAlignment = Alignment.Center
                 ) { Icon(Icons.Default.ChevronLeft, contentDescription = "Back", tint = TextPrimary) }
-                Text("Edit Profile", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 20.sp, color = TextPrimary)
+                Text("Edit Profile".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 20.sp, color = TextPrimary)
                 Spacer(modifier = Modifier.size(40.dp))
             }
 
@@ -179,7 +181,7 @@ fun ProfileScreen(
 
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "Date of Birth",
+                        "Date of Birth".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -219,7 +221,7 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text("Gender", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
+                    Text("Gender".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         listOf("Male", "Female", "Other").forEach { option ->
                             Box(
@@ -290,12 +292,12 @@ fun ProfileScreen(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen)
                 ) {
-                    Text("OK", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                    Text("OK".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             dismissButton = {
                 OutlinedButton(onClick = { showDatePicker = false }) {
-                    Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                    Text("Cancel".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             shape = RoundedCornerShape(24.dp)

@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.setup
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -110,7 +112,7 @@ fun ConfirmPinScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    "Confirm PIN",
+                    "Confirm PIN".tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
@@ -119,7 +121,7 @@ fun ConfirmPinScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    "Re-enter your 4-digit PIN to confirm",
+                    "Re-enter your 4-digit PIN to confirm".tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 15.sp,
@@ -163,7 +165,7 @@ fun ConfirmPinScreen(
                 )
 
                 Text(
-                    "Use your device keyboard to enter PIN",
+                    "Use your device keyboard to enter PIN".tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 13.sp,
@@ -197,7 +199,7 @@ fun ConfirmPinScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = GhanaYellow)
                 ) {
                     Text(
-                        "Confirm",
+                        "Confirm".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 20.sp,

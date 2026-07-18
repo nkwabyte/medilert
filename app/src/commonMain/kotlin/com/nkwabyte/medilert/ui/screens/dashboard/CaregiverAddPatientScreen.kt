@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.dashboard
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -158,7 +160,7 @@ fun CaregiverAddPatientScreen(
                         }
                     }
                     Text(
-                        "Add Patient",
+                        "Add Patient".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
@@ -175,7 +177,7 @@ fun CaregiverAddPatientScreen(
                         .padding(horizontal = 24.dp),
                     placeholder = {
                         Text(
-                            "Search by name, phone or email",
+                            "Search by name, phone or email".tr(),
                             fontFamily = Poppins,
                             color = TextHint,
                             fontSize = 13.sp
@@ -363,7 +365,7 @@ private fun SearchPromptState(modifier: Modifier = Modifier) {
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            "Search for a Patient",
+            "Search for a Patient".tr(),
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
             fontSize = 16.sp,
@@ -371,7 +373,7 @@ private fun SearchPromptState(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.height(6.dp))
         Text(
-            "Type a patient's name or phone number above to find and add them.",
+            "Type a patient's name or phone number above to find and add them.".tr(),
             fontFamily = Poppins,
             fontWeight = FontWeight.Medium,
             fontSize = 13.sp,
@@ -403,7 +405,7 @@ private fun EmptyPatientSearchState(query: String = "", modifier: Modifier = Mod
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            "No patients found",
+            "No patients found".tr(),
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
             fontSize = 16.sp,

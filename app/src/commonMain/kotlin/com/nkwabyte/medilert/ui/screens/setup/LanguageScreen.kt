@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.setup
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -47,9 +49,9 @@ fun LanguageScreen(
                 ) { Icon(Icons.Default.ChevronLeft, contentDescription = "Back", tint = TextPrimary) }
             }
             Column(modifier = Modifier.weight(1f).padding(horizontal = 24.dp)) {
-                Text("Select Language", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 28.sp, color = TextPrimary)
+                Text("Select Language".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 28.sp, color = TextPrimary)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("Choose your preferred language", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary)
+                Text("Choose your preferred language".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary)
                 Spacer(modifier = Modifier.height(32.dp))
                 languages.forEach { (code, name, native) ->
                     LanguageOption(name = name, native = native, isSelected = selectedLang == code) {
@@ -65,7 +67,7 @@ fun LanguageScreen(
                     modifier = Modifier.fillMaxWidth().height(60.dp),
                     shape = RoundedCornerShape(50.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = GhanaYellow),
-                ) { Text("Continue", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = TextPrimary) }
+                ) { Text("Continue".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = TextPrimary) }
             }
         }
         Box(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp).width(140.dp).height(5.dp).background(Divider, RoundedCornerShape(50.dp)))

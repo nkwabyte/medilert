@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.medication
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -124,7 +126,7 @@ fun AddMedicationStep3Screen(
                     .padding(horizontal = 24.dp).padding(bottom = 120.dp)
             ) {
                 Text(
-                    "Set reminder times",
+                    "Set reminder times".tr(),
                     fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 24.sp, color = TextPrimary,
                     textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 8.dp)
                 )
@@ -153,7 +155,7 @@ fun AddMedicationStep3Screen(
                     ) {
                         Icon(Icons.Default.Add, contentDescription = "Add", tint = PrimaryGreen)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Add Reminder", color = PrimaryGreen)
+                        Text("Add Reminder".tr(), color = PrimaryGreen)
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                     Button(
@@ -163,7 +165,7 @@ fun AddMedicationStep3Screen(
                     ) {
                         Icon(Icons.Default.Remove, contentDescription = "Remove", tint = GhanaRed)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Remove", color = GhanaRed)
+                        Text("Remove".tr(), color = GhanaRed)
                     }
                 }
 
@@ -174,8 +176,8 @@ fun AddMedicationStep3Screen(
                     horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
-                        Text("Take with food", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, color = TextPrimary)
-                        Text("Medication should be taken with meals", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 12.sp, color = TextSecondary)
+                        Text("Take with food".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, color = TextPrimary)
+                        Text("Medication should be taken with meals".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 12.sp, color = TextSecondary)
                     }
                     Switch(checked = withFood, onCheckedChange = { withFood = it }, colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = PrimaryGreen))
                 }
@@ -190,7 +192,7 @@ fun AddMedicationStep3Screen(
                     modifier = Modifier.fillMaxWidth().height(60.dp),
                     shape = RoundedCornerShape(50.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = GhanaYellow)
-                ) { Text("Continue", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = TextPrimary) }
+                ) { Text("Continue".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = TextPrimary) }
             }
         }
 
@@ -256,7 +258,7 @@ fun TimeSlotCard(label: String, time: String, onClick: () -> Unit) {
         Box(
             modifier = Modifier.background(PrimaryGreen.copy(alpha = 0.1f), RoundedCornerShape(10.dp)).padding(horizontal = 12.dp, vertical = 6.dp)
         ) {
-            Text("Change", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = PrimaryGreen)
+            Text("Change".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = PrimaryGreen)
         }
     }
 }
@@ -273,13 +275,13 @@ fun EditReminderDialog(
 
     AlertDialog(
         onDismissRequest = onCancel,
-        title = { Text("Edit Reminder") },
+        title = { Text("Edit Reminder".tr()) },
         text = {
             Column {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("Reminder Name") },
+                    label = { Text("Reminder Name".tr()) },
                     singleLine = true
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -294,8 +296,8 @@ fun EditReminderDialog(
                 val hour12 = when { hour == 0 -> 12; hour > 12 -> hour - 12; else -> hour }
                 val time = "${hour12.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} $amPm"
                 onConfirm(title, time)
-            }) { Text("OK") }
+            }) { Text("OK".tr()) }
         },
-        dismissButton = { TextButton(onClick = onCancel) { Text("Cancel") } }
+        dismissButton = { TextButton(onClick = onCancel) { Text("Cancel".tr()) } }
     )
 }

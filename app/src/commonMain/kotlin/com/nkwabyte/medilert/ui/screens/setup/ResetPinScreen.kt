@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.setup
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -116,7 +118,7 @@ fun ResetPinScreen(navViewModel: NavViewModel = viewModel { NavViewModel() }) {
                 )
 
                 Text(
-                    "Use your device keyboard to enter PIN",
+                    "Use your device keyboard to enter PIN".tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 13.sp,

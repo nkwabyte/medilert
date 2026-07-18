@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.reminder
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -73,12 +75,12 @@ fun ReminderScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            Text("Vitamin C", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 40.sp, color = textColor)
-            Text("500 mg • 1 Tablet", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 18.sp, color = textColor.copy(alpha = 0.85f))
+            Text("Vitamin C".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 40.sp, color = textColor)
+            Text("500 mg • 1 Tablet".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 18.sp, color = textColor.copy(alpha = 0.85f))
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text("Everyday", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = textColor.copy(alpha = 0.7f))
+            Text("Everyday".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = textColor.copy(alpha = 0.7f))
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -91,11 +93,11 @@ fun ReminderScreen(
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-            Text("4 pills left", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp, color = textColor.copy(alpha = 0.7f))
+            Text("4 pills left".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp, color = textColor.copy(alpha = 0.7f))
 
             if (type != "afternoon") {
                 Spacer(modifier = Modifier.height(12.dp))
-                Text("Side effects: abdominal pain", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 13.sp, color = textColor.copy(alpha = 0.7f),
+                Text("Side effects: abdominal pain".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 13.sp, color = textColor.copy(alpha = 0.7f),
                     modifier = Modifier.background(textColor.copy(alpha = 0.15f), RoundedCornerShape(8.dp)).padding(horizontal = 12.dp, vertical = 6.dp))
             }
         }
@@ -112,7 +114,7 @@ fun ReminderScreen(
             ) {
                 Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(20.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Mark as Taken", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text("Mark as Taken".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
 
             OutlinedButton(
@@ -124,7 +126,7 @@ fun ReminderScreen(
             ) {
                 Icon(Icons.Default.Snooze, contentDescription = null, modifier = Modifier.size(20.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Snooze 5 min", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+                Text("Snooze 5 min".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
             }
         }
     }

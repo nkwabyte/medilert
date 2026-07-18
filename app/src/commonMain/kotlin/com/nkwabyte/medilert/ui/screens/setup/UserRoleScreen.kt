@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.setup
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -102,10 +104,10 @@ fun UserRoleScreen(
     ) {
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text("I am a...", fontFamily = Poppins, fontWeight = FontWeight.Bold,
+        Text("I am a...".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold,
             fontSize = 28.sp, color = TextPrimary)
         Spacer(modifier = Modifier.height(4.dp))
-        Text("Select your role to personalize your experience",
+        Text("Select your role to personalize your experience".tr(),
             fontFamily = Poppins, fontWeight = FontWeight.Normal,
             fontSize = 14.sp, color = TextSecondary)
 
@@ -167,7 +169,7 @@ fun UserRoleScreen(
             shape = RoundedCornerShape(50.dp),
             colors = ButtonDefaults.buttonColors(containerColor = GhanaYellow)
         ) {
-            Text("Continue", fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
+            Text("Continue".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp, color = TextPrimary)
         }
     }
@@ -187,7 +189,7 @@ private fun LicenseInfoBanner() {
             tint = PrimaryGreen, modifier = Modifier.size(20.dp))
         Spacer(modifier = Modifier.width(12.dp))
         Text(
-            "Your professional credentials may be verified before patient access is granted.",
+            "Your professional credentials may be verified before patient access is granted.".tr(),
             fontFamily = Poppins, fontWeight = FontWeight.Medium,
             fontSize = 12.sp, color = PrimaryGreen
         )

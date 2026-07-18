@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.onboarding
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -126,7 +128,7 @@ fun OnboardingScreen1(navViewModel: NavViewModel = viewModel { NavViewModel() })
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                "Never Miss a Dose",
+                "Never Miss a Dose".tr(),
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp,
@@ -138,7 +140,7 @@ fun OnboardingScreen1(navViewModel: NavViewModel = viewModel { NavViewModel() })
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                "Set smart reminders for your medications\nand get notified at the right time, every time.",
+                "Set smart reminders for your medications\nand get notified at the right time, every time.".tr(),
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Normal,
                 fontSize = 15.sp,
@@ -159,7 +161,7 @@ fun OnboardingScreen1(navViewModel: NavViewModel = viewModel { NavViewModel() })
                 contentPadding = PaddingValues(0.dp)
             ) {
                 Text(
-                    "NEXT",
+                    "NEXT".tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
@@ -171,7 +173,7 @@ fun OnboardingScreen1(navViewModel: NavViewModel = viewModel { NavViewModel() })
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                "Skip",
+                "Skip".tr(),
                 fontFamily = Poppins,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 15.sp,

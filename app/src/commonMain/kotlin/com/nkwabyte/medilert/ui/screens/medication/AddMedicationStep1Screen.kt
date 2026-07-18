@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.medication
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -75,7 +77,7 @@ fun AddMedicationStep1Screen(
                     .padding(horizontal = 24.dp).padding(bottom = 120.dp)
             ) {
                 Text(
-                    "What medication do you want to add?",
+                    "What medication do you want to add?".tr(),
                     fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 24.sp, color = TextPrimary,
                     textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 32.dp)
                 )
@@ -89,7 +91,7 @@ fun AddMedicationStep1Screen(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text("Unit Type", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
+                    Text("Unit Type".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
                     Box(
                         modifier = Modifier.fillMaxWidth().height(64.dp)
                             .background(Surface, RoundedCornerShape(20.dp)).border(1.dp, BorderLight, RoundedCornerShape(20.dp))
@@ -119,7 +121,7 @@ fun AddMedicationStep1Screen(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text("Choose an Icon", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
+                    Text("Choose an Icon".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         medicationIcons.forEachIndexed { idx, icon ->
                             Box(
@@ -145,7 +147,7 @@ fun AddMedicationStep1Screen(
                     modifier = Modifier.fillMaxWidth().height(60.dp),
                     shape = RoundedCornerShape(50.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = GhanaYellow)
-                ) { Text("Continue", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = TextPrimary) }
+                ) { Text("Continue".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = TextPrimary) }
             }
         }
 

@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.setup
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -43,9 +45,9 @@ fun ForgetPinScreen(navViewModel: NavViewModel = viewModel { NavViewModel() }) {
                     contentAlignment = Alignment.Center
                 ) { Icon(Icons.Default.LockOpen, contentDescription = null, tint = GhanaRed, modifier = Modifier.size(40.dp)) }
                 Spacer(modifier = Modifier.height(24.dp))
-                Text("Forgot PIN?", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 28.sp, color = TextPrimary, textAlign = TextAlign.Center)
+                Text("Forgot PIN?".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 28.sp, color = TextPrimary, textAlign = TextAlign.Center)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("Enter your phone number to receive a recovery code", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary, textAlign = TextAlign.Center)
+                Text("Enter your phone number to receive a recovery code".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary, textAlign = TextAlign.Center)
                 Spacer(modifier = Modifier.height(40.dp))
                 AuthInputField(
                     label = "Phone Number", value = phone, onValueChange = { phone = it },
@@ -64,7 +66,7 @@ fun ForgetPinScreen(navViewModel: NavViewModel = viewModel { NavViewModel() }) {
                     Box(
                         modifier = Modifier.fillMaxSize().background(brush = Brush.horizontalGradient(listOf(PrimaryGreen, MediumGreen)), shape = RoundedCornerShape(24.dp)),
                         contentAlignment = Alignment.Center
-                    ) { Text("Send Recovery Code", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White) }
+                    ) { Text("Send Recovery Code".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White) }
                 }
             }
         }

@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.settings
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -94,14 +96,14 @@ fun AppVersionScreen(navViewModel: NavViewModel = viewModel { NavViewModel() }) 
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        "Medilert",
+                        "Medilert".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
                         fontSize = 22.sp,
                         color = Color.White
                     )
                     Text(
-                        "Your Medication Companion",
+                        "Your Medication Companion".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Normal,
                         fontSize = 13.sp,
@@ -147,7 +149,7 @@ fun AppVersionScreen(navViewModel: NavViewModel = viewModel { NavViewModel() }) 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
-                    "© 2026 Nkwabyte Technologies. All rights reserved.",
+                    "© 2026 Nkwabyte Technologies. All rights reserved.".tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp,

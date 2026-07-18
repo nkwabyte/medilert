@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.medication
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -106,9 +108,9 @@ fun AddMedicationStep4Screen(
                         if (datePickerTarget == "start") startDate = selectedDate else endDate = selectedDate
                     }
                     showDatePicker = false
-                }) { Text("OK") }
+                }) { Text("OK".tr()) }
             },
-            dismissButton = { TextButton(onClick = { showDatePicker = false }) { Text("Cancel") } }
+            dismissButton = { TextButton(onClick = { showDatePicker = false }) { Text("Cancel".tr()) } }
         ) { DatePicker(state = datePickerState) }
     }
 
@@ -136,14 +138,14 @@ fun AddMedicationStep4Screen(
                     .padding(horizontal = 24.dp).padding(bottom = 120.dp)
             ) {
                 Text(
-                    "Additional Details",
+                    "Additional Details".tr(),
                     fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 24.sp, color = TextPrimary,
                     textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 24.dp)
                 )
 
                 // Start Date
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text("Start Date", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
+                    Text("Start Date".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
                     Box(
                         modifier = Modifier.fillMaxWidth().height(64.dp)
                             .background(Surface, RoundedCornerShape(20.dp)).border(1.dp, BorderLight, RoundedCornerShape(20.dp))
@@ -162,7 +164,7 @@ fun AddMedicationStep4Screen(
 
                 // End Date
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text("End Date (Optional)", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
+                    Text("End Date (Optional)".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
                     Box(
                         modifier = Modifier.fillMaxWidth().height(64.dp)
                             .background(Surface, RoundedCornerShape(20.dp)).border(1.dp, BorderLight, RoundedCornerShape(20.dp))
@@ -181,7 +183,7 @@ fun AddMedicationStep4Screen(
 
                 // Current Supply
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text("Current Supply (pills)", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
+                    Text("Current Supply (pills)".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth().background(Surface, RoundedCornerShape(20.dp)).border(1.dp, BorderLight, RoundedCornerShape(20.dp)).padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
@@ -204,11 +206,11 @@ fun AddMedicationStep4Screen(
 
                 // Side Effects
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text("Known Side Effects", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
+                    Text("Known Side Effects".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
                     OutlinedTextField(
                         value = sideEffects, onValueChange = { sideEffects = it },
                         modifier = Modifier.fillMaxWidth().height(100.dp),
-                        placeholder = { Text("E.g. nausea, dizziness", fontFamily = Poppins, color = TextHint, fontSize = 14.sp) },
+                        placeholder = { Text("E.g. nausea, dizziness".tr(), fontFamily = Poppins, color = TextHint, fontSize = 14.sp) },
                         shape = RoundedCornerShape(20.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             unfocusedContainerColor = Surface, focusedContainerColor = Surface,
@@ -221,11 +223,11 @@ fun AddMedicationStep4Screen(
 
                 // Notes
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text("Notes", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
+                    Text("Notes".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
                     OutlinedTextField(
                         value = notes, onValueChange = { notes = it },
                         modifier = Modifier.fillMaxWidth().height(100.dp),
-                        placeholder = { Text("Any additional notes...", fontFamily = Poppins, color = TextHint, fontSize = 14.sp) },
+                        placeholder = { Text("Any additional notes...".tr(), fontFamily = Poppins, color = TextHint, fontSize = 14.sp) },
                         shape = RoundedCornerShape(20.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             unfocusedContainerColor = Surface, focusedContainerColor = Surface,
@@ -256,7 +258,7 @@ fun AddMedicationStep4Screen(
                         ),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("Save Medication", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 20.sp, color = Color.White)
+                        Text("Save Medication".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 20.sp, color = Color.White)
                     }
                 }
             }

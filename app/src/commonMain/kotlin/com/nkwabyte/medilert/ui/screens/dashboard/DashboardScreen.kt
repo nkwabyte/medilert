@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.dashboard
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -404,14 +406,14 @@ fun HomeTab(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "This Week",
+                        "This Week".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 17.sp,
                         color = TextPrimary
                     )
                     Text(
-                        "View all",
+                        "View all".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 13.sp,
@@ -1060,7 +1062,7 @@ private fun SessionHeader(
             )
         }
         Text(
-            "Edit",
+            "Edit".tr(),
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
             fontSize = 13.sp,
@@ -1105,7 +1107,7 @@ private fun DoseUpdateDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(
-                    "How was this dose?",
+                    "How was this dose?".tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 14.sp,
@@ -1127,7 +1129,7 @@ private fun DoseUpdateDialog(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(Icons.Default.CheckCircle, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(18.dp))
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text("Taken", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = PrimaryGreen)
+                            Text("Taken".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = PrimaryGreen)
                         }
                     }
                     Box(
@@ -1142,7 +1144,7 @@ private fun DoseUpdateDialog(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(Icons.Default.Cancel, contentDescription = null, tint = GhanaRed, modifier = Modifier.size(18.dp))
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text("Missed", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = GhanaRed)
+                            Text("Missed".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = GhanaRed)
                         }
                     }
                     Box(
@@ -1157,7 +1159,7 @@ private fun DoseUpdateDialog(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(Icons.Default.Schedule, contentDescription = null, tint = GhanaYellowDark, modifier = Modifier.size(18.dp))
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text("Skipped", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = GhanaYellowDark)
+                            Text("Skipped".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = GhanaYellowDark)
                         }
                     }
                 }
@@ -1177,7 +1179,7 @@ private fun DoseUpdateDialog(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Icon(Icons.Default.Edit, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(16.dp))
-                        Text("Edit Medication Details", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = PrimaryGreen)
+                        Text("Edit Medication Details".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = PrimaryGreen)
                     }
                 }
             }
@@ -1185,7 +1187,7 @@ private fun DoseUpdateDialog(
         confirmButton = {},
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary)
+                Text("Cancel".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary)
             }
         }
     )

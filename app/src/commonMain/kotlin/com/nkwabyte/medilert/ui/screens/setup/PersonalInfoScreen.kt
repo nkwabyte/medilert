@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.setup
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -98,10 +100,10 @@ fun PersonalInfoScreen(
     ) {
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text("Personal Info", fontFamily = Poppins, fontWeight = FontWeight.Bold,
+        Text("Personal Info".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold,
             fontSize = 28.sp, color = TextPrimary)
         Spacer(modifier = Modifier.height(4.dp))
-        Text("Tell us a bit about yourself", fontFamily = Poppins, fontWeight = FontWeight.Normal,
+        Text("Tell us a bit about yourself".tr(), fontFamily = Poppins, fontWeight = FontWeight.Normal,
             fontSize = 14.sp, color = TextSecondary)
 
         Spacer(modifier = Modifier.height(28.dp))
@@ -116,14 +118,14 @@ fun PersonalInfoScreen(
 
         // Date of birth
         Column(modifier = Modifier.fillMaxWidth()) {
-            Text("Date of Birth", fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
+            Text("Date of Birth".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp, color = TextPrimary,
                 modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
             OutlinedTextField(
                 value = dob, onValueChange = { },
                 readOnly = true,
                 placeholder = {
-                    Text("DD/MM/YYYY", fontFamily = Poppins, fontSize = 15.sp,
+                    Text("DD/MM/YYYY".tr(), fontFamily = Poppins, fontSize = 15.sp,
                         color = TextSecondary.copy(alpha = 0.6f))
                 },
                 leadingIcon = {
@@ -149,7 +151,7 @@ fun PersonalInfoScreen(
 
         // Gender selector
         Column(modifier = Modifier.fillMaxWidth()) {
-            Text("Gender", fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
+            Text("Gender".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp, color = TextPrimary,
                 modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -199,7 +201,7 @@ fun PersonalInfoScreen(
             shape = RoundedCornerShape(50.dp),
             colors = ButtonDefaults.buttonColors(containerColor = GhanaYellow)
         ) {
-            Text("Continue", fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
+            Text("Continue".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp, color = TextPrimary)
         }
     }
@@ -209,12 +211,12 @@ fun PersonalInfoScreen(
             onDismissRequest = { showDatePicker = false },
             confirmButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text("OK", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, color = PrimaryGreen)
+                    Text("OK".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, color = PrimaryGreen)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary)
+                    Text("Cancel".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary)
                 }
             },
             colors = DatePickerDefaults.colors(containerColor = Surface)

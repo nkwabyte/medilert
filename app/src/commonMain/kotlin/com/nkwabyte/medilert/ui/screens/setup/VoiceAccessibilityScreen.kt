@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.setup
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -56,10 +58,10 @@ fun VoiceAccessibilityScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(32.dp))
-                Text("Voice Accessibility", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 28.sp, color = TextPrimary, textAlign = TextAlign.Center)
+                Text("Voice Accessibility".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 28.sp, color = TextPrimary, textAlign = TextAlign.Center)
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    "Enable voice alerts so Medilert can read your medication reminders aloud",
+                    "Enable voice alerts so Medilert can read your medication reminders aloud".tr(),
                     fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp,
                     color = TextSecondary, textAlign = TextAlign.Center
                 )
@@ -77,7 +79,7 @@ fun VoiceAccessibilityScreen(
                     modifier = Modifier.fillMaxWidth().height(60.dp),
                     shape = RoundedCornerShape(50.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = GhanaYellow)
-                ) { Text("Continue", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = TextPrimary) }
+                ) { Text("Continue".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = TextPrimary) }
             }
         }
         Box(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp).width(140.dp).height(5.dp).background(Divider, RoundedCornerShape(50.dp)))

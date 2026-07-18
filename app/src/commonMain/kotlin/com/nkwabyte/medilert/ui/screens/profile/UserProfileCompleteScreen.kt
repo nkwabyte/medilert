@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.profile
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -92,7 +94,7 @@ fun UserProfileCompleteScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            "You're All Set!",
+            "You're All Set!".tr(),
             fontFamily = Poppins, fontWeight = FontWeight.Bold,
             fontSize = 30.sp, color = TextPrimary,
             textAlign = TextAlign.Center,

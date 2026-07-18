@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.settings
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -52,12 +54,12 @@ fun LanguageSettingsScreen(
                     modifier = Modifier.size(40.dp).background(Surface, CircleShape).border(1.dp, BorderLight, CircleShape).clickable { navViewModel.popBack() },
                     contentAlignment = Alignment.Center
                 ) { Icon(Icons.Default.ChevronLeft, contentDescription = "Back", tint = TextPrimary) }
-                Text("Language", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 20.sp, color = TextPrimary)
+                Text("Language".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 20.sp, color = TextPrimary)
                 Spacer(modifier = Modifier.size(40.dp))
             }
 
             Column(modifier = Modifier.weight(1f).padding(horizontal = 24.dp).padding(top = 16.dp)) {
-                Text("Select your language", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary)
+                Text("Select your language".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary)
                 Spacer(modifier = Modifier.height(24.dp))
                 languages.forEach { (code, name, native) ->
                     LanguageOption(name = name, native = native, isSelected = selectedLang == code) {
@@ -87,7 +89,7 @@ fun LanguageSettingsScreen(
                     Box(
                         modifier = Modifier.fillMaxSize().background(brush = Brush.horizontalGradient(listOf(PrimaryGreen, MediumGreen)), shape = RoundedCornerShape(50.dp)),
                         contentAlignment = Alignment.Center
-                    ) { Text("Save", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White) }
+                    ) { Text("Save".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White) }
                 }
             }
         }
@@ -96,11 +98,11 @@ fun LanguageSettingsScreen(
         if (showComingSoonDialog) {
             AlertDialog(
                 onDismissRequest = { showComingSoonDialog = false },
-                title = { Text("Coming Soon", fontFamily = Poppins, fontWeight = FontWeight.Bold) },
+                title = { Text("Coming Soon".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold) },
                 text = { Text("$comingSoonLangName is coming soon and will be available in a future update.", fontFamily = Poppins) },
                 confirmButton = {
                     TextButton(onClick = { showComingSoonDialog = false }) {
-                        Text("OK", color = PrimaryGreen, fontFamily = Poppins, fontWeight = FontWeight.Bold)
+                        Text("OK".tr(), color = PrimaryGreen, fontFamily = Poppins, fontWeight = FontWeight.Bold)
                     }
                 },
                 containerColor = Surface,

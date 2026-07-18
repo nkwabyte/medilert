@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.settings
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -202,7 +204,7 @@ fun SettingsScreen(
                         Spacer(modifier = Modifier.size(40.dp))
                     }
                     Text(
-                        "Settings",
+                        "Settings".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
@@ -498,11 +500,11 @@ fun SettingsScreen(
         AlertDialog(
             onDismissRequest = { showLogoutDialog = false },
             title = {
-                Text("Log Out", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text("Log Out".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             },
             text = {
                 Text(
-                    "Are you sure you want to log out of Medilert?",
+                    "Are you sure you want to log out of Medilert?".tr(),
                     fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp
                 )
             },
@@ -513,12 +515,12 @@ fun SettingsScreen(
                     authViewModel.resetState()
                     navViewModel.navigateAndClearStack(Login)
                 }, colors = ButtonDefaults.buttonColors(containerColor = GhanaRed)) {
-                    Text("Log Out", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                    Text("Log Out".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             dismissButton = {
                 OutlinedButton(onClick = { showLogoutDialog = false }) {
-                    Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                    Text("Cancel".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             shape = RoundedCornerShape(24.dp)
@@ -534,7 +536,7 @@ fun SettingsScreen(
             },
             containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
             title = {
-                Text("Notification Tone", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text("Notification Tone".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             },
             text = {
                 androidx.compose.foundation.layout.Column(
@@ -587,7 +589,7 @@ fun SettingsScreen(
                     SoundPlayer.stopNotificationSound()
                     showToneDialog = false 
                 }) {
-                    Text("OK", fontFamily = Poppins, fontWeight = FontWeight.Bold, color = PrimaryGreen)
+                    Text("OK".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, color = PrimaryGreen)
                 }
             },
             dismissButton = {
@@ -595,7 +597,7 @@ fun SettingsScreen(
                     SoundPlayer.stopNotificationSound()
                     showToneDialog = false 
                 }) {
-                    Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary)
+                    Text("Cancel".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary)
                 }
             },
             shape = RoundedCornerShape(24.dp)

@@ -1,5 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.medication
 
+import com.nkwabyte.medilert.util.tr
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -190,12 +192,12 @@ fun EditMedicationScreen(
                         showDatePicker = false
                     }
                 ) {
-                    Text("OK")
+                    Text("OK".tr())
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text("Cancel")
+                    Text("Cancel".tr())
                 }
             }
         ) {
@@ -264,7 +266,7 @@ fun EditMedicationScreen(
                 }
 
                 Text(
-                    "Edit Medication",
+                    "Edit Medication".tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
@@ -305,7 +307,7 @@ fun EditMedicationScreen(
                 // Dose
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "Dose Amount",
+                        "Dose Amount".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -358,7 +360,7 @@ fun EditMedicationScreen(
                 // Frequency
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "Frequency",
+                        "Frequency".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -416,7 +418,7 @@ fun EditMedicationScreen(
                 // Start Date
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "Start Date",
+                        "Start Date".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -451,7 +453,7 @@ fun EditMedicationScreen(
                 // End Date
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "End Date (Optional)",
+                        "End Date (Optional)".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -485,7 +487,7 @@ fun EditMedicationScreen(
 
                 // Reminder times
                 Text(
-                    "Reminder Times",
+                    "Reminder Times".tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 14.sp,
@@ -509,7 +511,7 @@ fun EditMedicationScreen(
 
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "Notes",
+                        "Notes".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -524,7 +526,7 @@ fun EditMedicationScreen(
                             .height(100.dp),
                         placeholder = {
                             Text(
-                                "Add notes...",
+                                "Add notes...".tr(),
                                 fontFamily = Poppins,
                                 color = TextHint
                             )
@@ -595,7 +597,7 @@ fun EditMedicationScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        "Save Changes",
+                        "Save Changes".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
@@ -620,7 +622,7 @@ fun EditMedicationScreen(
             onDismissRequest = { showDeleteDialog = false },
             title = {
                 Text(
-                    "Delete Medication",
+                    "Delete Medication".tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
@@ -628,7 +630,7 @@ fun EditMedicationScreen(
             },
             text = {
                 Text(
-                    "Are you sure you want to delete this medication? This action cannot be undone.",
+                    "Are you sure you want to delete this medication? This action cannot be undone.".tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 14.sp
@@ -643,13 +645,13 @@ fun EditMedicationScreen(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = GhanaRed)
                 ) {
-                    Text("Delete", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                    Text("Delete".tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             dismissButton = {
                 OutlinedButton(onClick = { showDeleteDialog = false }) {
                     Text(
-                        "Cancel",
+                        "Cancel".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold
                     )
