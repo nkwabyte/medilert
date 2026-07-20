@@ -194,7 +194,7 @@ fun CareGiverHomeContent(
                             .padding(horizontal = 24.dp, vertical = 20.dp)
                     ) {
                         Text(
-                            "Hi, $firstName 👋",
+                            "Hi, ".tr() + "$firstName 👋",
                             fontFamily = Poppins, fontWeight = FontWeight.Bold,
                             fontSize = 22.sp, color = Color.White
                         )
@@ -277,7 +277,7 @@ fun CareGiverHomeContent(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                "$patientFirstName's Week",
+                                "$patientFirstName " + "Week".tr(),
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp,
@@ -331,7 +331,7 @@ fun CareGiverHomeContent(
                             Box(modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp)) {
                             Column {
                                 Text(
-                                    "$dayLabel's adherence",
+                                    "${dayLabel.tr()} " + "adherence".tr(),
                                     fontFamily = Poppins,
                                     fontWeight = FontWeight.Medium,
                                     fontSize = 14.sp,
@@ -345,7 +345,7 @@ fun CareGiverHomeContent(
                                     color = Color.White
                                 )
                                 Text(
-                                    "${selectedDateStats.taken} of ${selectedDateStats.total} doses taken",
+                                    "${selectedDateStats.taken} of ${selectedDateStats.total}" + " doses taken".tr(),
                                     fontFamily = Poppins,
                                     fontWeight = FontWeight.Medium,
                                     fontSize = 14.sp,
@@ -377,7 +377,7 @@ fun CareGiverHomeContent(
                         ) {
                             HomeDailyStatCard(
                                 value = "${selectedDateStats.taken}",
-                                label = "Taken",
+                                label = "Taken".tr(),
                                 valueColor = PrimaryGreen,
                                 containerColor = PrimaryGreen.copy(alpha = 0.08f),
                                 icon = Icons.Default.CheckCircle,
@@ -386,7 +386,7 @@ fun CareGiverHomeContent(
                             )
                             HomeDailyStatCard(
                                 value = "${selectedDateStats.missed}",
-                                label = "Missed",
+                                label = "Missed".tr(),
                                 valueColor = GhanaRed,
                                 containerColor = GhanaRed.copy(alpha = 0.08f),
                                 icon = Icons.Default.Cancel,
@@ -395,7 +395,7 @@ fun CareGiverHomeContent(
                             )
                             HomeDailyStatCard(
                                 value = "${selectedDateStats.upcoming}",
-                                label = "Upcoming",
+                                label = "Upcoming".tr(),
                                 valueColor = Color(0xFF4A9EFF),
                                 containerColor = Color(0xFF4A9EFF).copy(alpha = 0.08f),
                                 icon = Icons.Default.Schedule,
@@ -413,7 +413,7 @@ fun CareGiverHomeContent(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                "$dayLabel's schedule",
+                                "${dayLabel.tr()} " + "schedule".tr(),
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp,
@@ -437,7 +437,7 @@ fun CareGiverHomeContent(
                 if (todayScheduleEnriched.isEmpty()) {
                     item {
                         Text(
-                            "No doses scheduled for ${selectedDayDisplay.first.lowercase()}",
+                            "No doses scheduled for ".tr() + dayLabel.tr().lowercase(),
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Medium,
                             fontSize = 14.sp,
@@ -467,7 +467,7 @@ fun CareGiverHomeContent(
                                         .background(headerColor, CircleShape)
                                 )
                                 Text(
-                                    title,
+                                    title.tr(),
                                     fontFamily = Poppins,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 14.sp,
@@ -623,7 +623,7 @@ private fun HistoryPatientListScreen(
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Text(
-                        "${filtered.size} patient${if (filtered.size != 1) "s" else ""}",
+                        "${filtered.size}" + " patient(s)".tr(),
                         fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
                         fontSize = 13.sp, color = TextSecondary,
                         modifier = Modifier.padding(horizontal = 24.dp)
@@ -644,7 +644,7 @@ private fun HistoryPatientListScreen(
                             )
                             Spacer(modifier = Modifier.height(12.dp))
                             Text(
-                                "No patients match \".tr()$searchQuery\"",
+                                "No patients match ".tr() + "\"$searchQuery\"",
                                 fontFamily = Poppins, fontWeight = FontWeight.Medium,
                                 fontSize = 14.sp, color = TextSecondary, textAlign = TextAlign.Center
                             )
@@ -787,7 +787,7 @@ private fun HistoryPatientDetailScreen(
                         Text("Weekly".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 18.sp, color = Color.White.copy(alpha = 0.9f))
                         Text("adherence".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 18.sp, color = Color.White.copy(alpha = 0.9f))
                         Text("${weeklyStats.adherence}%", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 64.sp, color = Color.White)
-                        Text("${weeklyStats.taken} of ${weeklyStats.total} doses taken this week", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp, color = Color.White.copy(alpha = 0.8f))
+                        Text("${weeklyStats.taken} of ${weeklyStats.total}" + " doses taken".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp, color = Color.White.copy(alpha = 0.8f))
                     }
                     Box(modifier = Modifier.size(120.dp).align(Alignment.CenterEnd), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator(
@@ -809,9 +809,9 @@ private fun HistoryPatientDetailScreen(
                     modifier = Modifier.padding(horizontal = 24.dp).fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    HistoryStatCard("${weeklyStats.taken}", "Taken", PrimaryGreen, modifier = Modifier.weight(1f))
-                    HistoryStatCard("${weeklyStats.missed}", "Missed", GhanaRed, modifier = Modifier.weight(1f))
-                    HistoryStatCard("${weeklyStats.upcoming}", "Upcoming", Color(0xFF4A9EFF), modifier = Modifier.weight(1f))
+                    HistoryStatCard("${weeklyStats.taken}", "Taken".tr(), PrimaryGreen, modifier = Modifier.weight(1f))
+                    HistoryStatCard("${weeklyStats.missed}", "Missed".tr(), GhanaRed, modifier = Modifier.weight(1f))
+                    HistoryStatCard("${weeklyStats.upcoming}", "Upcoming".tr(), Color(0xFF4A9EFF), modifier = Modifier.weight(1f))
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -851,7 +851,7 @@ private fun HistoryPatientDetailScreen(
                         FilterChip(
                             selected = selectedFilter == filter,
                             onClick = { selectedFilter = filter },
-                            label = { Text(filter, fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 13.sp) },
+                            label = { Text(filter.tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 13.sp) },
                             colors = FilterChipDefaults.filterChipColors(
                                 selectedContainerColor = PrimaryGreen, selectedLabelColor = Color.White,
                                 containerColor = Surface, labelColor = TextSecondary
@@ -868,7 +868,7 @@ private fun HistoryPatientDetailScreen(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
-                    "Results (${filteredHistory.size})",
+                    "Results ".tr() + "(${filteredHistory.size})",
                     fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp, color = TextPrimary,
                     modifier = Modifier.padding(horizontal = 24.dp)
@@ -987,7 +987,7 @@ private fun WeekCalendarStrip(
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
-                    day.dayLabel,
+                    day.dayLabel.tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 11.sp,
@@ -1195,7 +1195,7 @@ private fun NoPatientsHomeState(onAddPatientClick: () -> Unit = {}) {
         )
         Spacer(modifier = Modifier.height(6.dp))
         Text(
-            "Tap \".tr()+ Add\" above to link a patient and start monitoring their medication adherence.",
+            "Tap \"+ Add\" above to link a patient and start monitoring their medication adherence.".tr(),
             fontFamily = Poppins, fontWeight = FontWeight.Medium,
             fontSize = 13.sp, color = TextSecondary, textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -1222,7 +1222,7 @@ private fun NoPatientsState() {
         Text("No Patients Yet".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 22.sp, color = TextPrimary, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            "Use \".tr()+ Add\" on the Home tab to link a patient and start monitoring their adherence.",
+            "Use \"+ Add\" on the Home tab to link a patient and start monitoring their adherence.".tr(),
             fontFamily = Poppins, fontWeight = FontWeight.Medium,
             fontSize = 14.sp, color = TextSecondary, textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 16.dp)

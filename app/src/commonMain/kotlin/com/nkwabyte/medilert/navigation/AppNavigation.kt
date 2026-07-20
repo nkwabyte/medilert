@@ -39,12 +39,24 @@ import com.nkwabyte.medilert.ui.screens.setup.VerifyPhoneScreen
 import com.nkwabyte.medilert.ui.screens.setup.VoiceAccessibilityScreen
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 
-@Composable
-fun AppNavigation(navViewModel: NavViewModel = viewModel { NavViewModel() }) {
-    val backStack = navViewModel.backStack
-    val current = backStack.lastOrNull() ?: Splash
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.CompositionLocalProvider
+import com.nkwabyte.medilert.util.LocalAppLanguage
+import com.nkwabyte.medilert.viewmodel.AppViewModel
 
-    Crossfade(targetState = current, label = "nav") { destination ->
+@Composable
+fun AppNavigation(
+    navViewModel: NavViewModel = viewModel { NavViewModel() },
+    appViewModel: AppViewModel = viewModel { AppViewModel() }
+) {
+    val currentLang by appViewModel.selectedLanguage.collectAsState()
+
+    CompositionLocalProvider(LocalAppLanguage provides currentLang) {
+        val backStack = navViewModel.backStack
+        val current = backStack.lastOrNull() ?: Splash
+
+        Crossfade(targetState = current, label = "nav") { destination ->
         when (destination) {
             is Splash -> SplashScreen()
             is Onboarding1 -> OnboardingScreen1()
@@ -86,3 +98,5 @@ fun AppNavigation(navViewModel: NavViewModel = viewModel { NavViewModel() }) {
         }
     }
 }
+}
+

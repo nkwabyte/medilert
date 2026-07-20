@@ -209,7 +209,7 @@ fun MedicationHistoryScreen(
                                 color = Color.White
                             )
                             Text(
-                                "${weeklyStats.taken} of ${weeklyStats.total} doses taken this week",
+                                "${weeklyStats.taken} " + "of".tr() + " ${weeklyStats.total} " + "doses taken this week".tr(),
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 14.sp,
@@ -250,19 +250,19 @@ fun MedicationHistoryScreen(
                     ) {
                         HistoryStatCard(
                             "${weeklyStats.taken}",
-                            "Taken",
+                            "Taken".tr(),
                             PrimaryGreen,
                             modifier = Modifier.weight(1f)
                         )
                         HistoryStatCard(
                             "${weeklyStats.missed}",
-                            "Missed",
+                            "Missed".tr(),
                             GhanaRed,
                             modifier = Modifier.weight(1f)
                         )
                         HistoryStatCard(
                             "${weeklyStats.upcoming}",
-                            "Upcoming",
+                            "Upcoming".tr(),
                             TextPrimary,
                             modifier = Modifier.weight(1f)
                         )
@@ -331,7 +331,7 @@ fun MedicationHistoryScreen(
                             onClick = { selectedFilter = filter },
                             label = {
                                 Text(
-                                    filter,
+                                    filter.tr(),
                                     fontFamily = Poppins,
                                     fontWeight = FontWeight.SemiBold,
                                     fontSize = 13.sp
@@ -359,7 +359,7 @@ fun MedicationHistoryScreen(
                             onClick = { showDatePicker = true },
                             label = {
                                 Text(
-                                    selectedDate ?: "Select Date",
+                                    selectedDate ?: "Select Date".tr(),
                                     fontFamily = Poppins,
                                     fontWeight = FontWeight.SemiBold,
                                     fontSize = 13.sp
@@ -413,7 +413,7 @@ fun MedicationHistoryScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "Results (${filteredHistory.size})",
+                        "Results".tr() + " (${filteredHistory.size})",
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
@@ -520,7 +520,7 @@ fun EmptyHistoryState(hasHistory: Boolean, modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            if (hasHistory) "No Results Found" else "No History Yet",
+            if (hasHistory) "No Results Found".tr() else "No History Yet".tr(),
             fontFamily = Poppins,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
@@ -531,9 +531,9 @@ fun EmptyHistoryState(hasHistory: Boolean, modifier: Modifier = Modifier) {
 
         Text(
             if (hasHistory)
-                "Try adjusting your filters or search query"
+                "Try adjusting your filters or search query".tr()
             else
-                "Your medication history will appear here once you start tracking your doses",
+                "Your medication history will appear here once you start tracking your doses".tr(),
             fontFamily = Poppins,
             fontWeight = FontWeight.Medium,
             fontSize = 14.sp,
@@ -579,10 +579,10 @@ fun HistoryStatCard(
 @Composable
 fun HistoryEntryCard(entry: MedicationSchedule, modifier: Modifier = Modifier) {
     val (statusColor, statusIcon, statusLabel) = when (entry.status) {
-        DoseStatus.TAKEN -> Triple(PrimaryGreen, Icons.Default.CheckCircle, "Taken")
-        DoseStatus.MISSED -> Triple(GhanaRed, Icons.Default.Cancel, "Missed")
-        DoseStatus.SKIPPED -> Triple(GhanaYellow, Icons.Default.RemoveCircle, "Skipped")
-        DoseStatus.UPCOMING -> Triple(TextSecondary, Icons.Default.Schedule, "Upcoming")
+        DoseStatus.TAKEN -> Triple(PrimaryGreen, Icons.Default.CheckCircle, "Taken".tr())
+        DoseStatus.MISSED -> Triple(GhanaRed, Icons.Default.Cancel, "Missed".tr())
+        DoseStatus.SKIPPED -> Triple(GhanaYellow, Icons.Default.RemoveCircle, "Skipped".tr())
+        DoseStatus.UPCOMING -> Triple(TextSecondary, Icons.Default.Schedule, "Upcoming".tr())
     }
 
     Row(
@@ -617,7 +617,7 @@ fun HistoryEntryCard(entry: MedicationSchedule, modifier: Modifier = Modifier) {
             )
             if (entry.takenAt.isNotBlank() && entry.status == DoseStatus.TAKEN) {
                 Text(
-                    "Taken at ${entry.takenAt}",
+                    "Taken at".tr() + " ${entry.takenAt}",
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 11.sp,
@@ -641,21 +641,36 @@ fun HistoryEntryCard(entry: MedicationSchedule, modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
 fun formatDateHeader(date: String): String {
-    return try {
+    val parsedData = try {
         val localDate = LocalDate.parse(date)
         val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
         val yesterday = today.minus(1, DateTimeUnit.DAY)
         val dayName = localDate.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
         val monthName = localDate.month.name.lowercase().replaceFirstChar { it.uppercase() }
-        val formatted = "$dayName, ${localDate.dayOfMonth} $monthName"
-        when (localDate) {
-            today -> "Today, $formatted"
-            yesterday -> "Yesterday, $formatted"
-            else -> formatted
+        val prefix = when (localDate) {
+            today -> "Today"
+            yesterday -> "Yesterday"
+            else -> ""
         }
+        listOf(prefix, dayName, localDate.dayOfMonth.toString(), monthName)
     } catch (e: Exception) {
-        date
+        null
+    }
+    
+    if (parsedData == null) return date
+    
+    val prefix = parsedData[0]
+    val dayName = parsedData[1]
+    val dayOfMonth = parsedData[2]
+    val monthName = parsedData[3]
+    
+    val formatted = "${dayName.tr()}, $dayOfMonth ${monthName.tr()}"
+    return if (prefix.isNotEmpty()) {
+        "${prefix.tr()}, $formatted"
+    } else {
+        formatted
     }
 }
 

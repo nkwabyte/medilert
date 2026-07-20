@@ -60,15 +60,15 @@ fun ProfileScreen(
     var showDatePicker by remember { mutableStateOf(false) }
 
     val specialtyLabel = when (userRole) {
-        UserRole.DOCTOR -> "Medical Specialty"
-        UserRole.PHARMACIST -> "Institution / Pharmacy"
-        UserRole.GUARDIAN -> "Relationship to Patient"
+        UserRole.DOCTOR -> "Medical Specialty".tr()
+        UserRole.PHARMACIST -> "Institution / Pharmacy".tr()
+        UserRole.GUARDIAN -> "Relationship to Patient".tr()
         UserRole.PATIENT -> ""
     }
     val specialtyPlaceholder = when (userRole) {
-        UserRole.DOCTOR -> "e.g. Cardiologist, General Practitioner"
-        UserRole.PHARMACIST -> "e.g. Korle Bu Hospital Pharmacy"
-        UserRole.GUARDIAN -> "e.g. Parent, Spouse, Sibling"
+        UserRole.DOCTOR -> "e.g. Cardiologist, General Practitioner".tr()
+        UserRole.PHARMACIST -> "e.g. Korle Bu Hospital Pharmacy".tr()
+        UserRole.GUARDIAN -> "e.g. Parent, Spouse, Sibling".tr()
         UserRole.PATIENT -> ""
     }
 
@@ -154,15 +154,15 @@ fun ProfileScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                AuthInputField(label = "Full Name", value = fullName, onValueChange = { fullName = it }, placeholder = "Full name",
+                AuthInputField(label = "Full Name".tr(), value = fullName, onValueChange = { fullName = it }, placeholder = "Full name".tr(),
                     leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, tint = TextSecondary) })
                 Spacer(modifier = Modifier.height(16.dp))
 
-                AuthInputField(label = "Phone", value = phone, onValueChange = { phone = it }, placeholder = "Phone number",
+                AuthInputField(label = "Phone".tr(), value = phone, onValueChange = { phone = it }, placeholder = "Phone number".tr(),
                     leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null, tint = TextSecondary) }, keyboardType = KeyboardType.Phone)
                 Spacer(modifier = Modifier.height(16.dp))
 
-                AuthInputField(label = "Email", value = email, onValueChange = { email = it }, placeholder = "Email address",
+                AuthInputField(label = "Email".tr(), value = email, onValueChange = { email = it }, placeholder = "Email address".tr(),
                     leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = TextSecondary) }, keyboardType = KeyboardType.Email)
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -230,7 +230,7 @@ fun ProfileScreen(
                                     .border(2.dp, if (gender == option) PrimaryGreen else BorderLight, RoundedCornerShape(16.dp))
                                     .clickable { gender = option }.padding(vertical = 14.dp),
                                 contentAlignment = Alignment.Center
-                            ) { Text(option, fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = if (gender == option) Color.White else TextPrimary) }
+                            ) { Text(option.tr(), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = if (gender == option) Color.White else TextPrimary) }
                         }
                     }
                 }
@@ -238,10 +238,10 @@ fun ProfileScreen(
                 if (!isCaregiver) {
                     Spacer(modifier = Modifier.height(16.dp))
                     AuthInputField(
-                        label = "Emergency Contact",
+                        label = "Emergency Contact".tr(),
                         value = emergencyContact,
                         onValueChange = { emergencyContact = it },
-                        placeholder = "Emergency contact number",
+                        placeholder = "Emergency contact number".tr(),
                         leadingIcon = {
                             Icon(Icons.Default.Phone, contentDescription = null, tint = TextSecondary)
                         },
@@ -264,7 +264,7 @@ fun ProfileScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            if (isSaving) "Saving..." else "Save Changes",
+                            if (isSaving) "Saving...".tr() else "Save Changes".tr(),
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp,

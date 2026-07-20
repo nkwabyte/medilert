@@ -194,11 +194,14 @@ fun HomeTab(
     var selectedDateStr by remember { mutableStateOf(todayDateStr) }
 
     val currentHour = remember { Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).hour }
-    val greeting = remember(currentHour) {
+    val morningStr = "Good Morning".tr()
+    val afternoonStr = "Good Afternoon".tr()
+    val eveningStr = "Good Evening".tr()
+    val greeting = remember(currentHour, morningStr, afternoonStr, eveningStr) {
         when (currentHour) {
-            in 0..11 -> "Good Morning"
-            in 12..16 -> "Good Afternoon"
-            else -> "Good Evening"
+            in 0..11 -> morningStr
+            in 12..16 -> afternoonStr
+            else -> eveningStr
         }
     }
     val localGreeting = remember(selectedLanguage, currentHour) {
@@ -209,12 +212,8 @@ fun HomeTab(
         currentUser.name.split(" ").firstOrNull() ?: "User"
     }
 
-    val currentDate = remember {
-        val ldt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-        val dow = ldt.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
-        val mon = ldt.month.name.lowercase().replaceFirstChar { it.uppercase() }
-        "$dow, ${ldt.dayOfMonth} $mon, ${ldt.year}"
-    }
+    val ldt = remember { Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()) }
+    val currentDate = "${ldt.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }.tr()}, ${ldt.dayOfMonth} ${ldt.month.name.lowercase().replaceFirstChar { it.uppercase() }.tr()}, ${ldt.year}"
 
     // Filter schedule for selected date, cross-referencing active medications to exclude
     // orphaned schedule documents left behind by deleted or test medications.
@@ -237,7 +236,7 @@ fun HomeTab(
     var editingSchedule by remember { mutableStateOf<MedicationSchedule?>(null) }
 
     // Get formatted day name for selected date
-    val selectedDayInfo = remember(selectedDateStr) {
+    val selectedDayRaw = remember(selectedDateStr) {
         try {
             val parts = selectedDateStr.split("-")
             val year = parts[0].toInt()
@@ -248,11 +247,16 @@ fun HomeTab(
             val dayOfWeekName = ld.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
             val monthName = ld.month.name.lowercase().replaceFirstChar { it.uppercase() }
             val dayName = if (isToday) "Today" else dayOfWeekName
-            val fullDate = "$dayOfWeekName, $day $monthName"
-            Pair(dayName, fullDate)
+            listOf(dayName, dayOfWeekName, day.toString(), monthName)
         } catch (e: Exception) {
-            Pair("Today", currentDate.split(",").first())
+            emptyList<String>()
         }
+    }
+    val selectedDayInfoFirst = if (selectedDayRaw.isNotEmpty()) selectedDayRaw[0] else "Today"
+    val selectedDayInfoSecond = if (selectedDayRaw.isNotEmpty()) {
+        "${selectedDayRaw[1].tr()}, ${selectedDayRaw[2]} ${selectedDayRaw[3].tr()}"
+    } else {
+        currentDate.split(",").first()
     }
 
     // Generate week calendar data
@@ -450,7 +454,7 @@ fun HomeTab(
                             modifier = Modifier.clickable { selectedDateStr = dateStr }
                         ) {
                             Text(
-                                day,
+                                day.tr(),
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 12.sp,
@@ -524,7 +528,7 @@ fun HomeTab(
                     ) {
                         Column {
                             Text(
-                                "${selectedDayInfo.first}'s adherence",
+                                "${selectedDayInfoFirst}'s adherence".tr(),
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 18.sp,
@@ -581,21 +585,21 @@ fun HomeTab(
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         StatusBlock(
-                            label = "Taken",
+                            label = "Taken".tr(),
                             count = selTaken,
                             color = PrimaryGreen,
                             icon = Icons.Default.CheckCircle,
                             modifier = Modifier.weight(1f)
                         )
                         StatusBlock(
-                            label = "Missed",
+                            label = "Missed".tr(),
                             count = selMissed,
                             color = GhanaRed,
                             icon = Icons.Default.Cancel,
                             modifier = Modifier.weight(1f)
                         )
                         StatusBlock(
-                            label = "Upcoming",
+                            label = "Upcoming".tr(),
                             count = selUpcoming,
                             color = Color(0xFF4A9EFF),
                             icon = Icons.Default.Schedule,
@@ -615,7 +619,7 @@ fun HomeTab(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "${selectedDayInfo.first}'s schedule",
+                        "${selectedDayInfoFirst}'s schedule".tr(),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 20.sp,
@@ -627,7 +631,7 @@ fun HomeTab(
                             .padding(horizontal = 12.dp, vertical = 4.dp)
                     ) {
                         Text(
-                            selectedDayInfo.second,
+                            selectedDayInfoSecond,
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Medium,
                             fontSize = 13.sp,
@@ -644,7 +648,7 @@ fun HomeTab(
                 item {
                     EmptyScheduleState(
                         isToday = selectedDateStr == todayDateStr,
-                        dayName = selectedDayInfo.first,
+                        dayName = selectedDayInfoFirst,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 24.dp, vertical = 40.dp)
@@ -734,11 +738,11 @@ fun EmptyScheduleState(
     isToday: Boolean = true,
     dayName: String = "Today",
 ) {
-    val title = if (isToday) "All Clear for Today!" else "No Schedule for $dayName!"
+    val title = if (isToday) "All Clear for Today!".tr() else "No Schedule for".tr() + " ${dayName.tr()}!"
     val subtitle = if (isToday)
-        "You have no scheduled medications for today.\nEnjoy your day!"
+        "You have no scheduled medications for today.".tr() + "\n" + "Enjoy your day!".tr()
     else
-        "You have no scheduled medications for $dayName."
+        "You have no scheduled medications for".tr() + " ${dayName.tr()}."
 
     Column(
         modifier = modifier,

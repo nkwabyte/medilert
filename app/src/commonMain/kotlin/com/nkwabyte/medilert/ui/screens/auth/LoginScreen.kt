@@ -233,10 +233,10 @@ fun LoginScreen(
 
         // Email field
         AuthInputField(
-            label = "Email",
+            label = "Email".tr(),
             value = email,
             onValueChange = { email = it },
-            placeholder = "Enter your email",
+            placeholder = "Enter your email".tr(),
             leadingIcon = {
                 Icon(Icons.Default.Email, contentDescription = null,
                     tint = if (emailHasError) GhanaRed else TextSecondary)
@@ -261,10 +261,10 @@ fun LoginScreen(
 
         // Password field
         AuthInputField(
-            label = "Password",
+            label = "Password".tr(),
             value = password,
             onValueChange = { password = it },
-            placeholder = "Enter password",
+            placeholder = "Enter password".tr(),
             leadingIcon = {
                 Icon(Icons.Default.Lock, contentDescription = null,
                     tint = if (passwordHasError) GhanaRed else TextSecondary)
@@ -466,9 +466,9 @@ fun LoginScreen(
             Text(
                 buildAnnotatedString {
                     withStyle(SpanStyle(fontFamily = Poppins, fontWeight = FontWeight.Medium,
-                        fontSize = 15.sp, color = TextSecondary)) { append("Don't have an account?  ") }
+                        fontSize = 15.sp, color = TextSecondary)) { append("Don't have an account?  ".tr()) }
                     withStyle(SpanStyle(fontFamily = Poppins, fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp, color = PrimaryGreen)) { append("Sign up") }
+                        fontSize = 15.sp, color = PrimaryGreen)) { append("Sign up".tr()) }
                 },
                 modifier = Modifier
                     .clickable { navViewModel.navigateTo(SignUp) }

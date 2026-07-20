@@ -77,6 +77,10 @@ class AppViewModel(
                 user?.let {
                     _currentUser.value = it
                     _userRole.value = it.role
+                    _selectedLanguage.value = it.preferences.language
+                    _isDarkMode.value = it.preferences.theme == "dark"
+                    _voiceEnabled.value = it.preferences.voiceEnabled
+                    setTextSize(it.preferences.fontSize)
                     // Only try network download if no local cache exists
                     if (it.photoUrl.isNotBlank() && _profilePhotoBytes.value == null) {
                         viewModelScope.launch {

@@ -135,20 +135,35 @@ fun SettingsScreen(
         } else null
     }
 
-    val memberSince = remember(currentUser.createdAt) {
+    val memberSinceLabel = "Member since".tr()
+    val memberSinceMonthNum = remember(currentUser.createdAt) {
         if (currentUser.createdAt > 0) {
-            val instant = Instant.fromEpochMilliseconds(currentUser.createdAt)
-            val dt = instant.toLocalDateTime(TimeZone.currentSystemDefault())
-            val month = when (dt.monthNumber) {
-                1 -> "Jan"; 2 -> "Feb"; 3 -> "Mar"; 4 -> "Apr"
-                5 -> "May"; 6 -> "Jun"; 7 -> "Jul"; 8 -> "Aug"
-                9 -> "Sep"; 10 -> "Oct"; 11 -> "Nov"; 12 -> "Dec"
-                else -> ""
-            }
-            "Member since $month ${dt.year}"
+            Instant.fromEpochMilliseconds(currentUser.createdAt)
+                .toLocalDateTime(TimeZone.currentSystemDefault()).monthNumber
         } else {
-            "Member since 2026"
+            0
         }
+    }
+    val memberSinceYear = remember(currentUser.createdAt) {
+        if (currentUser.createdAt > 0) {
+            Instant.fromEpochMilliseconds(currentUser.createdAt)
+                .toLocalDateTime(TimeZone.currentSystemDefault()).year.toString()
+        } else {
+            "2026"
+        }
+    }
+    
+    val monthStr = when (memberSinceMonthNum) {
+        1 -> "January"; 2 -> "February"; 3 -> "March"; 4 -> "April"
+        5 -> "May"; 6 -> "June"; 7 -> "July"; 8 -> "August"
+        9 -> "September"; 10 -> "October"; 11 -> "November"; 12 -> "December"
+        else -> ""
+    }
+    
+    val memberSince = if (monthStr.isNotEmpty()) {
+        "$memberSinceLabel ${monthStr.tr()} $memberSinceYear"
+    } else {
+        "$memberSinceLabel $memberSinceYear"
     }
 
     Box(
@@ -340,12 +355,12 @@ fun SettingsScreen(
             }
 
             item {
-                SettingsSectionHeader("PROFILE")
+                SettingsSectionHeader("PROFILE".tr())
                 SettingsCard {
                     SettingsRow(
                         icon = Icons.Default.Person,
-                        title = "Edit Profile",
-                        subtitle = "Update your personal details",
+                        title = "Edit Profile".tr(),
+                        subtitle = "Update your personal details".tr(),
                         onClick = { navViewModel.navigateTo(ProfilePage) })
                 }
 
@@ -353,13 +368,13 @@ fun SettingsScreen(
             }
 
             item {
-                SettingsSectionHeader(if (caregiver) "PATIENT ALERTS" else "NOTIFICATIONS")
+                SettingsSectionHeader(if (caregiver) "PATIENT ALERTS".tr() else "NOTIFICATIONS".tr())
                 SettingsCard {
                     if (caregiver) {
                         SettingsRow(
                             icon = Icons.Default.Warning,
-                            title = "Missed Medications",
-                            subtitle = if (missedAlerts) "Enabled" else "Disabled",
+                            title = "Missed Medications".tr(),
+                            subtitle = if (missedAlerts) "Enabled".tr() else "Disabled".tr(),
                             rightElement = {
                                 MedSwitch(
                                     checked = missedAlerts,
@@ -368,8 +383,8 @@ fun SettingsScreen(
                         SettingsDivider()
                         SettingsRow(
                             icon = Icons.Default.Favorite,
-                            title = "Low Adherence Warning",
-                            subtitle = if (lowAdherence) "Enabled" else "Disabled",
+                            title = "Low Adherence Warning".tr(),
+                            subtitle = if (lowAdherence) "Enabled".tr() else "Disabled".tr(),
                             rightElement = {
                                 MedSwitch(
                                     checked = lowAdherence,
@@ -378,8 +393,8 @@ fun SettingsScreen(
                     } else {
                         SettingsRow(
                             icon = Icons.Default.Notifications,
-                            title = "Medication Reminders",
-                            subtitle = if (remindersOn) "Enabled" else "Disabled",
+                            title = "Medication Reminders".tr(),
+                            subtitle = if (remindersOn) "Enabled".tr() else "Disabled".tr(),
                             rightElement = {
                                 MedSwitch(
                                     checked = remindersOn,
@@ -389,8 +404,8 @@ fun SettingsScreen(
                     }
                     SettingsRow(
                         icon = Icons.AutoMirrored.Filled.VolumeUp,
-                        title = "Sound Alerts",
-                        subtitle = if (soundAlerts) "Enabled" else "Disabled",
+                        title = "Sound Alerts".tr(),
+                        subtitle = if (soundAlerts) "Enabled".tr() else "Disabled".tr(),
                         rightElement = {
                             MedSwitch(
                                 checked = soundAlerts,
@@ -399,8 +414,8 @@ fun SettingsScreen(
                     SettingsDivider()
                     SettingsRow(
                         icon = Icons.Default.PhoneAndroid,
-                        title = "Vibration",
-                        subtitle = if (vibration) "Enabled" else "Disabled",
+                        title = "Vibration".tr(),
+                        subtitle = if (vibration) "Enabled".tr() else "Disabled".tr(),
                         rightElement = {
                             MedSwitch(
                                 checked = vibration,
@@ -414,8 +429,8 @@ fun SettingsScreen(
                     SettingsDivider()
                     SettingsRow(
                         icon = Icons.Default.GraphicEq,
-                        title = "Notification Tone",
-                        subtitle = selectedTone,
+                        title = "Notification Tone".tr(),
+                        subtitle = selectedTone.tr(),
                         onClick = { showToneDialog = true })
                 }
 
@@ -423,12 +438,12 @@ fun SettingsScreen(
             }
 
             item {
-                SettingsSectionHeader("APPEARANCE")
+                SettingsSectionHeader("APPEARANCE".tr())
                 SettingsCard {
                     SettingsRow(
                         icon = Icons.Default.DarkMode,
-                        title = "Dark Mode",
-                        subtitle = if (darkMode) "On" else "Off",
+                        title = "Dark Mode".tr(),
+                        subtitle = if (darkMode) "On".tr() else "Off".tr(),
                         rightElement = {
                             MedSwitch(
                                 checked = darkMode,
@@ -436,7 +451,7 @@ fun SettingsScreen(
                         })
                     SettingsDivider()
                     SettingsRow(
-                        icon = Icons.Default.Language, title = "Language",
+                        icon = Icons.Default.Language, title = "Language".tr(),
                         subtitle = appViewModel.selectedLanguage.collectAsState().value,
                         onClick = { navViewModel.navigateTo(LanguageSettings) })
                 }
@@ -445,18 +460,18 @@ fun SettingsScreen(
             }
 
             item {
-                SettingsSectionHeader("ABOUT")
+                SettingsSectionHeader("ABOUT".tr())
                 SettingsCard {
                     SettingsRow(
                         icon = Icons.Default.Info,
-                        title = "App Version",
-                        subtitle = "V1.0.0 (Build 2026.03)",
+                        title = "App Version".tr(),
+                        subtitle = "V1.0.0 (Build 2026.03)".tr(),
                         onClick = { navViewModel.navigateTo(AppVersion) })
                     SettingsDivider()
                     SettingsRow(
                         icon = Icons.Default.Shield,
-                        title = "Privacy Policy",
-                        subtitle = "How we use your data",
+                        title = "Privacy Policy".tr(),
+                        subtitle = "How we use your data".tr(),
                         onClick = { navViewModel.navigateTo(PrivacyPolicy) })
                 }
 
@@ -464,7 +479,7 @@ fun SettingsScreen(
             }
 
             item {
-                SettingsSectionHeader("ACCOUNT", destructive = true)
+                SettingsSectionHeader("ACCOUNT".tr(), destructive = true)
                 Box(
                     modifier = Modifier
                         .padding(horizontal = 24.dp)
@@ -478,8 +493,8 @@ fun SettingsScreen(
                 ) {
                     SettingsRow(
                         icon = Icons.AutoMirrored.Filled.Logout,
-                        title = "Log Out",
-                        subtitle = "Sign out of your Medilert account",
+                        title = "Log Out".tr(),
+                        subtitle = "Sign out of your Medilert account".tr(),
                         isDestructive = true,
                         onClick = { showLogoutDialog = true })
                 }
@@ -566,7 +581,7 @@ fun SettingsScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                tone,
+                                tone.tr(),
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 14.sp,

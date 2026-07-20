@@ -110,28 +110,28 @@ fun PrivacyPolicyScreen(navViewModel: NavViewModel = viewModel { NavViewModel() 
                     .padding(top = 24.dp, bottom = 40.dp)
             ) {
                 PrivacySection(
-                    "1. Information We Collect",
-                    "Medilert collects personal information including your name, phone number, email address, and medication details to provide our service. We also collect usage data to improve your experience."
+                    "1. Information We Collect".tr(),
+                    "Medilert collects personal information including your name, phone number, email address, and medication details to provide our service. We also collect usage data to improve your experience.".tr()
                 )
                 PrivacySection(
-                    "2. How We Use Your Information",
-                    "Your information is used to send medication reminders, track adherence, and provide health insights. We do not sell your personal data to third parties."
+                    "2. How We Use Your Information".tr(),
+                    "Your information is used to send medication reminders, track adherence, and provide health insights. We do not sell your personal data to third parties.".tr()
                 )
                 PrivacySection(
-                    "3. Data Security",
-                    "We implement industry-standard security measures to protect your data. All data is encrypted in transit and at rest. Your PIN and password are stored using secure hashing algorithms."
+                    "3. Data Security".tr(),
+                    "We implement industry-standard security measures to protect your data. All data is encrypted in transit and at rest. Your PIN and password are stored using secure hashing algorithms.".tr()
                 )
                 PrivacySection(
-                    "4. Data Sharing",
-                    "If you are a patient, your medication adherence data may be shared with your assigned caregiver or doctor. You can control this in Settings > My Care Team."
+                    "4. Data Sharing".tr(),
+                    "If you are a patient, your medication adherence data may be shared with your assigned caregiver or doctor. You can control this in Settings > My Care Team.".tr()
                 )
                 PrivacySection(
-                    "5. Your Rights",
-                    "You have the right to access, correct, or delete your personal data at any time. Contact us at privacy@medilert.com to exercise these rights."
+                    "5. Your Rights".tr(),
+                    "You have the right to access, correct, or delete your personal data at any time. Contact us at privacy@medilert.com to exercise these rights.".tr()
                 )
                 PrivacySection(
-                    "6. Contact Us",
-                    "For any privacy-related concerns, contact our Data Protection Officer at: privacy@medilert.com\n\nLast updated: March 2026"
+                    "6. Contact Us".tr(),
+                    "For any privacy-related concerns, contact our Data Protection Officer at: privacy@medilert.com\n\nLast updated: March 2026".tr()
                 )
             }
         }

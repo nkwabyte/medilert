@@ -190,16 +190,16 @@ fun SignUpScreen(
             Spacer(modifier = Modifier.height(28.dp))
 
             AuthInputField(
-                label = "Full Name", value = fullName, onValueChange = { fullName = it },
-                placeholder = "Enter your full name",
+                label = "Full Name".tr(), value = fullName, onValueChange = { fullName = it },
+                placeholder = "Enter your full name".tr(),
                 leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, tint = TextSecondary) }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             AuthInputField(
-                label = "Email", value = email, onValueChange = { email = it },
-                placeholder = "Enter your email",
+                label = "Email".tr(), value = email, onValueChange = { email = it },
+                placeholder = "Enter your email".tr(),
                 leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = TextSecondary) },
                 keyboardType = KeyboardType.Email
             )
@@ -207,8 +207,8 @@ fun SignUpScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             AuthInputField(
-                label = "Phone Number", value = phoneNumber, onValueChange = { phoneNumber = it },
-                placeholder = "0XXXXXXXXX or 9 digits",
+                label = "Phone Number".tr(), value = phoneNumber, onValueChange = { phoneNumber = it },
+                placeholder = "0XXXXXXXXX or 9 digits".tr(),
                 leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null, tint = TextSecondary) },
                 keyboardType = KeyboardType.Phone
             )
@@ -216,8 +216,8 @@ fun SignUpScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             AuthInputField(
-                label = "Password", value = password, onValueChange = { password = it },
-                placeholder = "Create password",
+                label = "Password".tr(), value = password, onValueChange = { password = it },
+                placeholder = "Create password".tr(),
                 leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = TextSecondary) },
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardType = KeyboardType.Password,
@@ -232,9 +232,9 @@ fun SignUpScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             AuthInputField(
-                label = "Repeat Password", value = confirmPassword,
+                label = "Repeat Password".tr(), value = confirmPassword,
                 onValueChange = { confirmPassword = it },
-                placeholder = "Confirm password",
+                placeholder = "Confirm password".tr(),
                 leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = TextSecondary) },
                 visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardType = KeyboardType.Password,
@@ -316,9 +316,9 @@ fun SignUpScreen(
                 Text(
                     buildAnnotatedString {
                         withStyle(SpanStyle(fontFamily = Poppins, fontWeight = FontWeight.Medium,
-                            fontSize = 15.sp, color = TextSecondary)) { append("Already have an account?  ") }
+                            fontSize = 15.sp, color = TextSecondary)) { append("Already have an account?  ".tr()) }
                         withStyle(SpanStyle(fontFamily = Poppins, fontWeight = FontWeight.Bold,
-                            fontSize = 15.sp, color = PrimaryGreen)) { append("Sign In") }
+                            fontSize = 15.sp, color = PrimaryGreen)) { append("Sign In".tr()) }
                     },
                     modifier = Modifier.clickable { navViewModel.navigateTo(Login) }.padding(vertical = 8.dp)
                 )

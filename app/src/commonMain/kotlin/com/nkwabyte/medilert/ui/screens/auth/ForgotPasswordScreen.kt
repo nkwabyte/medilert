@@ -92,10 +92,10 @@ fun ForgotPasswordScreen(navViewModel: NavViewModel = viewModel { NavViewModel()
         Spacer(modifier = Modifier.height(32.dp))
 
         AuthInputField(
-            label = "Email",
+            label = "Email".tr(),
             value = email,
             onValueChange = { email = it; successMessage = null; errorMessage = null },
-            placeholder = "Enter your email",
+            placeholder = "Enter your email".tr(),
             leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = TextSecondary) }
         )
 
