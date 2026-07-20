@@ -1,4 +1,6 @@
 package com.nkwabyte.medilert.ui.screens.settings
+import androidx.compose.ui.res.stringResource
+
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -40,7 +42,7 @@ fun AppVersionScreen(navViewModel: NavViewModel = viewModel()) {
                     modifier = Modifier.size(40.dp).background(Surface, CircleShape).border(1.dp, BorderLight, CircleShape).clickable { navViewModel.popBack() },
                     contentAlignment = Alignment.Center
                 ) { Icon(Icons.Default.ChevronLeft, contentDescription = "Back", tint = TextPrimary) }
-                Text("About Medilert", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 20.sp, color = TextPrimary)
+                Text(stringResource(R.string.about_medilert), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 20.sp, color = TextPrimary)
                 Spacer(modifier = Modifier.size(40.dp))
             }
 
@@ -51,8 +53,8 @@ fun AppVersionScreen(navViewModel: NavViewModel = viewModel()) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Text("Medilert", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 28.sp, color = PrimaryGreen)
-                Text("Your Medication Companion", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary)
+                Text(stringResource(R.string.medilert), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 28.sp, color = PrimaryGreen)
+                Text(stringResource(R.string.your_medication_companion), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary)
 
                 Spacer(modifier = Modifier.height(32.dp))
 
@@ -76,7 +78,7 @@ fun AppVersionScreen(navViewModel: NavViewModel = viewModel()) {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                Text("© 2026 Nkwabyte Technologies. All rights reserved.", fontFamily = Poppins, fontWeight = FontWeight.Normal, fontSize = 12.sp, color = TextSecondary, textAlign = TextAlign.Center)
+                Text(stringResource(R.string.2026_nkwabyte_technologies_all_rights_reserved), fontFamily = Poppins, fontWeight = FontWeight.Normal, fontSize = 12.sp, color = TextSecondary, textAlign = TextAlign.Center)
             }
         }
         Box(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp).width(140.dp).height(5.dp).background(Divider, RoundedCornerShape(50.dp)))

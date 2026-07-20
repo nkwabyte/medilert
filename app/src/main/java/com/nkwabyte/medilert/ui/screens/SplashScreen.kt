@@ -1,4 +1,6 @@
 package com.nkwabyte.medilert.ui.screens
+import androidx.compose.ui.res.stringResource
+
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
@@ -160,7 +162,7 @@ fun SplashScreen(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Medilert",
+                contentDescription = stringResource(R.string.medilert),
                 modifier = Modifier.size(88.dp),
                 contentScale = ContentScale.Fit
             )
@@ -190,7 +192,7 @@ fun SplashScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                "Managing your health,\none reminder at a time.",
+                stringResource(R.string.managing_your_health_none_reminder_at_a_time),
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp,
@@ -202,7 +204,7 @@ fun SplashScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                "Stay on track with your medications and\nnever miss a dose again.",
+                stringResource(R.string.stay_on_track_with_your_medications_and_nnever_miss_a_dose_again),
                 fontFamily = Poppins,
                 fontWeight = FontWeight.Normal,
                 fontSize = 14.sp,
@@ -237,7 +239,7 @@ fun SplashScreen(
                             contentPadding = PaddingValues(0.dp)
                         ) {
                             Text(
-                                "GET STARTED",
+                                stringResource(R.string.get_started),
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp,
@@ -261,7 +263,7 @@ fun SplashScreen(
                                         append("Already have an account?  ")
                                     }
                                     withStyle(SpanStyle(color = Color.White, fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 15.sp)) {
-                                        append("Log In")
+                                        append(stringResource(R.string.log_in))
                                     }
                                 }
                             )
@@ -271,7 +273,7 @@ fun SplashScreen(
 
                         // Privacy note
                         Text(
-                            "By proceeding, you agree to our Terms and Privacy Policy.",
+                            stringResource(R.string.by_proceeding_you_agree_to_our_terms_and_privacy_policy),
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Normal,
                             fontSize = 11.sp,

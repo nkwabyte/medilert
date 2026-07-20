@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.auth
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -138,7 +141,7 @@ fun ForgotPasswordScreen(navViewModel: NavViewModel = viewModel()) {
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
-                    "Forgot Password?",
+                    stringResource(R.string.forgot_password),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
@@ -150,7 +153,7 @@ fun ForgotPasswordScreen(navViewModel: NavViewModel = viewModel()) {
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
-                    "Enter your email and we'll send you a password reset link",
+                    stringResource(R.string.enter_your_email_and_we_ll_send_you_a_password_reset_link),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 15.sp,
@@ -252,7 +255,7 @@ fun ForgotPasswordScreen(navViewModel: NavViewModel = viewModel()) {
                             )
                         } else {
                             Text(
-                                "Send Reset Link",
+                                stringResource(R.string.send_reset_link),
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp,

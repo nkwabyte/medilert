@@ -1,4 +1,6 @@
 package com.nkwabyte.medilert.ui.screens.auth
+import androidx.compose.ui.res.stringResource
+
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
@@ -260,7 +262,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
-                    "Welcome Back",
+                    stringResource(R.string.welcome_back),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
                     fontSize = 32.sp,
@@ -354,13 +356,13 @@ fun LoginScreen(
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            "Remember Me",
+                            stringResource(R.string.remember_me),
                             fontFamily = Poppins, fontWeight = FontWeight.Medium,
                             fontSize = 13.sp, color = TextSecondary
                         )
                     }
                     Text(
-                        "Forgot Password?",
+                        stringResource(R.string.forgot_password),
                         fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
                         fontSize = 13.sp, color = GhanaRed,
                         modifier = Modifier
@@ -501,10 +503,10 @@ fun LoginScreen(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
-                                Text("Logged In", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White)
+                                Text(stringResource(R.string.logged_in), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White)
                             }
                             else -> Text(
-                                "Log In",
+                                stringResource(R.string.log_in),
                                 fontFamily = Poppins, fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp, color = Color.White
                             )
@@ -521,7 +523,7 @@ fun LoginScreen(
                 ) {
                     HorizontalDivider(modifier = Modifier.weight(1f), color = BorderMedium)
                     Text(
-                        "  Or sign in with  ",
+                        stringResource(R.string.or_sign_in_with),
                         fontFamily = Poppins, fontWeight = FontWeight.Medium,
                         fontSize = 13.sp, color = TextSecondary
                     )
@@ -554,7 +556,7 @@ fun LoginScreen(
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
-                            "Continue with Google",
+                            stringResource(R.string.continue_with_google),
                             fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
                             fontSize = 16.sp, color = TextPrimary
                         )
@@ -565,12 +567,12 @@ fun LoginScreen(
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        "Don't have an account? ",
+                        stringResource(R.string.don_t_have_an_account),
                         fontFamily = Poppins, fontWeight = FontWeight.Medium,
                         fontSize = 15.sp, color = TextSecondary
                     )
                     Text(
-                        "Sign up",
+                        stringResource(R.string.sign_up),
                         fontFamily = Poppins, fontWeight = FontWeight.Bold,
                         fontSize = 15.sp, color = PrimaryGreen,
                         modifier = Modifier

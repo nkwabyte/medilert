@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.auth
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -53,9 +56,9 @@ fun NewPasswordScreen(navViewModel: NavViewModel = viewModel()) {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                Text("Set New Password", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 28.sp, color = TextPrimary, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+                Text(stringResource(R.string.set_new_password), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 28.sp, color = TextPrimary, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("Your new password must be different from previous passwords", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp, color = TextSecondary, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+                Text(stringResource(R.string.your_new_password_must_be_different_from_previous_passwords), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp, color = TextSecondary, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
 
                 Spacer(modifier = Modifier.height(40.dp))
 
@@ -101,7 +104,7 @@ fun NewPasswordScreen(navViewModel: NavViewModel = viewModel()) {
                     Box(
                         modifier = Modifier.fillMaxSize().background(brush = Brush.horizontalGradient(listOf(PrimaryGreen, MediumGreen)), shape = RoundedCornerShape(24.dp)),
                         contentAlignment = Alignment.Center
-                    ) { Text("Reset Password", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White) }
+                    ) { Text(stringResource(R.string.reset_password), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White) }
                 }
             }
         }

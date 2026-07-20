@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.reminder
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -77,12 +80,12 @@ fun ReminderScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            Text("Vitamin C", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 40.sp, color = textColor)
-            Text("500 mg • 1 Tablet", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 18.sp, color = textColor.copy(alpha = 0.85f))
+            Text(stringResource(R.string.vitamin_c), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 40.sp, color = textColor)
+            Text(stringResource(R.string.500_mg_1_tablet), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 18.sp, color = textColor.copy(alpha = 0.85f))
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text("Everyday", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = textColor.copy(alpha = 0.7f))
+            Text(stringResource(R.string.everyday), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = textColor.copy(alpha = 0.7f))
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -96,11 +99,11 @@ fun ReminderScreen(
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-            Text("4 pills left", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp, color = textColor.copy(alpha = 0.7f))
+            Text(stringResource(R.string.4_pills_left), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp, color = textColor.copy(alpha = 0.7f))
 
             if (type != "afternoon") {
                 Spacer(modifier = Modifier.height(12.dp))
-                Text("Side effects: abdominal pain", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 13.sp, color = textColor.copy(alpha = 0.7f),
+                Text(stringResource(R.string.side_effects_abdominal_pain), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 13.sp, color = textColor.copy(alpha = 0.7f),
                     modifier = Modifier.background(textColor.copy(alpha = 0.15f), RoundedCornerShape(8.dp)).padding(horizontal = 12.dp, vertical = 6.dp))
             }
         }
@@ -118,7 +121,7 @@ fun ReminderScreen(
             ) {
                 Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(20.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Mark as Taken", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(stringResource(R.string.mark_as_taken), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
 
             OutlinedButton(
@@ -130,7 +133,7 @@ fun ReminderScreen(
             ) {
                 Icon(Icons.Default.Snooze, contentDescription = null, modifier = Modifier.size(20.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Snooze 5 min", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+                Text(stringResource(R.string.snooze_5_min), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
             }
         }
     }

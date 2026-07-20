@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.auth
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -131,7 +134,7 @@ fun VerifyOtpScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    "Verify Code",
+                    stringResource(R.string.verify_code),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
@@ -139,7 +142,7 @@ fun VerifyOtpScreen(
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    "Enter the 6-digit code we sent to your phone",
+                    stringResource(R.string.enter_the_6_digit_code_we_sent_to_your_phone),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 15.sp,
@@ -158,14 +161,14 @@ fun VerifyOtpScreen(
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        "Didn't receive a code? ",
+                        stringResource(R.string.didn_t_receive_a_code),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Medium,
                         fontSize = 14.sp,
                         color = TextSecondary
                     )
                     Text(
-                        "Resend",
+                        stringResource(R.string.resend),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp,
@@ -228,7 +231,7 @@ fun VerifyOtpScreen(
                             )
                         } else {
                             Text(
-                                "Verify",
+                                stringResource(R.string.verify),
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp,

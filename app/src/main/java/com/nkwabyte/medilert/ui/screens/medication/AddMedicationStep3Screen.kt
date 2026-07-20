@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.medication
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -124,7 +127,7 @@ fun AddMedicationStep3Screen(
             }
 
             Column(modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 120.dp)) {
-                Text("Set reminder times", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 24.sp, color = TextPrimary,
+                Text(stringResource(R.string.set_reminder_times), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 24.sp, color = TextPrimary,
                     textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 8.dp))
                 Text("Based on: $frequency", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp, color = TextSecondary,
                     textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp))
@@ -158,7 +161,7 @@ fun AddMedicationStep3Screen(
                     ) {
                         Icon(Icons.Default.Add, contentDescription = "Add", tint = PrimaryGreen)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Add Reminder", color = PrimaryGreen)
+                        Text(stringResource(R.string.add_reminder), color = PrimaryGreen)
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                     Button(
@@ -170,9 +173,9 @@ fun AddMedicationStep3Screen(
                         colors = ButtonDefaults.buttonColors(containerColor = GhanaRed.copy(alpha = 0.1f)),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Icon(Icons.Default.Remove, contentDescription = "Remove", tint = GhanaRed)
+                        Icon(Icons.Default.Remove, contentDescription = stringResource(R.string.remove), tint = GhanaRed)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Remove", color = GhanaRed)
+                        Text(stringResource(R.string.remove), color = GhanaRed)
                     }
                 }
 
@@ -184,8 +187,8 @@ fun AddMedicationStep3Screen(
                     horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
-                        Text("Take with food", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, color = TextPrimary)
-                        Text("Medication should be taken with meals", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 12.sp, color = TextSecondary)
+                        Text(stringResource(R.string.take_with_food), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, color = TextPrimary)
+                        Text(stringResource(R.string.medication_should_be_taken_with_meals), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 12.sp, color = TextSecondary)
                     }
                     Switch(checked = withFood, onCheckedChange = { withFood = it }, colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = PrimaryGreen))
                 }
@@ -194,7 +197,7 @@ fun AddMedicationStep3Screen(
                     onClick = {
                         val updatedMedication = draftMedication.copy(
                             intakes = intakes,
-                            instructions = if (withFood) "Take with food" else ""
+                            instructions = if (withFood) stringResource(R.string.take_with_food) else ""
                         )
                         medicationViewModel.updateDraftMedication(updatedMedication)
                         navViewModel.navigateTo(AddMedication4)
@@ -202,7 +205,7 @@ fun AddMedicationStep3Screen(
                     modifier = Modifier.fillMaxWidth().height(60.dp),
                     shape = RoundedCornerShape(50.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = GhanaYellow)
-                ) { Text("Continue", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = TextPrimary) }
+                ) { Text(stringResource(R.string.continue), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = TextPrimary) }
             }
         }
 
@@ -237,7 +240,7 @@ fun TimeSlotCard(label: String, time: String, onClick: () -> Unit) {
         Box(
             modifier = Modifier.background(PrimaryGreen.copy(alpha = 0.1f), RoundedCornerShape(10.dp)).padding(horizontal = 12.dp, vertical = 6.dp)
         ) {
-            Text("Change", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = PrimaryGreen)
+            Text(stringResource(R.string.change), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = PrimaryGreen)
         }
     }
 }
@@ -254,13 +257,13 @@ fun EditReminderDialog(
 
     AlertDialog(
         onDismissRequest = onCancel,
-        title = { Text("Edit Reminder") },
+        title = { Text(stringResource(R.string.edit_reminder)) },
         text = {
             Column {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("Reminder Name") },
+                    label = { Text(stringResource(R.string.reminder_name)) },
                     singleLine = true
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -278,12 +281,12 @@ fun EditReminderDialog(
                     onConfirm(title, time)
                 }
             ) {
-                Text("OK")
+                Text(stringResource(R.string.ok))
             }
         },
         dismissButton = {
             TextButton(onClick = onCancel) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel))
             }
         }
     )

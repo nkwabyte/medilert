@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.dashboard
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -164,7 +167,7 @@ fun CaregiverAddPatientScreen(
                         }
                     }
                     Text(
-                        "Add Patient",
+                        stringResource(R.string.add_patient),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
@@ -181,7 +184,7 @@ fun CaregiverAddPatientScreen(
                         .padding(horizontal = 24.dp),
                     placeholder = {
                         Text(
-                            "Search by name, phone or email",
+                            stringResource(R.string.search_by_name_phone_or_email),
                             fontFamily = Poppins,
                             color = TextHint,
                             fontSize = 13.sp
@@ -369,7 +372,7 @@ private fun SearchPromptState(modifier: Modifier = Modifier) {
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            "Search for a Patient",
+            stringResource(R.string.search_for_a_patient),
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
             fontSize = 16.sp,
@@ -377,7 +380,7 @@ private fun SearchPromptState(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.height(6.dp))
         Text(
-            "Type a patient's name or phone number above to find and add them.",
+            stringResource(R.string.type_a_patient_s_name_or_phone_number_above_to_find_and_add_them),
             fontFamily = Poppins,
             fontWeight = FontWeight.Medium,
             fontSize = 13.sp,
@@ -409,7 +412,7 @@ private fun EmptyPatientSearchState(query: String = "", modifier: Modifier = Mod
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            "No patients found",
+            stringResource(R.string.no_patients_found),
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
             fontSize = 16.sp,

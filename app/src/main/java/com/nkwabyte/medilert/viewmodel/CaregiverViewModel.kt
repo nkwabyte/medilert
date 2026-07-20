@@ -1,6 +1,9 @@
 @file:OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 
 package com.nkwabyte.medilert.viewmodel
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -250,7 +253,7 @@ class CaregiverViewModel(
         val dailyUnits = medication.intakes.sumOf { it.dose }.coerceAtLeast(1)
         val daysPerCycle = when (medication.frequency) {
             "Every other day" -> 2
-            "Weekly" -> 7
+            stringResource(R.string.weekly) -> 7
             else -> 1
         }
         val daysSupply = (ceil(medication.currentInventory.toDouble() / dailyUnits) * daysPerCycle)
@@ -288,7 +291,7 @@ class CaregiverViewModel(
                     "Once daily", "Twice daily",
                     "Three times daily", "Four times daily" -> true
                     "Every other day" -> daysBetween % 2 == 0L
-                    "Weekly" -> cal.get(Calendar.DAY_OF_WEEK) == medStartCal.get(Calendar.DAY_OF_WEEK)
+                    stringResource(R.string.weekly) -> cal.get(Calendar.DAY_OF_WEEK) == medStartCal.get(Calendar.DAY_OF_WEEK)
                     else -> false
                 }
                 if (shouldAdd) {
@@ -340,9 +343,9 @@ class CaregiverViewModel(
                 scheduleById["${slot.medicationId}_${date}_${intakeIndex}"]?.status == DoseStatus.TAKEN
             }
             val frequencyText = when (med?.frequency) {
-                "Once daily", "Twice daily", "Three times daily", "Four times daily" -> "Everyday"
+                "Once daily", "Twice daily", "Three times daily", "Four times daily" -> stringResource(R.string.everyday)
                 "Every other day" -> "Every other day"
-                "Weekly" -> "Weekly"
+                stringResource(R.string.weekly) -> stringResource(R.string.weekly)
                 else -> med?.frequency ?: ""
             }
             TodayDoseInfo(

@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.dashboard
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -58,9 +61,9 @@ fun EmptyHomeContent(onAddMedication: () -> Unit) {
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Text("No Medications Yet", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 24.sp, color = TextPrimary, textAlign = TextAlign.Center)
+        Text(stringResource(R.string.no_medications_yet), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 24.sp, color = TextPrimary, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.height(12.dp))
-        Text("Add your first medication to start tracking your doses and reminders", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary, textAlign = TextAlign.Center)
+        Text(stringResource(R.string.add_your_first_medication_to_start_tracking_your_doses_and_reminders), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary, textAlign = TextAlign.Center)
 
         Spacer(modifier = Modifier.height(40.dp))
 
@@ -77,7 +80,7 @@ fun EmptyHomeContent(onAddMedication: () -> Unit) {
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
-                    Text("Add Medication", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White)
+                    Text(stringResource(R.string.add_medication), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White)
                 }
             }
         }
@@ -93,8 +96,8 @@ fun EmptyHistoryContent() {
     ) {
         Icon(Icons.Default.MedicalServices, contentDescription = null, tint = TextSecondary, modifier = Modifier.size(80.dp))
         Spacer(modifier = Modifier.height(16.dp))
-        Text("No History Yet", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 22.sp, color = TextPrimary, textAlign = TextAlign.Center)
+        Text(stringResource(R.string.no_history_yet), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 22.sp, color = TextPrimary, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.height(8.dp))
-        Text("Your medication history will appear here once you start tracking", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary, textAlign = TextAlign.Center)
+        Text(stringResource(R.string.your_medication_history_will_appear_here_once_you_start_tracking), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary, textAlign = TextAlign.Center)
     }
 }

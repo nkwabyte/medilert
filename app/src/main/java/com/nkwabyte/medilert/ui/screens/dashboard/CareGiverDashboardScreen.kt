@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.dashboard
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -132,7 +135,7 @@ fun CareGiverHomeContent(
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            "Monitoring:",
+                            stringResource(R.string.monitoring),
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Medium,
                             fontSize = 13.sp,
@@ -237,7 +240,7 @@ fun CareGiverHomeContent(
                                 color = TextPrimary
                             )
                             Text(
-                                "View all",
+                                stringResource(R.string.view_all),
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 14.sp,
@@ -314,7 +317,7 @@ fun CareGiverHomeContent(
                         ) {
                             HomeDailyStatCard(
                                 value = "${selectedDateStats.taken}",
-                                label = "Taken",
+                                label = stringResource(R.string.taken),
                                 valueColor = PrimaryGreen,
                                 containerColor = PrimaryGreen.copy(alpha = 0.08f),
                                 icon = Icons.Default.CheckCircle,
@@ -323,7 +326,7 @@ fun CareGiverHomeContent(
                             )
                             HomeDailyStatCard(
                                 value = "${selectedDateStats.missed}",
-                                label = "Missed",
+                                label = stringResource(R.string.missed),
                                 valueColor = GhanaRed,
                                 containerColor = GhanaRed.copy(alpha = 0.08f),
                                 icon = Icons.Default.Cancel,
@@ -491,12 +494,12 @@ private fun HistoryPatientListScreen(
                 item {
                     Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)) {
                         Text(
-                            "Patient History",
+                            stringResource(R.string.patient_history),
                             fontFamily = Poppins, fontWeight = FontWeight.Bold,
                             fontSize = 24.sp, color = TextPrimary
                         )
                         Text(
-                            "Select a patient to view their dose history",
+                            stringResource(R.string.select_a_patient_to_view_their_dose_history),
                             fontFamily = Poppins, fontWeight = FontWeight.Medium,
                             fontSize = 13.sp, color = TextSecondary
                         )
@@ -508,7 +511,7 @@ private fun HistoryPatientListScreen(
                         value = searchQuery,
                         onValueChange = { searchQuery = it },
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
-                        placeholder = { Text("Search patients...", fontFamily = Poppins, fontSize = 14.sp, color = TextHint) },
+                        placeholder = { Text(stringResource(R.string.search_patients), fontFamily = Poppins, fontSize = 14.sp, color = TextHint) },
                         leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = TextSecondary) },
                         trailingIcon = {
                             if (searchQuery.isNotEmpty()) {
@@ -552,7 +555,7 @@ private fun HistoryPatientListScreen(
                             )
                             Spacer(modifier = Modifier.height(12.dp))
                             Text(
-                                "No patients match \"$searchQuery\"",
+                                stringResource(R.string.no_patients_match)$searchQuery\"",
                                 fontFamily = Poppins, fontWeight = FontWeight.Medium,
                                 fontSize = 14.sp, color = TextSecondary, textAlign = TextAlign.Center
                             )
@@ -592,8 +595,8 @@ private fun HistoryPatientDetailScreen(
             val matchesSearch = searchQuery.isBlank() ||
                     entry.medicationName.contains(searchQuery, ignoreCase = true)
             val matchesStatus = when (selectedFilter) {
-                "Taken" -> entry.status == DoseStatus.TAKEN
-                "Missed" -> entry.status == DoseStatus.MISSED
+                stringResource(R.string.taken) -> entry.status == DoseStatus.TAKEN
+                stringResource(R.string.missed) -> entry.status == DoseStatus.MISSED
                 "Upcoming" -> entry.status == DoseStatus.UPCOMING
                 else -> true
             }
@@ -626,7 +629,7 @@ private fun HistoryPatientDetailScreen(
 
                 Column(modifier = Modifier.padding(horizontal = 24.dp)) {
                     Text(
-                        "Weekly adherence overview",
+                        stringResource(R.string.weekly_adherence_overview),
                         fontFamily = Poppins, fontWeight = FontWeight.Medium,
                         fontSize = 13.sp, color = TextSecondary
                     )
@@ -645,8 +648,8 @@ private fun HistoryPatientDetailScreen(
                         .padding(24.dp)
                 ) {
                     Column {
-                        Text("Weekly", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 18.sp, color = Color.White.copy(alpha = 0.9f))
-                        Text("adherence", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 18.sp, color = Color.White.copy(alpha = 0.9f))
+                        Text(stringResource(R.string.weekly), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 18.sp, color = Color.White.copy(alpha = 0.9f))
+                        Text(stringResource(R.string.adherence), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 18.sp, color = Color.White.copy(alpha = 0.9f))
                         Text("${weeklyStats.adherence}%", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 64.sp, color = Color.White)
                         Text("${weeklyStats.taken} of ${weeklyStats.total} doses taken this week", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp, color = Color.White.copy(alpha = 0.8f))
                     }
@@ -669,8 +672,8 @@ private fun HistoryPatientDetailScreen(
                     modifier = Modifier.padding(horizontal = 24.dp).fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    HistoryStatCard("${weeklyStats.taken}", "Taken", PrimaryGreen, modifier = Modifier.weight(1f))
-                    HistoryStatCard("${weeklyStats.missed}", "Missed", GhanaRed, modifier = Modifier.weight(1f))
+                    HistoryStatCard("${weeklyStats.taken}", stringResource(R.string.taken), PrimaryGreen, modifier = Modifier.weight(1f))
+                    HistoryStatCard("${weeklyStats.missed}", stringResource(R.string.missed), GhanaRed, modifier = Modifier.weight(1f))
                     HistoryStatCard("${weeklyStats.upcoming}", "Upcoming", Color(0xFF4A9EFF), modifier = Modifier.weight(1f))
                 }
 
@@ -680,7 +683,7 @@ private fun HistoryPatientDetailScreen(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
-                    placeholder = { Text("Search medications...", fontFamily = Poppins, fontSize = 14.sp, color = TextHint) },
+                    placeholder = { Text(stringResource(R.string.search_medications), fontFamily = Poppins, fontSize = 14.sp, color = TextHint) },
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = TextSecondary) },
                     trailingIcon = {
                         if (searchQuery.isNotEmpty()) {
@@ -707,7 +710,7 @@ private fun HistoryPatientDetailScreen(
                     contentPadding = PaddingValues(horizontal = 24.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(listOf("All", "Taken", "Missed", "Upcoming")) { filter ->
+                    items(listOf("All", stringResource(R.string.taken), stringResource(R.string.missed), "Upcoming")) { filter ->
                         FilterChip(
                             selected = selectedFilter == filter,
                             onClick = { selectedFilter = filter },
@@ -809,7 +812,7 @@ private fun HistoryPatientCard(
                 fontSize = 16.sp, color = TextPrimary
             )
             Text(
-                "Tap to view dose history",
+                stringResource(R.string.tap_to_view_dose_history),
                 fontFamily = Poppins, fontWeight = FontWeight.Medium,
                 fontSize = 12.sp, color = TextSecondary
             )
@@ -1049,13 +1052,13 @@ private fun NoPatientsHomeState(onAddPatientClick: () -> Unit = {}) {
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            "No patients linked yet",
+            stringResource(R.string.no_patients_linked_yet),
             fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
             fontSize = 16.sp, color = TextPrimary, textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(6.dp))
         Text(
-            "Tap \"+ Add\" above to link a patient and start monitoring their medication adherence.",
+            stringResource(R.string.tap)+ Add\" above to link a patient and start monitoring their medication adherence.",
             fontFamily = Poppins, fontWeight = FontWeight.Medium,
             fontSize = 13.sp, color = TextSecondary, textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -1079,10 +1082,10 @@ private fun NoPatientsState() {
             Icon(Icons.Default.Groups, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(60.dp))
         }
         Spacer(modifier = Modifier.height(24.dp))
-        Text("No Patients Yet", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 22.sp, color = TextPrimary, textAlign = TextAlign.Center)
+        Text(stringResource(R.string.no_patients_yet), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 22.sp, color = TextPrimary, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            "Use \"+ Add\" on the Home tab to link a patient and start monitoring their adherence.",
+            stringResource(R.string.use)+ Add\" on the Home tab to link a patient and start monitoring their adherence.",
             fontFamily = Poppins, fontWeight = FontWeight.Medium,
             fontSize = 14.sp, color = TextSecondary, textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 16.dp)

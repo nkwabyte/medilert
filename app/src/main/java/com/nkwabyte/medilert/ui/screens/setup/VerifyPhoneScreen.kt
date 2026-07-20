@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.setup
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import android.app.Activity
 import androidx.compose.foundation.background
@@ -90,9 +93,9 @@ fun VerifyPhoneScreen(
                         contentAlignment = Alignment.Center
                     ) { Icon(Icons.Default.Phone, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(40.dp)) }
                     Spacer(modifier = Modifier.height(24.dp))
-                    Text("Verify Phone", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 28.sp, color = TextPrimary, textAlign = TextAlign.Center)
+                    Text(stringResource(R.string.verify_phone), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 28.sp, color = TextPrimary, textAlign = TextAlign.Center)
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("We'll send a verification code to your phone number", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary, textAlign = TextAlign.Center)
+                    Text(stringResource(R.string.we_ll_send_a_verification_code_to_your_phone_number), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary, textAlign = TextAlign.Center)
                     Spacer(modifier = Modifier.height(40.dp))
                     AuthInputField(
                         label = "Phone Number",
@@ -140,7 +143,7 @@ fun VerifyPhoneScreen(
                             if (uiState.isLoading) {
                                 CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
                             } else {
-                                Text("Send Code", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White)
+                                Text(stringResource(R.string.send_code), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White)
                             }
                         }
                     }

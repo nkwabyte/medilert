@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.medication
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -107,12 +110,12 @@ fun AddMedicationStep4Screen(
                         showDatePicker = false
                     }
                 ) {
-                    Text("OK")
+                    Text(stringResource(R.string.ok))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         ) {
@@ -185,7 +188,7 @@ fun AddMedicationStep4Screen(
                     .padding(bottom = 120.dp)
             ) {
                 Text(
-                    "Additional Details",
+                    stringResource(R.string.additional_details),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp,
@@ -199,7 +202,7 @@ fun AddMedicationStep4Screen(
                 // Start Date
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "Start Date",
+                        stringResource(R.string.start_date),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -234,7 +237,7 @@ fun AddMedicationStep4Screen(
                 // End Date
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "End Date (Optional)",
+                        stringResource(R.string.end_date_optional),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -269,7 +272,7 @@ fun AddMedicationStep4Screen(
                 // Supply count
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "Current Supply (pills)",
+                        stringResource(R.string.current_supply_pills),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -328,7 +331,7 @@ fun AddMedicationStep4Screen(
 
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "Known Side Effects",
+                        stringResource(R.string.known_side_effects),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -342,7 +345,7 @@ fun AddMedicationStep4Screen(
                             .height(100.dp),
                         placeholder = {
                             Text(
-                                "E.g. nausea, dizziness",
+                                stringResource(R.string.e_g_nausea_dizziness),
                                 fontFamily = Poppins,
                                 color = TextHint,
                                 fontSize = 14.sp
@@ -362,7 +365,7 @@ fun AddMedicationStep4Screen(
 
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "Notes",
+                        stringResource(R.string.notes),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -376,7 +379,7 @@ fun AddMedicationStep4Screen(
                             .height(100.dp),
                         placeholder = {
                             Text(
-                                "Any additional notes...",
+                                stringResource(R.string.any_additional_notes),
                                 fontFamily = Poppins,
                                 color = TextHint,
                                 fontSize = 14.sp
@@ -428,7 +431,7 @@ fun AddMedicationStep4Screen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            "Save Medication",
+                            stringResource(R.string.save_medication),
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,

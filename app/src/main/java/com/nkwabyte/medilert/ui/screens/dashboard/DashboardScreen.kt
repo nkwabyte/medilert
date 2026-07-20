@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.dashboard
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -277,7 +280,7 @@ fun HomeTab(
                 "num" to dateNum,
                 "dateStr" to dayStr,
                 "isToday" to isToday,
-                "adherence" to dayAdherence
+                stringResource(R.string.adherence) to dayAdherence
             )
         }
     }
@@ -369,14 +372,14 @@ fun HomeTab(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "This Week",
+                        stringResource(R.string.this_week),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 17.sp,
                         color = TextPrimary
                     )
                     Text(
-                        "View all",
+                        stringResource(R.string.view_all),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 13.sp,
@@ -404,7 +407,7 @@ fun HomeTab(
                         val date = dayData["num"] as String
                         val dateStr = dayData["dateStr"] as String
                         val isToday = dayData["isToday"] as Boolean
-                        val adherence = dayData["adherence"] as Int
+                        val adherence = dayData[stringResource(R.string.adherence)] as Int
                         val isSelected = dateStr == selectedDateStr
 
                         Column(
@@ -544,14 +547,14 @@ fun HomeTab(
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         StatusBlock(
-                            label = "Taken",
+                            label = stringResource(R.string.taken),
                             count = selTaken,
                             color = PrimaryGreen,
                             icon = Icons.Default.CheckCircle,
                             modifier = Modifier.weight(1f)
                         )
                         StatusBlock(
-                            label = "Missed",
+                            label = stringResource(R.string.missed),
                             count = selMissed,
                             color = GhanaRed,
                             icon = Icons.Default.Cancel,
@@ -804,9 +807,9 @@ fun MedicationScheduleCard(
         else -> PrimaryGreen
     }
     val statusText = when (schedule.status) {
-        DoseStatus.TAKEN -> "Taken"
-        DoseStatus.MISSED -> "Missed"
-        DoseStatus.SKIPPED -> "Skipped"
+        DoseStatus.TAKEN -> stringResource(R.string.taken)
+        DoseStatus.MISSED -> stringResource(R.string.missed)
+        DoseStatus.SKIPPED -> stringResource(R.string.skipped)
         DoseStatus.UPCOMING -> "Upcoming"
     }
 
@@ -946,7 +949,7 @@ fun MedicationScheduleCard(
                     ) {
                         Icon(
                             Icons.Default.Check,
-                            contentDescription = "Taken",
+                            contentDescription = stringResource(R.string.taken),
                             tint = Color.White,
                             modifier = Modifier.size(22.dp)
                         )
@@ -1026,7 +1029,7 @@ private fun SessionHeader(
             )
         }
         Text(
-            "Edit",
+            stringResource(R.string.edit),
             fontFamily = Poppins,
             fontWeight = FontWeight.SemiBold,
             fontSize = 13.sp,
@@ -1071,7 +1074,7 @@ private fun DoseUpdateDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(
-                    "How was this dose?",
+                    stringResource(R.string.how_was_this_dose),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 14.sp,
@@ -1093,7 +1096,7 @@ private fun DoseUpdateDialog(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(Icons.Default.CheckCircle, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(18.dp))
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text("Taken", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = PrimaryGreen)
+                            Text(stringResource(R.string.taken), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = PrimaryGreen)
                         }
                     }
                     Box(
@@ -1108,7 +1111,7 @@ private fun DoseUpdateDialog(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(Icons.Default.Cancel, contentDescription = null, tint = GhanaRed, modifier = Modifier.size(18.dp))
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text("Missed", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = GhanaRed)
+                            Text(stringResource(R.string.missed), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = GhanaRed)
                         }
                     }
                     Box(
@@ -1123,7 +1126,7 @@ private fun DoseUpdateDialog(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(Icons.Default.Schedule, contentDescription = null, tint = GhanaYellowDark, modifier = Modifier.size(18.dp))
                             Spacer(modifier = Modifier.height(4.dp))
-                            Text("Skipped", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = GhanaYellowDark)
+                            Text(stringResource(R.string.skipped), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, color = GhanaYellowDark)
                         }
                     }
                 }
@@ -1143,7 +1146,7 @@ private fun DoseUpdateDialog(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Icon(Icons.Default.Edit, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(16.dp))
-                        Text("Edit Medication Details", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = PrimaryGreen)
+                        Text(stringResource(R.string.edit_medication_details), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = PrimaryGreen)
                     }
                 }
             }
@@ -1151,7 +1154,7 @@ private fun DoseUpdateDialog(
         confirmButton = {},
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary)
+                Text(stringResource(R.string.cancel), fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary)
             }
         }
     )

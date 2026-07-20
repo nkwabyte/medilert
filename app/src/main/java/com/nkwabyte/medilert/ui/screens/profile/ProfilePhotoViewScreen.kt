@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.profile
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -55,7 +58,7 @@ fun ProfilePhotoViewScreen(navViewModel: NavViewModel = viewModel()) {
                 ) {
                     Icon(Icons.Default.CameraAlt, contentDescription = null, modifier = Modifier.size(20.dp))
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Camera", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
+                    Text(stringResource(R.string.camera), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
                 }
                 Button(
                     onClick = { },
@@ -65,7 +68,7 @@ fun ProfilePhotoViewScreen(navViewModel: NavViewModel = viewModel()) {
                 ) {
                     Icon(Icons.Default.Image, contentDescription = null, modifier = Modifier.size(20.dp))
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Gallery", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
+                    Text(stringResource(R.string.gallery), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
                 }
             }
 
@@ -78,7 +81,7 @@ fun ProfilePhotoViewScreen(navViewModel: NavViewModel = viewModel()) {
             ) {
                 Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(20.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Remove Photo", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
+                Text(stringResource(R.string.remove_photo), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
             }
         }
     }
@@ -86,15 +89,15 @@ fun ProfilePhotoViewScreen(navViewModel: NavViewModel = viewModel()) {
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Remove Photo", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp) },
-            text = { Text("Are you sure you want to remove your profile photo?", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp) },
+            title = { Text(stringResource(R.string.remove_photo), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp) },
+            text = { Text(stringResource(R.string.are_you_sure_you_want_to_remove_your_profile_photo), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp) },
             confirmButton = {
                 Button(onClick = { showDeleteDialog = false; navViewModel.popBack() }, colors = ButtonDefaults.buttonColors(containerColor = GhanaRed)) {
-                    Text("Remove", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.remove), fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             dismissButton = {
-                OutlinedButton(onClick = { showDeleteDialog = false }) { Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.SemiBold) }
+                OutlinedButton(onClick = { showDeleteDialog = false }) { Text(stringResource(R.string.cancel), fontFamily = Poppins, fontWeight = FontWeight.SemiBold) }
             },
             shape = RoundedCornerShape(24.dp)
         )

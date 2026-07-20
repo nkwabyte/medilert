@@ -1,4 +1,6 @@
 package com.nkwabyte.medilert.ui.screens.setup
+import androidx.compose.ui.res.stringResource
+
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -141,7 +143,7 @@ fun UserRoleScreen(
                     .padding(bottom = 16.dp)
             ) {
                 Text(
-                    "I am a...",
+                    stringResource(R.string.i_am_a),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
@@ -149,7 +151,7 @@ fun UserRoleScreen(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    "Select your role to personalize your experience",
+                    stringResource(R.string.select_your_role_to_personalize_your_experience),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 15.sp,
@@ -229,7 +231,7 @@ fun UserRoleScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = GhanaYellow)
                 ) {
                     Text(
-                        "Continue",
+                        stringResource(R.string.continue),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 20.sp,
@@ -267,7 +269,7 @@ private fun LicenseInfoBanner() {
         )
         Spacer(modifier = Modifier.width(12.dp))
         Text(
-            "Your professional credentials may be verified before patient access is granted.",
+            stringResource(R.string.your_professional_credentials_may_be_verified_before_patient_access_is_granted),
             fontFamily = Poppins,
             fontWeight = FontWeight.Medium,
             fontSize = 12.sp,

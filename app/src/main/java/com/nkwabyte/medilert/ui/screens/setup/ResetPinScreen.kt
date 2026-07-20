@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.setup
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -60,7 +63,7 @@ fun ResetPinScreen(navViewModel: NavViewModel = viewModel()) {
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    if (step == 0) "New PIN" else "Confirm PIN",
+                    if (step == 0) "New PIN" else stringResource(R.string.confirm_pin),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
@@ -121,7 +124,7 @@ fun ResetPinScreen(navViewModel: NavViewModel = viewModel()) {
                 )
 
                 Text(
-                    "Use your device keyboard to enter PIN",
+                    stringResource(R.string.use_your_device_keyboard_to_enter_pin),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 13.sp,
@@ -154,7 +157,7 @@ fun ResetPinScreen(navViewModel: NavViewModel = viewModel()) {
                     colors = ButtonDefaults.buttonColors(containerColor = GhanaYellow)
                 ) {
                     Text(
-                        if (step == 0) "Continue" else "Reset PIN",
+                        if (step == 0) stringResource(R.string.continue) else "Reset PIN",
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 20.sp,

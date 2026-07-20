@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.data.service
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import com.nkwabyte.medilert.data.FirebaseResult
 import com.nkwabyte.medilert.data.repository.MedicationRepository
@@ -156,7 +159,7 @@ class MedicationService(
                             "Three times daily", "Four times daily" -> true
 
                             "Every other day" -> daysBetween % 2 == 0L
-                            "Weekly" -> dayOfWeek == medStartCal.get(Calendar.DAY_OF_WEEK)
+                            stringResource(R.string.weekly) -> dayOfWeek == medStartCal.get(Calendar.DAY_OF_WEEK)
                             else -> false // "As needed" — not pre-scheduled
                         }
                         if (shouldAdd) {
@@ -210,7 +213,7 @@ class MedicationService(
         val dailyUnits = medication.intakes.sumOf { it.dose }.coerceAtLeast(1)
         val daysPerCycle = when (medication.frequency) {
             "Every other day" -> 2
-            "Weekly" -> 7
+            stringResource(R.string.weekly) -> 7
             else -> 1
         }
         val daysSupply = (ceil(medication.currentInventory.toDouble() / dailyUnits) * daysPerCycle)

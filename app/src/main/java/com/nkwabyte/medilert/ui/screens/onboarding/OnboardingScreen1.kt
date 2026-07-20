@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.onboarding
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -176,7 +179,7 @@ fun OnboardingScreen1(navViewModel: NavViewModel = viewModel()) {
                 }
             ) {
                 Text(
-                    text = "Skip",
+                    text = stringResource(R.string.skip),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,

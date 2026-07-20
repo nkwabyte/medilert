@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.settings
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -194,7 +197,7 @@ fun SettingsScreen(
                         Spacer(modifier = Modifier.size(40.dp))
                     }
                     Text(
-                        "Settings",
+                        stringResource(R.string.settings),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
@@ -304,7 +307,7 @@ fun SettingsScreen(
                 SettingsCard {
                     SettingsRow(
                         icon = Icons.Default.Person,
-                        title = "Edit Profile",
+                        title = stringResource(R.string.edit_profile),
                         subtitle = "Update your personal details",
                         onClick = { navViewModel.navigateTo(ProfilePage) })
                 }
@@ -374,7 +377,7 @@ fun SettingsScreen(
                     SettingsDivider()
                     SettingsRow(
                         icon = Icons.Default.GraphicEq,
-                        title = "Notification Tone",
+                        title = stringResource(R.string.notification_tone),
                         subtitle = selectedTone,
                         onClick = { showToneDialog = true })
                 }
@@ -396,12 +399,12 @@ fun SettingsScreen(
                         })
                     SettingsDivider()
                     SettingsRow(
-                        icon = Icons.Default.Language, title = "Language",
+                        icon = Icons.Default.Language, title = stringResource(R.string.language),
                         subtitle = appViewModel.selectedLanguage.collectAsState().value,
                         onClick = { navViewModel.navigateTo(LanguageSettings) })
                     SettingsDivider()
                     SettingsRow(
-                        icon = Icons.Default.TextFields, title = "Text Size", subtitle = textSize,
+                        icon = Icons.Default.TextFields, title = stringResource(R.string.text_size), subtitle = textSize,
                         onClick = { showTextSizeDialog = true })
                 }
 
@@ -419,7 +422,7 @@ fun SettingsScreen(
                     SettingsDivider()
                     SettingsRow(
                         icon = Icons.Default.Shield,
-                        title = "Privacy Policy",
+                        title = stringResource(R.string.privacy_policy),
                         subtitle = "How we use your data",
                         onClick = { navViewModel.navigateTo(PrivacyPolicy) })
                 }
@@ -442,7 +445,7 @@ fun SettingsScreen(
                 ) {
                     SettingsRow(
                         icon = Icons.AutoMirrored.Filled.Logout,
-                        title = "Log Out",
+                        title = stringResource(R.string.log_out),
                         subtitle = "Sign out of your Medilert account",
                         isDestructive = true,
                         onClick = { showLogoutDialog = true })
@@ -464,11 +467,11 @@ fun SettingsScreen(
         AlertDialog(
             onDismissRequest = { showLogoutDialog = false },
             title = {
-                Text("Log Out", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(stringResource(R.string.log_out), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             },
             text = {
                 Text(
-                    "Are you sure you want to log out of Medilert?",
+                    stringResource(R.string.are_you_sure_you_want_to_log_out_of_medilert),
                     fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp
                 )
             },
@@ -478,12 +481,12 @@ fun SettingsScreen(
                     appViewModel.logout(context)
                     navViewModel.navigateAndClearStack(Login)
                 }, colors = ButtonDefaults.buttonColors(containerColor = GhanaRed)) {
-                    Text("Log Out", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.log_out), fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             dismissButton = {
                 OutlinedButton(onClick = { showLogoutDialog = false }) {
-                    Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.cancel), fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             shape = RoundedCornerShape(24.dp)
@@ -495,7 +498,7 @@ fun SettingsScreen(
         AlertDialog(
             onDismissRequest = { showTextSizeDialog = false },
             containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
-            title = { Text("Text Size", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp) },
+            title = { Text(stringResource(R.string.text_size), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp) },
             text = {
                 androidx.compose.foundation.layout.Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     sizes.forEach { size ->
@@ -519,7 +522,7 @@ fun SettingsScreen(
                 }
             },
             confirmButton = {},
-            dismissButton = { androidx.compose.material3.TextButton(onClick = { showTextSizeDialog = false }) { Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary) } },
+            dismissButton = { androidx.compose.material3.TextButton(onClick = { showTextSizeDialog = false }) { Text(stringResource(R.string.cancel), fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary) } },
             shape = RoundedCornerShape(24.dp)
         )
     }
@@ -530,7 +533,7 @@ fun SettingsScreen(
             onDismissRequest = { showToneDialog = false },
             containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
             title = {
-                Text("Notification Tone", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(stringResource(R.string.notification_tone), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             },
             text = {
                 androidx.compose.foundation.layout.Column(
@@ -582,7 +585,7 @@ fun SettingsScreen(
             confirmButton = {},
             dismissButton = {
                 androidx.compose.material3.TextButton(onClick = { showToneDialog = false }) {
-                    Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary)
+                    Text(stringResource(R.string.cancel), fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary)
                 }
             },
             shape = RoundedCornerShape(24.dp)

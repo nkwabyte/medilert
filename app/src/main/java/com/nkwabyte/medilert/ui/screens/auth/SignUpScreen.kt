@@ -1,4 +1,6 @@
 package com.nkwabyte.medilert.ui.screens.auth
+import androidx.compose.ui.res.stringResource
+
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -261,7 +263,7 @@ fun SignUpScreen(
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Text(
-                        "Create Account",
+                        stringResource(R.string.create_account),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
                         fontSize = 32.sp,
@@ -404,7 +406,7 @@ fun SignUpScreen(
                                 )
                             } else {
                                 Text(
-                                    "Get Started",
+                                    stringResource(R.string.get_started_1),
                                     fontFamily = Poppins,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 18.sp,
@@ -424,7 +426,7 @@ fun SignUpScreen(
                     ) {
                         HorizontalDivider(modifier = Modifier.weight(1f), color = BorderMedium)
                         Text(
-                            "  Or sign up with  ",
+                            stringResource(R.string.or_sign_up_with),
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Medium,
                             fontSize = 13.sp,
@@ -480,7 +482,7 @@ fun SignUpScreen(
                             )
                             Spacer(modifier = Modifier.width(12.dp))
                             Text(
-                                "Continue with Google",
+                                stringResource(R.string.continue_with_google),
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 16.sp,
@@ -493,14 +495,14 @@ fun SignUpScreen(
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            "Already have an account? ",
+                            stringResource(R.string.already_have_an_account),
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Medium,
                             fontSize = 15.sp,
                             color = TextSecondary
                         )
                         Text(
-                            "Sign In",
+                            stringResource(R.string.sign_in),
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.sp,

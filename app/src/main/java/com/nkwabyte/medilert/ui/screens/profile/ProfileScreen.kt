@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.profile
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -149,7 +152,7 @@ fun ProfileScreen(
                         .border(1.dp, BorderLight, CircleShape).clickable { navViewModel.popBack() },
                     contentAlignment = Alignment.Center
                 ) { Icon(Icons.Default.ChevronLeft, contentDescription = "Back", tint = TextPrimary) }
-                Text("Edit Profile", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 20.sp, color = TextPrimary)
+                Text(stringResource(R.string.edit_profile), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 20.sp, color = TextPrimary)
                 Spacer(modifier = Modifier.size(40.dp))
             }
 
@@ -201,15 +204,15 @@ fun ProfileScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         CircularProgressIndicator(modifier = Modifier.size(14.dp), strokeWidth = 2.dp, color = PrimaryGreen)
-                        Text("Uploading photo...", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 12.sp, color = PrimaryGreen)
+                        Text(stringResource(R.string.uploading_photo), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 12.sp, color = PrimaryGreen)
                     }
-                    photoUploadError -> Text("Upload failed. Tap camera to retry.", fontFamily = Poppins,
+                    photoUploadError -> Text(stringResource(R.string.upload_failed_tap_camera_to_retry), fontFamily = Poppins,
                         fontWeight = FontWeight.Medium, fontSize = 12.sp, color = GhanaRed,
                         modifier = Modifier.align(Alignment.CenterHorizontally))
-                    selectedPhotoUri != null -> Text("Photo uploaded ✓", fontFamily = Poppins,
+                    selectedPhotoUri != null -> Text(stringResource(R.string.photo_uploaded), fontFamily = Poppins,
                         fontWeight = FontWeight.Medium, fontSize = 12.sp, color = DarkGreen,
                         modifier = Modifier.align(Alignment.CenterHorizontally))
-                    else -> Text("Tap the camera icon to add a photo", fontFamily = Poppins,
+                    else -> Text(stringResource(R.string.tap_the_camera_icon_to_add_a_photo), fontFamily = Poppins,
                         fontWeight = FontWeight.Medium, fontSize = 12.sp, color = TextSecondary,
                         modifier = Modifier.align(Alignment.CenterHorizontally))
                 }
@@ -226,7 +229,7 @@ fun ProfileScreen(
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                             Icon(Icons.Default.CheckCircle, contentDescription = null, tint = DarkGreen, modifier = Modifier.size(18.dp))
-                            Text("Profile saved successfully!", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 13.sp, color = DarkGreen)
+                            Text(stringResource(R.string.profile_saved_successfully), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 13.sp, color = DarkGreen)
                         }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
@@ -253,7 +256,7 @@ fun ProfileScreen(
                 }
 
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text("Date of Birth", fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
+                    Text(stringResource(R.string.date_of_birth), fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 6.dp))
                     Box(
                         modifier = Modifier.fillMaxWidth().height(64.dp).background(Surface, RoundedCornerShape(24.dp))
@@ -271,7 +274,7 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text("Gender", fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
+                    Text(stringResource(R.string.gender), fontFamily = Poppins, fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 8.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         listOf("Male", "Female", "Other").forEach { option ->
@@ -309,7 +312,7 @@ fun ProfileScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            if (isSaving) "Saving..." else "Save Changes",
+                            if (isSaving) "Saving..." else stringResource(R.string.save_changes),
                             fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White
                         )
                     }
@@ -333,11 +336,11 @@ fun ProfileScreen(
                         showDatePicker = false
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen)
-                ) { Text("OK", fontFamily = Poppins, fontWeight = FontWeight.SemiBold) }
+                ) { Text(stringResource(R.string.ok), fontFamily = Poppins, fontWeight = FontWeight.SemiBold) }
             },
             dismissButton = {
                 OutlinedButton(onClick = { showDatePicker = false }) {
-                    Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.cancel), fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             shape = RoundedCornerShape(24.dp)

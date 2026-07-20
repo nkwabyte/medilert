@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.setup
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -136,7 +139,7 @@ fun PersonalInfoScreen(
                     .padding(top = 24.dp, bottom = 32.dp)
             ) {
                 Text(
-                    "Personal Info",
+                    stringResource(R.string.personal_info),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
@@ -144,7 +147,7 @@ fun PersonalInfoScreen(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    "Tell us a bit about yourself",
+                    stringResource(R.string.tell_us_a_bit_about_yourself),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 15.sp,
@@ -167,7 +170,7 @@ fun PersonalInfoScreen(
                 // Date of Birth field with date picker
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "Date of Birth",
+                        stringResource(R.string.date_of_birth),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -180,7 +183,7 @@ fun PersonalInfoScreen(
                         readOnly = true,
                         placeholder = {
                             Text(
-                                "DD/MM/YYYY",
+                                stringResource(R.string.dd_mm_yyyy),
                                 fontFamily = Poppins,
                                 fontSize = 15.sp,
                                 color = TextSecondary.copy(alpha = 0.6f)
@@ -227,7 +230,7 @@ fun PersonalInfoScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "Gender",
+                        stringResource(R.string.gender),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -294,7 +297,7 @@ fun PersonalInfoScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = GhanaYellow)
                 ) {
                     Text(
-                        "Continue",
+                        stringResource(R.string.continue),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 20.sp,
@@ -315,7 +318,7 @@ fun PersonalInfoScreen(
                         }
                     ) {
                         Text(
-                            "OK",
+                            stringResource(R.string.ok),
                             fontFamily = Poppins,
                             fontWeight = FontWeight.SemiBold,
                             color = PrimaryGreen
@@ -327,7 +330,7 @@ fun PersonalInfoScreen(
                         onClick = { showDatePicker = false }
                     ) {
                         Text(
-                            "Cancel",
+                            stringResource(R.string.cancel),
                             fontFamily = Poppins,
                             fontWeight = FontWeight.Medium,
                             color = TextSecondary

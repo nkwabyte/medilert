@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.setup
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -102,7 +105,7 @@ fun SetPinScreen(
                 }
 
                 Text(
-                    "Skip",
+                    stringResource(R.string.skip),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,
@@ -121,7 +124,7 @@ fun SetPinScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    "Set PIN",
+                    stringResource(R.string.set_pin),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
@@ -130,7 +133,7 @@ fun SetPinScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    "Create a 4-digit PIN to secure your account",
+                    stringResource(R.string.create_a_4_digit_pin_to_secure_your_account),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 15.sp,
@@ -164,7 +167,7 @@ fun SetPinScreen(
                 )
 
                 Text(
-                    "Use your device keyboard to enter PIN",
+                    stringResource(R.string.use_your_device_keyboard_to_enter_pin),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 13.sp,
@@ -195,7 +198,7 @@ fun SetPinScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = GhanaYellow)
                 ) {
                     Text(
-                        "Continue",
+                        stringResource(R.string.continue),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 20.sp,

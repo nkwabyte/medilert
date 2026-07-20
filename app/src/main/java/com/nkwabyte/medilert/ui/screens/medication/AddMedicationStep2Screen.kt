@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.medication
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,7 +31,7 @@ import com.nkwabyte.medilert.viewmodel.MedicationViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 
 private val frequencies = listOf(
-    "Once daily", "Twice daily", "Three times daily", "Four times daily", "Every other day", "Weekly", "As needed"
+    "Once daily", "Twice daily", "Three times daily", "Four times daily", "Every other day", stringResource(R.string.weekly), "As needed"
 )
 
 @Composable
@@ -66,11 +69,11 @@ fun AddMedicationStep2Screen(
             Column(
                 modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 120.dp)
             ) {
-                Text("How often do you take it?", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 24.sp, color = TextPrimary,
+                Text(stringResource(R.string.how_often_do_you_take_it), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 24.sp, color = TextPrimary,
                     textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 24.dp))
 
                 // Dose counter
-                Text("Dose Amount", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 12.dp))
+                Text(stringResource(R.string.dose_amount), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 12.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth().background(Surface, RoundedCornerShape(20.dp)).border(1.dp, BorderLight, RoundedCornerShape(20.dp)).padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
@@ -90,7 +93,7 @@ fun AddMedicationStep2Screen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                Text("Frequency", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 12.dp))
+                Text(stringResource(R.string.frequency), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(start = 4.dp, bottom = 12.dp))
 
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     frequencies.forEach { freq ->
@@ -124,7 +127,7 @@ fun AddMedicationStep2Screen(
                     modifier = Modifier.fillMaxWidth().height(60.dp),
                     shape = RoundedCornerShape(50.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = GhanaYellow)
-                ) { Text("Continue", fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = TextPrimary) }
+                ) { Text(stringResource(R.string.continue), fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = TextPrimary) }
             }
         }
     }

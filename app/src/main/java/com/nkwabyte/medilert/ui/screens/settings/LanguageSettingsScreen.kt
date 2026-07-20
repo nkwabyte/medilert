@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.settings
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -54,12 +57,12 @@ fun LanguageSettingsScreen(
                     modifier = Modifier.size(40.dp).background(Surface, CircleShape).border(1.dp, BorderLight, CircleShape).clickable { navViewModel.popBack() },
                     contentAlignment = Alignment.Center
                 ) { Icon(Icons.Default.ChevronLeft, contentDescription = "Back", tint = TextPrimary) }
-                Text("Language", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 20.sp, color = TextPrimary)
+                Text(stringResource(R.string.language), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 20.sp, color = TextPrimary)
                 Spacer(modifier = Modifier.size(40.dp))
             }
 
             Column(modifier = Modifier.weight(1f).padding(horizontal = 24.dp).padding(top = 16.dp)) {
-                Text("Select your language", fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary)
+                Text(stringResource(R.string.select_your_language), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, color = TextSecondary)
                 Spacer(modifier = Modifier.height(24.dp))
                 languages.forEach { (code, name, native) ->
                     LanguageOption(name = name, native = native, isSelected = selectedLang == code) {
@@ -87,7 +90,7 @@ fun LanguageSettingsScreen(
                     Box(
                         modifier = Modifier.fillMaxSize().background(brush = Brush.horizontalGradient(listOf(PrimaryGreen, MediumGreen)), shape = RoundedCornerShape(50.dp)),
                         contentAlignment = Alignment.Center
-                    ) { Text("Save", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White) }
+                    ) { Text(stringResource(R.string.save), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White) }
                 }
             }
         }

@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.medication
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -79,7 +82,7 @@ private val frequencies = listOf(
     "Three times daily",
     "Four times daily",
     "Every other day",
-    "Weekly",
+    stringResource(R.string.weekly),
     "As needed"
 )
 
@@ -191,12 +194,12 @@ fun EditMedicationScreen(
                         showDatePicker = false
                     }
                 ) {
-                    Text("OK")
+                    Text(stringResource(R.string.ok))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         ) {
@@ -265,7 +268,7 @@ fun EditMedicationScreen(
                 }
 
                 Text(
-                    "Edit Medication",
+                    stringResource(R.string.edit_medication),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
@@ -278,7 +281,7 @@ fun EditMedicationScreen(
                         .background(GhanaRed.copy(alpha = 0.1f), CircleShape)
                         .clickable { showDeleteDialog = true },
                     contentAlignment = Alignment.Center
-                ) { Icon(Icons.Default.Delete, contentDescription = "Delete", tint = GhanaRed) }
+                ) { Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete), tint = GhanaRed) }
             }
 
             Column(
@@ -306,7 +309,7 @@ fun EditMedicationScreen(
                 // Dose
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "Dose Amount",
+                        stringResource(R.string.dose_amount),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -359,7 +362,7 @@ fun EditMedicationScreen(
                 // Frequency
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "Frequency",
+                        stringResource(R.string.frequency),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -417,7 +420,7 @@ fun EditMedicationScreen(
                 // Start Date
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "Start Date",
+                        stringResource(R.string.start_date),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -452,7 +455,7 @@ fun EditMedicationScreen(
                 // End Date
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "End Date (Optional)",
+                        stringResource(R.string.end_date_optional),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -486,7 +489,7 @@ fun EditMedicationScreen(
 
                 // Reminder times
                 Text(
-                    "Reminder Times",
+                    stringResource(R.string.reminder_times),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 14.sp,
@@ -510,7 +513,7 @@ fun EditMedicationScreen(
 
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        "Notes",
+                        stringResource(R.string.notes),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -525,7 +528,7 @@ fun EditMedicationScreen(
                             .height(100.dp),
                         placeholder = {
                             Text(
-                                "Add notes...",
+                                stringResource(R.string.add_notes),
                                 fontFamily = Poppins,
                                 color = TextHint
                             )
@@ -596,7 +599,7 @@ fun EditMedicationScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        "Save Changes",
+                        stringResource(R.string.save_changes),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
@@ -621,7 +624,7 @@ fun EditMedicationScreen(
             onDismissRequest = { showDeleteDialog = false },
             title = {
                 Text(
-                    "Delete Medication",
+                    stringResource(R.string.delete_medication),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
@@ -629,7 +632,7 @@ fun EditMedicationScreen(
             },
             text = {
                 Text(
-                    "Are you sure you want to delete this medication? This action cannot be undone.",
+                    stringResource(R.string.are_you_sure_you_want_to_delete_this_medication_this_action_cannot_be_undone),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
                     fontSize = 14.sp
@@ -644,13 +647,13 @@ fun EditMedicationScreen(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = GhanaRed)
                 ) {
-                    Text("Delete", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.delete), fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             dismissButton = {
                 OutlinedButton(onClick = { showDeleteDialog = false }) {
                     Text(
-                        "Cancel",
+                        stringResource(R.string.cancel),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.SemiBold
                     )

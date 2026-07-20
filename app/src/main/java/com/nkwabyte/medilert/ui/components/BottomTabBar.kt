@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.components
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -65,13 +68,13 @@ fun BottomTabBar(
             )
             TabItem(
                 icon = Icons.Default.History,
-                label = "History",
+                label = stringResource(R.string.history),
                 isActive = activeTab == DashboardTab.HISTORY,
                 onClick = { onTabSelected(DashboardTab.HISTORY) }
             )
             TabItem(
                 icon = Icons.Default.Settings,
-                label = "Settings",
+                label = stringResource(R.string.settings),
                 isActive = activeTab == DashboardTab.SETTINGS,
                 onClick = { onTabSelected(DashboardTab.SETTINGS) }
             )

@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.onboarding
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -162,7 +165,7 @@ fun OnboardingScreen2(navViewModel: NavViewModel = viewModel()) {
                 colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen)
             ) {
                 Text(
-                    text = "Get Started",
+                    text = stringResource(R.string.get_started_1),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp,

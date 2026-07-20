@@ -1,4 +1,7 @@
 package com.nkwabyte.medilert.ui.screens.medication
+import androidx.compose.ui.res.stringResource
+import com.nkwabyte.medilert.R
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -58,8 +61,8 @@ fun MedicationHistoryScreen(
 
             // Status filter
             val matchesStatus = when (selectedFilter) {
-                "Taken" -> schedule.status == DoseStatus.TAKEN
-                "Missed" -> schedule.status == DoseStatus.MISSED
+                stringResource(R.string.taken) -> schedule.status == DoseStatus.TAKEN
+                stringResource(R.string.missed) -> schedule.status == DoseStatus.MISSED
                 "Upcoming" -> schedule.status == DoseStatus.UPCOMING
                 else -> true // "All"
             }
@@ -149,7 +152,7 @@ fun MedicationHistoryScreen(
                     }
 
                     Text(
-                        "History",
+                        stringResource(R.string.history),
                         fontFamily = Poppins,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
@@ -173,14 +176,14 @@ fun MedicationHistoryScreen(
                     ) {
                         Column {
                             Text(
-                                "Weekly",
+                                stringResource(R.string.weekly),
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 18.sp,
                                 color = Color.White.copy(alpha = 0.9f)
                             )
                             Text(
-                                "adherence",
+                                stringResource(R.string.adherence),
                                 fontFamily = Poppins,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 18.sp,
@@ -236,13 +239,13 @@ fun MedicationHistoryScreen(
                     ) {
                         HistoryStatCard(
                             "${weeklyStats.taken}",
-                            "Taken",
+                            stringResource(R.string.taken),
                             PrimaryGreen,
                             modifier = Modifier.weight(1f)
                         )
                         HistoryStatCard(
                             "${weeklyStats.missed}",
-                            "Missed",
+                            stringResource(R.string.missed),
                             GhanaRed,
                             modifier = Modifier.weight(1f)
                         )
@@ -266,7 +269,7 @@ fun MedicationHistoryScreen(
                         .padding(horizontal = 24.dp),
                     placeholder = {
                         Text(
-                            "Search medications...",
+                            stringResource(R.string.search_medications),
                             fontFamily = Poppins,
                             fontSize = 14.sp,
                             color = TextHint
@@ -313,7 +316,7 @@ fun MedicationHistoryScreen(
                     contentPadding = PaddingValues(horizontal = 24.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(listOf("All", "Taken", "Missed", "Upcoming")) { filter ->
+                    items(listOf("All", stringResource(R.string.taken), stringResource(R.string.missed), "Upcoming")) { filter ->
                         FilterChip(
                             selected = selectedFilter == filter,
                             onClick = { selectedFilter = filter },
@@ -467,12 +470,12 @@ fun MedicationHistoryScreen(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen)
                 ) {
-                    Text("OK", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.ok), fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             dismissButton = {
                 OutlinedButton(onClick = { showDatePicker = false }) {
-                    Text("Cancel", fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.cancel), fontFamily = Poppins, fontWeight = FontWeight.SemiBold)
                 }
             },
             shape = RoundedCornerShape(24.dp)
@@ -513,7 +516,7 @@ fun EmptyHistoryState(hasHistory: Boolean, modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            if (hasHistory) "No Results Found" else "No History Yet",
+            if (hasHistory) "No Results Found" else stringResource(R.string.no_history_yet),
             fontFamily = Poppins,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
@@ -572,9 +575,9 @@ fun HistoryStatCard(
 @Composable
 fun HistoryEntryCard(entry: MedicationSchedule, modifier: Modifier = Modifier) {
     val (statusColor, statusIcon, statusLabel) = when (entry.status) {
-        DoseStatus.TAKEN -> Triple(PrimaryGreen, Icons.Default.CheckCircle, "Taken")
-        DoseStatus.MISSED -> Triple(GhanaRed, Icons.Default.Cancel, "Missed")
-        DoseStatus.SKIPPED -> Triple(GhanaYellow, Icons.Default.RemoveCircle, "Skipped")
+        DoseStatus.TAKEN -> Triple(PrimaryGreen, Icons.Default.CheckCircle, stringResource(R.string.taken))
+        DoseStatus.MISSED -> Triple(GhanaRed, Icons.Default.Cancel, stringResource(R.string.missed))
+        DoseStatus.SKIPPED -> Triple(GhanaYellow, Icons.Default.RemoveCircle, stringResource(R.string.skipped))
         DoseStatus.UPCOMING -> Triple(TextSecondary, Icons.Default.Schedule, "Upcoming")
     }
 
