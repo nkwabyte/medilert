@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics.plugin)
-    kotlin("native.cocoapods")
 }
 
 kotlin {
@@ -19,28 +18,14 @@ kotlin {
         }
     }
 
-    iosArm64()
-    iosSimulatorArm64()
-
-    // CocoaPods integration: generates MediLert.podspec and links Firebase iOS SDK
-    // so that gitlive-firebase can resolve its native symbols at link time.
-    cocoapods {
-        version = "1.0"
-        summary = "MediLert Kotlin Multiplatform shared module"
-        homepage = "https://github.com/nkwabyte/medilert"
-        ios.deploymentTarget = "16.0"
-        framework {
+    listOf(
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { target ->
+        target.binaries.framework {
             baseName = "MediLert"
             isStatic = true
         }
-        // Firebase pods required by gitlive-firebase for iOS linking
-        pod("FirebaseCore")
-        pod("FirebaseAuth")
-        pod("FirebaseFirestore")
-        pod("FirebaseStorage")
-        pod("FirebaseMessaging")
-        pod("FirebaseCrashlytics")
-        pod("FirebaseAnalytics")
     }
 
     targets.configureEach {
