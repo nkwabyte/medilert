@@ -185,25 +185,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		AA00000025 /* Compile Kotlin Framework */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Compile Kotlin Framework";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -z \"$KOTLIN_PROJECT_PATH\" ]; then\n  KOTLIN_PROJECT_PATH=\"$SRCROOT/..\"\nfi\n\"$KOTLIN_PROJECT_PATH/gradlew\" -p \"$KOTLIN_PROJECT_PATH\" :app:embedAndSignAppleFrameworkForXcode\n";
-			showEnvVarsInLog = 0;
-		};
 		4837AD78EDCCC366361E22F5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -222,6 +203,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+		};
+		AA00000025 /* Compile Kotlin Framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Compile Kotlin Framework";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ -z \"$KOTLIN_PROJECT_PATH\" ]; then\n  KOTLIN_PROJECT_PATH=\"$SRCROOT/..\"\nfi\nif [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping framework compilation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED, syncing Compose resources...\"\n  ARCHS=\"arm64\" \"$KOTLIN_PROJECT_PATH/gradlew\" -p \"$KOTLIN_PROJECT_PATH\" :app:syncComposeResourcesForIos\nelse\n  \"$KOTLIN_PROJECT_PATH/gradlew\" -p \"$KOTLIN_PROJECT_PATH\" :app:embedAndSignAppleFrameworkForXcode\nfi\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
