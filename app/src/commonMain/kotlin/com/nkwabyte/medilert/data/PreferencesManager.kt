@@ -4,7 +4,8 @@ import com.russhwolf.settings.Settings
 import kotlinx.datetime.Clock
 
 class PreferencesManager {
-    private val settings = Settings()
+    private val settings get() = Settings()
+
 
     companion object {
         private const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"

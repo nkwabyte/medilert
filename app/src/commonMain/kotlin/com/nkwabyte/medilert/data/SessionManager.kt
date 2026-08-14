@@ -7,10 +7,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SessionManager(
-    private val prefsManager: PreferencesManager = PreferencesManager.instance,
+    private val prefsManager: PreferencesManager,
     private val onSessionExpired: suspend () -> Unit
 ) {
-    private val scope = CoroutineScope(Dispatchers.Default)
+    constructor(onSessionExpired: suspend () -> Unit) : this(PreferencesManager.instance, onSessionExpired)
+
+    private val scope get() = CoroutineScope(Dispatchers.Default)
+
     private var sessionCheckJob: Job? = null
 
     companion object {

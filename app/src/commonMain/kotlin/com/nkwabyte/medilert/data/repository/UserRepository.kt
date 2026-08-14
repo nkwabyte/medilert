@@ -8,8 +8,9 @@ import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
 
 class UserRepository {
-    private val firestore = Firebase.firestore
-    private val auth = Firebase.auth
+    private val firestore get() = Firebase.firestore
+    private val auth get() = Firebase.auth
+
 
     private val uid get() = auth.currentUser?.uid ?: error("No authenticated user")
 

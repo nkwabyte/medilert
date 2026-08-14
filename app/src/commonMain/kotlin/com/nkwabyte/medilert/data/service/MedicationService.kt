@@ -20,11 +20,13 @@ import kotlinx.datetime.todayIn
 import kotlin.math.ceil
 
 class MedicationService(
-    private val repository: MedicationRepository = MedicationRepository()
+    private val repository: MedicationRepository
 ) {
-    val medications: Flow<List<Medication>> = repository.medicationsFlow()
+    constructor() : this(MedicationRepository())
 
-    val scheduleHistory: Flow<List<MedicationSchedule>> = combine(
+    val medications: Flow<List<Medication>> get() = repository.medicationsFlow()
+
+    val scheduleHistory: Flow<List<MedicationSchedule>> get() = combine(
         repository.medicationsFlow(),
         repository.doseRecordsFlow()
     ) { medications, doseRecords ->
@@ -51,13 +53,13 @@ class MedicationService(
         (overlaid + olderHistory).sortedByDescending { it.date }
     }
 
-    val todayAdherence: Flow<Int> = scheduleHistory.map { schedules ->
+    val todayAdherence: Flow<Int> get() = scheduleHistory.map { schedules ->
         val todayKey = Clock.System.todayIn(TimeZone.currentSystemDefault()).toString()
         val today = schedules.filter { it.date == todayKey }
         (computeAdherence(today) * 100).toInt()
     }
 
-    val todayCounts: Flow<Triple<Int, Int, Int>> = scheduleHistory.map { schedules ->
+    val todayCounts: Flow<Triple<Int, Int, Int>> get() = scheduleHistory.map { schedules ->
         val todayKey = Clock.System.todayIn(TimeZone.currentSystemDefault()).toString()
         val today = schedules.filter { it.date == todayKey }
         Triple(
