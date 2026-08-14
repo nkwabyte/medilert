@@ -13,11 +13,12 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 class ChatRepository {
-    private val firestore = Firebase.firestore
-    private val auth = Firebase.auth
+    private val firestore get() = Firebase.firestore
+    private val auth get() = Firebase.auth
 
     private val uid get() = auth.currentUser?.uid ?: error("No authenticated user")
-    private val conversationsCollection = firestore.collection("conversations")
+    private val conversationsCollection get() = firestore.collection("conversations")
+
 
     fun getConversationId(userId1: String, userId2: String): String {
         return if (userId1 < userId2) "${userId1}_${userId2}" else "${userId2}_${userId1}"

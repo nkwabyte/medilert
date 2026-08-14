@@ -15,9 +15,10 @@ data class NotificationPreferences(
 )
 
 class NotificationRepository {
-    private val firestore = Firebase.firestore
-    private val auth = Firebase.auth
-    private val messaging = Firebase.messaging
+    private val firestore get() = Firebase.firestore
+    private val auth get() = Firebase.auth
+    private val messaging get() = Firebase.messaging
+
 
     private val uid get() = auth.currentUser?.uid ?: error("No authenticated user")
     private fun userDoc() = firestore.collection("users").document(uid)

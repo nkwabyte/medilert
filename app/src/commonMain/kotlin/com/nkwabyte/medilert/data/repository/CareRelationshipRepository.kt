@@ -15,12 +15,13 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 class CareRelationshipRepository {
-    private val firestore = Firebase.firestore
-    private val auth = Firebase.auth
+    private val firestore get() = Firebase.firestore
+    private val auth get() = Firebase.auth
 
     private val uid get() = auth.currentUser?.uid ?: error("No authenticated user")
 
-    private val assignments = firestore.collection("careAssignments")
+    private val assignments get() = firestore.collection("careAssignments")
+
     private fun userDoc(id: String) = firestore.collection("users").document(id)
     private fun assignmentId(caregiverId: String, patientId: String) = "${caregiverId}_${patientId}"
 

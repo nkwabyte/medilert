@@ -11,7 +11,8 @@ import dev.gitlive.firebase.auth.PhoneAuthProvider
 import dev.gitlive.firebase.auth.auth
 
 class AuthRepository {
-    private val auth = Firebase.auth
+    private val auth get() = Firebase.auth
+
 
     val currentUser: FirebaseUser? get() = auth.currentUser
     val isLoggedIn: Boolean get() = currentUser != null
