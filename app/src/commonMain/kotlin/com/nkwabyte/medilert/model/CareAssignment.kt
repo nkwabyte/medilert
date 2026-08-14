@@ -1,6 +1,6 @@
 package com.nkwabyte.medilert.model
 
-import kotlin.time.Clock
+import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -10,5 +10,5 @@ data class CareAssignment(
     val caregiverId: String = "",
     val patientName: String = "",
     val caregiverName: String = "",
-    val assignedAt: Long = Clock.System.now().toEpochMilliseconds()
+    val assignedAt: Long = 0L
 )

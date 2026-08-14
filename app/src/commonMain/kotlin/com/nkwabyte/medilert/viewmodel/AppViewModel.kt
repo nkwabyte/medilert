@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
+import kotlinx.datetime.Clock
 
 class AppViewModel(
     private val authService: AuthService = AuthService(),
@@ -136,17 +136,6 @@ class AppViewModel(
         lowAdherenceEnabled: Boolean? = null
     ) {
         viewModelScope.launch {
-            val updates = mutableMapOf<String, Any>()
-            notificationsEnabled?.let { updates["preferences.notificationsEnabled"] = it }
-            soundEnabled?.let { updates["preferences.soundEnabled"] = it }
-            vibrationEnabled?.let { updates["preferences.vibrationEnabled"] = it }
-            theme?.let { updates["preferences.theme"] = it }
-            language?.let { updates["preferences.language"] = it }
-            fontSize?.let { updates["preferences.fontSize"] = it }
-            voiceEnabled?.let { updates["preferences.voiceEnabled"] = it }
-            missedAlertsEnabled?.let { updates["preferences.missedAlertsEnabled"] = it }
-            lowAdherenceEnabled?.let { updates["preferences.lowAdherenceEnabled"] = it }
-
             val currentPrefs = _currentUser.value.preferences
             val updatedPrefs = currentPrefs.copy(
                 notificationsEnabled = notificationsEnabled ?: currentPrefs.notificationsEnabled,
@@ -160,8 +149,9 @@ class AppViewModel(
                 lowAdherenceEnabled = lowAdherenceEnabled ?: currentPrefs.lowAdherenceEnabled
             )
             _currentUser.value = _currentUser.value.copy(preferences = updatedPrefs)
+            _isDarkMode.value = updatedPrefs.theme == "dark"
 
-            if (updates.isNotEmpty()) userService.updateProfile(updates)
+            userService.updateProfile(mapOf("preferences" to updatedPrefs))
         }
     }
 

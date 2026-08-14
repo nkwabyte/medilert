@@ -6,9 +6,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-internal var poppinsFont: FontFamily = FontFamily.Default
-
-val Poppins: FontFamily get() = poppinsFont
+val Poppins: FontFamily get() = FontFamily.Default
 
 fun createTypography(fontFamily: FontFamily): Typography = Typography(
     displayLarge = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Bold, fontSize = 32.sp, lineHeight = 40.sp),

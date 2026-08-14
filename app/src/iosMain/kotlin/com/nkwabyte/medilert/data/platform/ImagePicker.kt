@@ -12,6 +12,7 @@ import platform.posix.memcpy
 import platform.UIKit.*
 
 // Retained while a picker is active to prevent ARC from deallocating the delegate.
+@kotlin.native.concurrent.ThreadLocal
 private var activeDelegateHolder: Any? = null
 
 actual class ImagePicker(

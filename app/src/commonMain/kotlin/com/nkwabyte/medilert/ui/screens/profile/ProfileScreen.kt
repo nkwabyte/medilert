@@ -33,7 +33,7 @@ import com.nkwabyte.medilert.ui.screens.auth.AuthInputField
 import com.nkwabyte.medilert.ui.theme.*
 import com.nkwabyte.medilert.viewmodel.AppViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
-import kotlin.time.Clock
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime

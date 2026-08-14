@@ -37,7 +37,9 @@ import com.nkwabyte.medilert.ui.theme.Surface
 import com.nkwabyte.medilert.ui.theme.TabActive
 import com.nkwabyte.medilert.ui.theme.TabInactive
 
-enum class DashboardTab { HOME, HISTORY, SETTINGS }
+import androidx.compose.material.icons.automirrored.filled.Chat
+
+enum class DashboardTab { HOME, HISTORY, CHAT, SETTINGS }
 
 @Composable
 fun BottomTabBar(
@@ -56,7 +58,7 @@ fun BottomTabBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(72.dp)
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -71,6 +73,12 @@ fun BottomTabBar(
                 label = stringResource(R.string.history),
                 isActive = activeTab == DashboardTab.HISTORY,
                 onClick = { onTabSelected(DashboardTab.HISTORY) }
+            )
+            TabItem(
+                icon = Icons.AutoMirrored.Filled.Chat,
+                label = "Chat",
+                isActive = activeTab == DashboardTab.CHAT,
+                onClick = { onTabSelected(DashboardTab.CHAT) }
             )
             TabItem(
                 icon = Icons.Default.Settings,

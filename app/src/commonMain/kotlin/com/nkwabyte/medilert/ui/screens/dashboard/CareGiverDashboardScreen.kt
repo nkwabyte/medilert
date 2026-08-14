@@ -44,6 +44,7 @@ import com.nkwabyte.medilert.ui.screens.medication.EmptyHistoryState
 import com.nkwabyte.medilert.ui.screens.medication.HistoryEntryCard
 import com.nkwabyte.medilert.ui.screens.medication.HistoryStatCard
 import com.nkwabyte.medilert.ui.screens.medication.formatDateHeader
+import com.nkwabyte.medilert.ui.screens.chat.ChatScreen
 import com.nkwabyte.medilert.ui.screens.settings.SettingsScreen
 import com.nkwabyte.medilert.ui.theme.*
 import com.nkwabyte.medilert.viewmodel.AppViewModel
@@ -51,7 +52,7 @@ import com.nkwabyte.medilert.viewmodel.CaregiverViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 import com.nkwabyte.medilert.viewmodel.TodayDoseInfo
 import com.nkwabyte.medilert.viewmodel.WeekDayInfo
-import kotlin.time.Clock
+import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -75,6 +76,7 @@ fun CareGiverDashboardScreen(
                 onAddPatientClick = { navViewModel.navigateTo(CaregiverAddPatient) }
             )
             DashboardTab.HISTORY -> CareGiverHistoryContent(caregiverViewModel = caregiverViewModel)
+            DashboardTab.CHAT -> ChatScreen(appViewModel = appViewModel, isCaregiver = true)
             DashboardTab.SETTINGS -> SettingsScreen(hideBackButton = true, isCaregiver = true)
         }
         BottomTabBar(
@@ -193,11 +195,19 @@ fun CareGiverHomeContent(
                             .statusBarsPadding()
                             .padding(horizontal = 24.dp, vertical = 20.dp)
                     ) {
-                        Text(
-                            "Hi, ".tr() + "$firstName 👋",
-                            fontFamily = Poppins, fontWeight = FontWeight.Bold,
-                            fontSize = 22.sp, color = Color.White
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                "Hi, ".tr() + "$firstName 👋",
+                                fontFamily = Poppins, fontWeight = FontWeight.Bold,
+                                fontSize = 21.sp, color = Color.White
+                            )
+                            com.nkwabyte.medilert.ui.components.RoleBadge(
+                                role = com.nkwabyte.medilert.ui.components.UserRole.DOCTOR
+                            )
+                        }
                         Text(
                             today,
                             fontFamily = Poppins, fontWeight = FontWeight.Normal,

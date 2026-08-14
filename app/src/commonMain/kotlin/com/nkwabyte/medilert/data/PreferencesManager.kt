@@ -1,7 +1,7 @@
 package com.nkwabyte.medilert.data
 
 import com.russhwolf.settings.Settings
-import kotlin.time.Clock
+import kotlinx.datetime.Clock
 
 class PreferencesManager {
     private val settings = Settings()

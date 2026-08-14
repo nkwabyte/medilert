@@ -96,13 +96,13 @@ fun SettingsScreen(
     val currentUser by appViewModel.currentUser.collectAsState()
     val userRole by appViewModel.userRole.collectAsState()
     val caregiver = isCaregiver || userRole == UserRole.DOCTOR || userRole == UserRole.PHARMACIST
-    var remindersOn by remember { mutableStateOf(true) }
-    var soundAlerts by remember { mutableStateOf(false) }
-    var vibration by remember { mutableStateOf(true) }
+    val remindersOn = currentUser.preferences.notificationsEnabled
+    val soundAlerts = currentUser.preferences.soundEnabled
+    val vibration = currentUser.preferences.vibrationEnabled
     val darkMode by appViewModel.isDarkMode.collectAsState()
     val textSize by appViewModel.textSize.collectAsState()
-    var missedAlerts by remember { mutableStateOf(true) }
-    var lowAdherence by remember { mutableStateOf(true) }
+    val missedAlerts = currentUser.preferences.missedAlertsEnabled
+    val lowAdherence = currentUser.preferences.lowAdherenceEnabled
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showToneDialog by remember { mutableStateOf(false) }
     var selectedTone by remember { mutableStateOf("Default") }
@@ -326,7 +326,7 @@ fun SettingsScreen(
                             rightElement = {
                                 MedSwitch(
                                     checked = missedAlerts,
-                                    onCheckedChange = { missedAlerts = it })
+                                    onCheckedChange = { appViewModel.updatePreferences(missedAlertsEnabled = it) })
                             })
                         SettingsDivider()
                         SettingsRow(
@@ -336,7 +336,7 @@ fun SettingsScreen(
                             rightElement = {
                                 MedSwitch(
                                     checked = lowAdherence,
-                                    onCheckedChange = { lowAdherence = it })
+                                    onCheckedChange = { appViewModel.updatePreferences(lowAdherenceEnabled = it) })
                             })
                     } else {
                         SettingsRow(
@@ -346,7 +346,7 @@ fun SettingsScreen(
                             rightElement = {
                                 MedSwitch(
                                     checked = remindersOn,
-                                    onCheckedChange = { remindersOn = it })
+                                    onCheckedChange = { appViewModel.updatePreferences(notificationsEnabled = it) })
                             })
                         SettingsDivider()
                     }
@@ -357,7 +357,7 @@ fun SettingsScreen(
                         rightElement = {
                             MedSwitch(
                                 checked = soundAlerts,
-                                onCheckedChange = { soundAlerts = it })
+                                onCheckedChange = { appViewModel.updatePreferences(soundEnabled = it) })
                         })
                     SettingsDivider()
                     SettingsRow(
@@ -368,7 +368,7 @@ fun SettingsScreen(
                             MedSwitch(
                                 checked = vibration,
                                 onCheckedChange = { 
-                                    vibration = it 
+                                    appViewModel.updatePreferences(vibrationEnabled = it)
                                     if (it) {
                                         com.nkwabyte.medilert.util.HapticFeedback.success()
                                     }

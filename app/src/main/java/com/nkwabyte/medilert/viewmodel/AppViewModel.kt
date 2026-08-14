@@ -62,6 +62,10 @@ class AppViewModel(
                 user?.let {
                     _currentUser.value = it
                     _userRole.value = it.role
+                    _selectedLanguage.value = it.preferences.language
+                    _isDarkMode.value = it.preferences.theme == "dark"
+                    _voiceEnabled.value = it.preferences.voiceEnabled
+                    setTextSize(it.preferences.fontSize)
                 }
             }
         }
@@ -112,22 +116,27 @@ class AppViewModel(
         theme: String? = null,
         language: String? = null,
         fontSize: String? = null,
-        voiceEnabled: Boolean? = null
+        voiceEnabled: Boolean? = null,
+        missedAlertsEnabled: Boolean? = null,
+        lowAdherenceEnabled: Boolean? = null
     ) {
         viewModelScope.launch {
-            val updates = mutableMapOf<String, Any>()
+            val currentPrefs = _currentUser.value.preferences
+            val updatedPrefs = currentPrefs.copy(
+                notificationsEnabled = notificationsEnabled ?: currentPrefs.notificationsEnabled,
+                soundEnabled = soundEnabled ?: currentPrefs.soundEnabled,
+                vibrationEnabled = vibrationEnabled ?: currentPrefs.vibrationEnabled,
+                theme = theme ?: currentPrefs.theme,
+                language = language ?: currentPrefs.language,
+                fontSize = fontSize ?: currentPrefs.fontSize,
+                voiceEnabled = voiceEnabled ?: currentPrefs.voiceEnabled,
+                missedAlertsEnabled = missedAlertsEnabled ?: currentPrefs.missedAlertsEnabled,
+                lowAdherenceEnabled = lowAdherenceEnabled ?: currentPrefs.lowAdherenceEnabled
+            )
+            _currentUser.value = _currentUser.value.copy(preferences = updatedPrefs)
+            _isDarkMode.value = updatedPrefs.theme == "dark"
 
-            notificationsEnabled?.let { updates["preferences.notificationsEnabled"] = it }
-            soundEnabled?.let { updates["preferences.soundEnabled"] = it }
-            vibrationEnabled?.let { updates["preferences.vibrationEnabled"] = it }
-            theme?.let { updates["preferences.theme"] = it }
-            language?.let { updates["preferences.language"] = it }
-            fontSize?.let { updates["preferences.fontSize"] = it }
-            voiceEnabled?.let { updates["preferences.voiceEnabled"] = it }
-
-            if (updates.isNotEmpty()) {
-                userService.updateProfile(updates)
-            }
+            userService.updateProfile(mapOf("preferences" to updatedPrefs))
         }
     }
 

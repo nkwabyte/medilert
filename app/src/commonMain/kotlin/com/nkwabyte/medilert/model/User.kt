@@ -1,6 +1,6 @@
 package com.nkwabyte.medilert.model
 
-import kotlin.time.Clock
+import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -17,8 +17,8 @@ data class User(
     val specialty: String = "",
     val emergencyContact: String = "",
     val preferences: UserPreferences = UserPreferences(),
-    val createdAt: Long = Clock.System.now().toEpochMilliseconds(),
-    val updatedAt: Long = Clock.System.now().toEpochMilliseconds(),
+    val createdAt: Long = 0L,
+    val updatedAt: Long = 0L,
     val caregiverId: String = ""
 )
 

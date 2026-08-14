@@ -72,6 +72,7 @@ import com.nkwabyte.medilert.navigation.ProfilePage
 import com.nkwabyte.medilert.ui.components.BottomTabBar
 import com.nkwabyte.medilert.ui.components.DashboardTab
 import com.nkwabyte.medilert.ui.screens.medication.MedicationHistoryScreen
+import com.nkwabyte.medilert.ui.screens.chat.ChatScreen
 import com.nkwabyte.medilert.ui.screens.settings.SettingsScreen
 import com.nkwabyte.medilert.ui.theme.Background
 import com.nkwabyte.medilert.ui.theme.BorderLight
@@ -141,6 +142,10 @@ fun DashboardScreen(
                     navViewModel = navViewModel,
                     medicationViewModel = medicationViewModel,
                     hideBackButton = true
+                )
+
+                DashboardTab.CHAT -> ChatScreen(
+                    appViewModel = appViewModel
                 )
 
                 DashboardTab.SETTINGS -> SettingsScreen(

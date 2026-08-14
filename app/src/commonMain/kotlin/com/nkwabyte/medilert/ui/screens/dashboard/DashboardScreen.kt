@@ -77,6 +77,7 @@ import com.nkwabyte.medilert.navigation.ProfilePage
 import org.jetbrains.compose.resources.painterResource
 import com.nkwabyte.medilert.ui.components.BottomTabBar
 import com.nkwabyte.medilert.ui.components.DashboardTab
+import com.nkwabyte.medilert.ui.screens.chat.ChatScreen
 import com.nkwabyte.medilert.ui.screens.medication.MedicationHistoryScreen
 import com.nkwabyte.medilert.ui.screens.settings.SettingsScreen
 import com.nkwabyte.medilert.ui.theme.Background
@@ -98,7 +99,7 @@ import com.nkwabyte.medilert.util.HapticFeedback
 import com.nkwabyte.medilert.viewmodel.AppViewModel
 import com.nkwabyte.medilert.viewmodel.MedicationViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
-import kotlin.time.Clock
+import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
@@ -156,6 +157,10 @@ fun DashboardScreen(
                     navViewModel = navViewModel,
                     medicationViewModel = medicationViewModel,
                     hideBackButton = true
+                )
+
+                DashboardTab.CHAT -> ChatScreen(
+                    appViewModel = appViewModel
                 )
 
                 DashboardTab.SETTINGS -> SettingsScreen(
@@ -374,13 +379,21 @@ fun HomeTab(
                         }
                         Spacer(modifier = Modifier.width(14.dp))
                         Column {
-                            Text(
-                                "$greeting, $userName",
-                                fontFamily = Poppins,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp,
-                                color = Color.White
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Text(
+                                    "$greeting, $userName",
+                                    fontFamily = Poppins,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 19.sp,
+                                    color = Color.White
+                                )
+                                com.nkwabyte.medilert.ui.components.RoleBadge(
+                                    role = com.nkwabyte.medilert.ui.components.UserRole.PATIENT
+                                )
+                            }
                             if (localGreeting.isNotEmpty()) {
                                 Text(
                                     localGreeting,

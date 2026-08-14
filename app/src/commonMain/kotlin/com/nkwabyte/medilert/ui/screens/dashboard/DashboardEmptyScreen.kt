@@ -23,6 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nkwabyte.medilert.navigation.*
 import com.nkwabyte.medilert.ui.components.BottomTabBar
 import com.nkwabyte.medilert.ui.components.DashboardTab
+import com.nkwabyte.medilert.ui.screens.chat.ChatScreen
 import com.nkwabyte.medilert.ui.screens.settings.SettingsScreen
 import com.nkwabyte.medilert.ui.theme.*
 import com.nkwabyte.medilert.viewmodel.AppViewModel
@@ -39,6 +40,7 @@ fun DashboardEmptyScreen(
         when (activeTab) {
             DashboardTab.HOME -> EmptyHomeContent(onAddMedication = { navViewModel.navigateTo(AddMedication1) })
             DashboardTab.HISTORY -> EmptyHistoryContent()
+            DashboardTab.CHAT -> ChatScreen(appViewModel = appViewModel)
             DashboardTab.SETTINGS -> SettingsScreen(hideBackButton = true)
         }
 
@@ -58,7 +60,13 @@ fun EmptyHomeContent(onAddMedication: () -> Unit) {
             contentAlignment = Alignment.Center
         ) { Icon(Icons.Default.MedicalServices, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(60.dp)) }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(20.dp))
+
+        com.nkwabyte.medilert.ui.components.RoleBadge(
+            role = com.nkwabyte.medilert.ui.components.UserRole.PATIENT
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text("No Medications Yet".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 24.sp, color = TextPrimary, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.height(12.dp))

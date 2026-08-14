@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Medication(
-    val id: String = kotlin.uuid.Uuid.random().toString(),
+    val id: String = "",
     val name: String = "",
     val frequency: String = "Once daily",
     val dose: Int = 1,

@@ -35,7 +35,7 @@ import com.nkwabyte.medilert.model.MedicationSchedule
 import com.nkwabyte.medilert.ui.theme.*
 import com.nkwabyte.medilert.viewmodel.MedicationViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
-import kotlin.time.Clock
+import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate

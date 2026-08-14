@@ -24,6 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nkwabyte.medilert.navigation.*
 import com.nkwabyte.medilert.ui.components.BottomTabBar
 import com.nkwabyte.medilert.ui.components.DashboardTab
+import com.nkwabyte.medilert.ui.screens.chat.ChatScreen
 import com.nkwabyte.medilert.ui.screens.settings.SettingsScreen
 import com.nkwabyte.medilert.ui.theme.*
 import com.nkwabyte.medilert.viewmodel.AppViewModel
@@ -40,6 +41,7 @@ fun DashboardEmptyScreen(
         when (activeTab) {
             DashboardTab.HOME -> EmptyHomeContent(onAddMedication = { navViewModel.navigateTo(AddMedication1) })
             DashboardTab.HISTORY -> EmptyHistoryContent()
+            DashboardTab.CHAT -> ChatScreen(appViewModel = appViewModel)
             DashboardTab.SETTINGS -> SettingsScreen(hideBackButton = true)
         }
 

@@ -37,6 +37,7 @@ import com.nkwabyte.medilert.ui.screens.medication.EmptyHistoryState
 import com.nkwabyte.medilert.ui.screens.medication.HistoryEntryCard
 import com.nkwabyte.medilert.ui.screens.medication.HistoryStatCard
 import com.nkwabyte.medilert.ui.screens.medication.formatDateHeader
+import com.nkwabyte.medilert.ui.screens.chat.ChatScreen
 import com.nkwabyte.medilert.ui.screens.settings.SettingsScreen
 import com.nkwabyte.medilert.ui.theme.*
 import com.nkwabyte.medilert.viewmodel.AppViewModel
@@ -65,6 +66,7 @@ fun CareGiverDashboardScreen(
                 onAddPatientClick = { navViewModel.navigateTo(CaregiverAddPatient) }
             )
             DashboardTab.HISTORY -> CareGiverHistoryContent(caregiverViewModel = caregiverViewModel)
+            DashboardTab.CHAT -> ChatScreen(appViewModel = appViewModel, isCaregiver = true)
             DashboardTab.SETTINGS -> SettingsScreen(hideBackButton = true, isCaregiver = true)
         }
         BottomTabBar(

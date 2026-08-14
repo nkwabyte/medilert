@@ -70,7 +70,6 @@ fun MedilertTheme(
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
     val medilertColors = if (darkTheme) darkMedilertColors() else lightMedilertColors()
     val font = loadPoppins()
-    poppinsFont = font
     val currentDensity = LocalDensity.current
 
     CompositionLocalProvider(
