@@ -16,9 +16,21 @@ class ChatService(
     fun getUserConversationsFlow(userId: String): Flow<List<ChatConversation>> =
         chatRepository.userConversationsFlow(userId)
 
-    fun getMessagesFlow(conversationId: String): Flow<List<ChatMessage>> =
-        chatRepository.messagesFlow(conversationId)
+    fun getMessagesFlow(conversationId: String, userId: String = ""): Flow<List<ChatMessage>> =
+        chatRepository.messagesFlow(conversationId, userId)
 
     suspend fun sendMessage(message: ChatMessage): FirebaseResult<Unit> =
         chatRepository.sendMessage(message)
+
+    suspend fun deleteConversationForUser(conversationId: String, userId: String): FirebaseResult<Unit> =
+        chatRepository.deleteConversationForUser(conversationId, userId)
+
+    suspend fun deleteConversationForEveryone(conversationId: String): FirebaseResult<Unit> =
+        chatRepository.deleteConversationForEveryone(conversationId)
+
+    suspend fun markConversationAsRead(conversationId: String, currentUserId: String): FirebaseResult<Unit> =
+        chatRepository.markConversationAsRead(conversationId, currentUserId)
+
+    suspend fun markMessagesAsDelivered(conversationId: String, currentUserId: String): FirebaseResult<Unit> =
+        chatRepository.markMessagesAsDelivered(conversationId, currentUserId)
 }

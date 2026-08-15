@@ -13,9 +13,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import com.nkwabyte.medilert.util.HapticFeedback
+import com.nkwabyte.medilert.util.SoundPlayer
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,9 +63,12 @@ import kotlinx.datetime.toLocalDateTime
 fun CareGiverDashboardScreen(
     navViewModel: NavViewModel = viewModel { NavViewModel() },
     appViewModel: AppViewModel = viewModel { AppViewModel() },
-    caregiverViewModel: CaregiverViewModel = viewModel { CaregiverViewModel() }
+    caregiverViewModel: CaregiverViewModel = viewModel { CaregiverViewModel() },
+    chatViewModel: com.nkwabyte.medilert.viewmodel.ChatViewModel = viewModel { com.nkwabyte.medilert.viewmodel.ChatViewModel() }
 ) {
     val activeTab by caregiverViewModel.activeTab.collectAsState()
+    val activeConversation by chatViewModel.activeConversation.collectAsState()
+    val isAiChatActive by chatViewModel.isAiChatActive.collectAsState()
     val currentUser by appViewModel.currentUser.collectAsState()
     val photoBytes by appViewModel.profilePhotoBytes.collectAsState()
 
@@ -76,14 +82,21 @@ fun CareGiverDashboardScreen(
                 onAddPatientClick = { navViewModel.navigateTo(CaregiverAddPatient) }
             )
             DashboardTab.HISTORY -> CareGiverHistoryContent(caregiverViewModel = caregiverViewModel)
-            DashboardTab.CHAT -> ChatScreen(appViewModel = appViewModel, isCaregiver = true)
+            DashboardTab.CHAT -> ChatScreen(
+                appViewModel = appViewModel,
+                chatViewModel = chatViewModel,
+                isCaregiver = true
+            )
             DashboardTab.SETTINGS -> SettingsScreen(hideBackButton = true, isCaregiver = true)
         }
-        BottomTabBar(
-            activeTab = activeTab,
-            onTabSelected = { caregiverViewModel.setActiveTab(it) },
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
+
+        if (activeTab != DashboardTab.CHAT || (activeConversation == null && !isAiChatActive)) {
+            BottomTabBar(
+                activeTab = activeTab,
+                onTabSelected = { caregiverViewModel.setActiveTab(it) },
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
+        }
     }
 }
 
@@ -338,43 +351,58 @@ fun CareGiverHomeContent(
                                         )
                                     )
                             )
-                            Box(modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp)) {
-                            Column {
-                                Text(
-                                    "${dayLabel.tr()} " + "adherence".tr(),
-                                    fontFamily = Poppins,
-                                    fontWeight = FontWeight.Medium,
-                                    fontSize = 14.sp,
-                                    color = Color.White.copy(alpha = 0.8f)
-                                )
-                                Text(
-                                    "${selectedDateStats.adherence}%",
-                                    fontFamily = Poppins,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 60.sp,
-                                    color = Color.White
-                                )
-                                Text(
-                                    "${selectedDateStats.taken} of ${selectedDateStats.total}" + " doses taken".tr(),
-                                    fontFamily = Poppins,
-                                    fontWeight = FontWeight.Medium,
-                                    fontSize = 14.sp,
-                                    color = Color.White.copy(alpha = 0.8f)
-                                )
-                            }
                             Box(
-                                modifier = Modifier.size(110.dp).align(Alignment.CenterEnd),
-                                contentAlignment = Alignment.Center
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 24.dp, vertical = 24.dp)
                             ) {
-                                CircularProgressIndicator(
-                                    progress = { selectedDateStats.adherence / 100f },
-                                    modifier = Modifier.size(90.dp),
-                                    color = GhanaYellow,
-                                    trackColor = Color.White.copy(alpha = 0.2f),
-                                    strokeWidth = 10.dp,
-                                    strokeCap = StrokeCap.Round
-                                )
-                            }
+                                Column(
+                                    modifier = Modifier.padding(end = 120.dp)
+                                ) {
+                                    Text(
+                                        "${dayLabel.tr()} " + "adherence".tr(),
+                                        fontFamily = Poppins,
+                                        fontWeight = FontWeight.Medium,
+                                        fontSize = 18.sp,
+                                        color = Color.White.copy(alpha = 0.9f)
+                                    )
+                                    Text(
+                                        "${selectedDateStats.adherence}%",
+                                        fontFamily = Poppins,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 64.sp,
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        "${selectedDateStats.taken} of ${selectedDateStats.total}" + " doses taken".tr(),
+                                        fontFamily = Poppins,
+                                        fontWeight = FontWeight.Medium,
+                                        fontSize = 16.sp,
+                                        color = Color.White.copy(alpha = 0.8f)
+                                    )
+                                }
+                                Box(
+                                    modifier = Modifier
+                                        .size(120.dp)
+                                        .align(Alignment.CenterEnd),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator(
+                                        progress = { selectedDateStats.adherence / 100f },
+                                        modifier = Modifier.size(100.dp),
+                                        color = GhanaYellow,
+                                        trackColor = Color.White.copy(alpha = 0.2f),
+                                        strokeWidth = 12.dp,
+                                        strokeCap = StrokeCap.Round
+                                    )
+                                    Text(
+                                        "${selectedDateStats.adherence}%",
+                                        fontFamily = Poppins,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp,
+                                        color = Color.White
+                                    )
+                                }
                             }
                         }
 
@@ -496,17 +524,20 @@ fun CareGiverHomeContent(
             }
         }
 
-        // FAB
+        // FAB (Add Patient) positioned cleanly above BottomTabBar and system navigation bar
         FloatingActionButton(
             onClick = onAddPatientClick,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(end = 24.dp, bottom = 100.dp),
+                .navigationBarsPadding()
+                .padding(end = 24.dp, bottom = 88.dp)
+                .size(64.dp),
             containerColor = GhanaYellow,
             contentColor = Color.White,
-            shape = CircleShape
+            shape = CircleShape,
+            elevation = FloatingActionButtonDefaults.elevation(8.dp)
         ) {
-            Icon(Icons.Default.PersonAdd, contentDescription = "Add patient", modifier = Modifier.size(24.dp))
+            Icon(Icons.Default.PersonAdd, contentDescription = "Add patient", modifier = Modifier.size(28.dp))
         }
     }
 }
@@ -792,24 +823,29 @@ private fun HistoryPatientDetailScreen(
                                 )
                             )
                     )
-                    Box(modifier = Modifier.padding(24.dp)) {
-                    Column {
-                        Text("Weekly".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 18.sp, color = Color.White.copy(alpha = 0.9f))
-                        Text("adherence".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 18.sp, color = Color.White.copy(alpha = 0.9f))
-                        Text("${weeklyStats.adherence}%", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 64.sp, color = Color.White)
-                        Text("${weeklyStats.taken} of ${weeklyStats.total}" + " doses taken".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 14.sp, color = Color.White.copy(alpha = 0.8f))
-                    }
-                    Box(modifier = Modifier.size(120.dp).align(Alignment.CenterEnd), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(
-                            progress = { weeklyStats.adherence / 100f },
-                            modifier = Modifier.size(100.dp),
-                            color = GhanaYellow,
-                            trackColor = Color.White.copy(alpha = 0.2f),
-                            strokeWidth = 12.dp,
-                            strokeCap = StrokeCap.Round
-                        )
-                        Text("${weeklyStats.adherence}%", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
-                    }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp, vertical = 24.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(end = 120.dp)
+                        ) {
+                            Text("Weekly adherence".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 18.sp, color = Color.White.copy(alpha = 0.9f))
+                            Text("${weeklyStats.adherence}%", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 64.sp, color = Color.White)
+                            Text("${weeklyStats.taken} of ${weeklyStats.total}" + " doses taken".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 16.sp, color = Color.White.copy(alpha = 0.8f))
+                        }
+                        Box(modifier = Modifier.size(120.dp).align(Alignment.CenterEnd), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator(
+                                progress = { weeklyStats.adherence / 100f },
+                                modifier = Modifier.size(100.dp),
+                                color = GhanaYellow,
+                                trackColor = Color.White.copy(alpha = 0.2f),
+                                strokeWidth = 12.dp,
+                                strokeCap = StrokeCap.Round
+                            )
+                            Text("${weeklyStats.adherence}%", fontFamily = Poppins, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.White)
+                        }
                     }
                 }
 
@@ -985,55 +1021,50 @@ private fun WeekCalendarStrip(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(Surface, RoundedCornerShape(20.dp))
-            .border(1.dp, BorderLight, RoundedCornerShape(20.dp))
-            .padding(horizontal = 8.dp, vertical = 16.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
+            .background(Surface, RoundedCornerShape(24.dp))
+            .border(1.dp, BorderLight, RoundedCornerShape(24.dp))
+            .padding(horizontal = 8.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         days.forEach { day ->
             Column(
                 modifier = Modifier.clickable { onDaySelected(day.date) },
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
                     day.dayLabel.tr(),
                     fontFamily = Poppins,
                     fontWeight = FontWeight.Medium,
-                    fontSize = 11.sp,
+                    fontSize = 12.sp,
                     color = if (day.isSelected) PrimaryGreen else TextSecondary
                 )
                 Box(
                     modifier = Modifier
                         .size(36.dp)
                         .background(
-                            when {
-                                day.isSelected -> DarkGreen
-                                else -> Color.Transparent
-                            },
+                            if (day.isSelected) PrimaryGreen else SurfaceVariant,
                             CircleShape
                         )
                         .then(
-                            when {
-                                day.isToday && !day.isSelected ->
-                                    Modifier.border(2.dp, DarkGreen, CircleShape)
-                                else -> Modifier
-                            }
+                            if (day.isToday && !day.isSelected)
+                                Modifier.border(2.dp, PrimaryGreen, CircleShape)
+                            else Modifier
                         ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         "${day.dayNumber}",
                         fontFamily = Poppins,
-                        fontWeight = if (day.isSelected || day.isToday) FontWeight.Bold else FontWeight.Medium,
+                        fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
-                        color = if (day.isSelected) Color.White else if (day.isToday) DarkGreen else TextPrimary
+                        color = if (day.isSelected) Color.White else if (day.isToday) PrimaryGreen else TextPrimary
                     )
                 }
                 // Adherence dot: green ≥80%, yellow >0%, transparent otherwise
                 Box(
                     modifier = Modifier
-                        .size(6.dp)
+                        .size(4.dp)
                         .background(
                             when {
                                 day.adherence >= 80 -> PrimaryGreen
@@ -1175,12 +1206,24 @@ private fun TodayScheduleCard(info: TodayDoseInfo, modifier: Modifier = Modifier
                     modifier = Modifier.size(16.dp)
                 )
             }
-            Icon(
-                Icons.Default.Mic,
-                contentDescription = null,
-                tint = Color.White.copy(alpha = 0.55f),
-                modifier = Modifier.size(18.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(Color.White.copy(alpha = 0.15f), CircleShape)
+                    .clickable {
+                        HapticFeedback.light()
+                        SoundPlayer.playSoundOnce("Bell")
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.AutoMirrored.Filled.VolumeUp,
+                    contentDescription = "Play sound",
+                    tint = Color.White.copy(alpha = 0.85f),
+                    modifier = Modifier.size(18.dp)
+                )
+            }
         }
     }
 }

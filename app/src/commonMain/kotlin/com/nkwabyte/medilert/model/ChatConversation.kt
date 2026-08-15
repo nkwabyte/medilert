@@ -13,5 +13,7 @@ data class ChatConversation(
     val lastMessageTimestamp: Long = 0L,
     val lastMessageSenderId: String = "",
     val unreadCount: Map<String, Int> = emptyMap(),
+    val deletedForUserIds: List<String> = emptyList(),
+    val clearHistoryTimestamps: Map<String, Long> = emptyMap(),
     val updatedAt: Long = 0L
 )

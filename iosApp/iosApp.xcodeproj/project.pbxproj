@@ -220,7 +220,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ -z \"$KOTLIN_PROJECT_PATH\" ]; then\n  KOTLIN_PROJECT_PATH=\"$SRCROOT/..\"\nfi\nif [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping framework compilation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED, syncing Compose resources...\"\n  ARCHS=\"arm64\" \"$KOTLIN_PROJECT_PATH/gradlew\" -p \"$KOTLIN_PROJECT_PATH\" :app:syncComposeResourcesForIos\nelse\n  \"$KOTLIN_PROJECT_PATH/gradlew\" -p \"$KOTLIN_PROJECT_PATH\" :app:embedAndSignAppleFrameworkForXcode\nfi\n";
+			shellScript = "if [ -z \"$KOTLIN_PROJECT_PATH\" ]; then\n  KOTLIN_PROJECT_PATH=\"$SRCROOT/..\"\nfi\n\"$KOTLIN_PROJECT_PATH/gradlew\" -p \"$KOTLIN_PROJECT_PATH\" :app:embedAndSignAppleFrameworkForXcode\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

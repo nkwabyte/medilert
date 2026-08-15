@@ -1,7 +1,13 @@
 package com.nkwabyte.medilert.model
 
 import kotlinx.datetime.Clock
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 @Serializable
 data class User(
@@ -19,7 +25,8 @@ data class User(
     val preferences: UserPreferences = UserPreferences(),
     val createdAt: Long = 0L,
     val updatedAt: Long = 0L,
-    val caregiverId: String = ""
+    val caregiverId: String = "",
+    val lastActiveAt: Long = 0L
 )
 
 @Serializable
@@ -35,7 +42,21 @@ data class UserPreferences(
     val lowAdherenceEnabled: Boolean = true
 )
 
-@Serializable
+@Serializable(with = UserRoleSerializer::class)
 enum class UserRole {
     PATIENT, DOCTOR, PHARMACIST, GUARDIAN
+}
+
+object UserRoleSerializer : KSerializer<UserRole> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("UserRole", PrimitiveKind.STRING)
+    override fun serialize(encoder: Encoder, value: UserRole) = encoder.encodeString(value.name)
+    override fun deserialize(decoder: Decoder): UserRole {
+        val str = try { decoder.decodeString().uppercase().trim() } catch (_: Exception) { "PATIENT" }
+        return when (str) {
+            "DOCTOR" -> UserRole.DOCTOR
+            "PHARMACIST" -> UserRole.PHARMACIST
+            "GUARDIAN", "CAREGIVER" -> UserRole.GUARDIAN
+            else -> UserRole.PATIENT
+        }
+    }
 }

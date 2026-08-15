@@ -3,6 +3,13 @@ package com.nkwabyte.medilert.model
 import kotlinx.serialization.Serializable
 
 @Serializable
+enum class MessageStatus {
+    SENT,
+    DELIVERED,
+    READ
+}
+
+@Serializable
 data class ChatMessage(
     val id: String = "",
     val conversationId: String = "",
@@ -13,5 +20,6 @@ data class ChatMessage(
     val recipientName: String = "",
     val text: String = "",
     val timestamp: Long = 0L,
-    val read: Boolean = false
+    val read: Boolean = false,
+    val status: MessageStatus = MessageStatus.SENT
 )

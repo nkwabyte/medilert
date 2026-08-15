@@ -11,16 +11,19 @@ import platform.darwin.dispatch_time
 actual object SoundPlayer {
     private var currentPlayer: AVAudioPlayer? = null
 
-    @OptIn(ExperimentalForeignApi::class)
-    actual fun playNotificationSound(tone: String) {
-        val fileName = when (tone) {
+    private fun getFileName(tone: String): String {
+        return when (tone) {
             "Bell" -> "bell_notification"
             "Clear Tones" -> "clear_announce_tones"
             "Happy Bells" -> "happy_bells_notification"
             "Urgent Loop", "Default" -> "urgent_simple_tone_loop"
-            else -> "urgent_simple_tone_loop"
+            else -> "bell_notification"
         }
+    }
 
+    @OptIn(ExperimentalForeignApi::class)
+    actual fun playNotificationSound(tone: String) {
+        val fileName = getFileName(tone)
         val url = NSBundle.mainBundle.URLForResource(fileName, withExtension = "wav")
         if (url != null) {
             try {
@@ -38,6 +41,24 @@ actual object SoundPlayer {
                         stopNotificationSound()
                     }
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
+    actual fun playSoundOnce(tone: String) {
+        val fileName = getFileName(tone)
+        val url = NSBundle.mainBundle.URLForResource(fileName, withExtension = "wav")
+        if (url != null) {
+            try {
+                currentPlayer?.stop()
+                val player = AVAudioPlayer(contentsOfURL = url, error = null)
+                player.numberOfLoops = 0 // play once
+                player.prepareToPlay()
+                player.play()
+                currentPlayer = player
             } catch (e: Exception) {
                 e.printStackTrace()
             }

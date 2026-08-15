@@ -9,13 +9,7 @@ actual object SoundPlayer {
 
     actual fun playNotificationSound(tone: String) {
         try {
-            val resId = when (tone) {
-                "Bell" -> R.raw.bell_notification
-                "Clear Tones" -> R.raw.clear_announce_tones
-                "Happy Bells" -> R.raw.happy_bells_notification
-                "Urgent Loop", "Default" -> R.raw.urgent_simple_tone_loop
-                else -> R.raw.urgent_simple_tone_loop
-            }
+            val resId = getToneResourceId(tone)
             val context = MedilertApplication.appContext
             
             stopNotificationSound()
@@ -32,6 +26,34 @@ actual object SoundPlayer {
             }, 30000)
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    actual fun playSoundOnce(tone: String) {
+        try {
+            val resId = getToneResourceId(tone)
+            val context = MedilertApplication.appContext
+            stopNotificationSound()
+            val mediaPlayer = MediaPlayer.create(context, resId)
+            currentPlayer = mediaPlayer
+            mediaPlayer?.isLooping = false
+            mediaPlayer?.setOnCompletionListener {
+                it.release()
+                if (currentPlayer == it) currentPlayer = null
+            }
+            mediaPlayer?.start()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun getToneResourceId(tone: String): Int {
+        return when (tone) {
+            "Bell" -> R.raw.bell_notification
+            "Clear Tones" -> R.raw.clear_announce_tones
+            "Happy Bells" -> R.raw.happy_bells_notification
+            "Urgent Loop", "Default" -> R.raw.urgent_simple_tone_loop
+            else -> R.raw.bell_notification
         }
     }
 

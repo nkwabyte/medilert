@@ -96,7 +96,9 @@ import com.nkwabyte.medilert.ui.theme.TextPrimary
 import com.nkwabyte.medilert.ui.theme.TextSecondary
 import com.nkwabyte.medilert.util.GhanaianPhrases
 import com.nkwabyte.medilert.util.HapticFeedback
+import com.nkwabyte.medilert.util.SoundPlayer
 import com.nkwabyte.medilert.viewmodel.AppViewModel
+import com.nkwabyte.medilert.viewmodel.ChatViewModel
 import com.nkwabyte.medilert.viewmodel.MedicationViewModel
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 import kotlinx.datetime.Clock
@@ -130,9 +132,12 @@ private fun sessionOf(scheduledTime: String): String {
 fun DashboardScreen(
     navViewModel: NavViewModel = viewModel { NavViewModel() },
     appViewModel: AppViewModel = viewModel { AppViewModel() },
-    medicationViewModel: MedicationViewModel = viewModel { MedicationViewModel() }
+    medicationViewModel: MedicationViewModel = viewModel { MedicationViewModel() },
+    chatViewModel: ChatViewModel = viewModel { ChatViewModel() }
 ) {
     val activeTab by appViewModel.activeDashboardTab.collectAsState()
+    val activeConversation by chatViewModel.activeConversation.collectAsState()
+    val isAiChatActive by chatViewModel.isAiChatActive.collectAsState()
 
     Box(
         modifier = Modifier
@@ -160,7 +165,8 @@ fun DashboardScreen(
                 )
 
                 DashboardTab.CHAT -> ChatScreen(
-                    appViewModel = appViewModel
+                    appViewModel = appViewModel,
+                    chatViewModel = chatViewModel
                 )
 
                 DashboardTab.SETTINGS -> SettingsScreen(
@@ -171,11 +177,13 @@ fun DashboardScreen(
             }
         }
 
-        BottomTabBar(
-            activeTab = activeTab,
-            onTabSelected = { appViewModel.setDashboardTab(it) },
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
+        if (activeTab != DashboardTab.CHAT || (activeConversation == null && !isAiChatActive)) {
+            BottomTabBar(
+                activeTab = activeTab,
+                onTabSelected = { appViewModel.setDashboardTab(it) },
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
+        }
     }
 }
 
@@ -729,7 +737,7 @@ fun HomeTab(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .navigationBarsPadding()
-                .padding(end = 24.dp, bottom = 100.dp)
+                .padding(end = 24.dp, bottom = 88.dp)
                 .size(68.dp),
             shape = CircleShape,
             containerColor = PrimaryGreen,
@@ -1024,18 +1032,23 @@ fun MedicationScheduleCard(
                 DoseStatus.UPCOMING -> Unit
             }
 
-            // Speaker icon (bottom-right) — always visible for upcoming, dimmed for others
+            // Speaker icon (bottom-right) — plays sound on click
             Box(
                 modifier = Modifier
                     .size(40.dp)
                     .align(Alignment.BottomEnd)
-                    .background(Color.White.copy(alpha = if (schedule.status == DoseStatus.UPCOMING) 0.25f else 0.1f), CircleShape),
+                    .clip(CircleShape)
+                    .background(Color.White.copy(alpha = if (schedule.status == DoseStatus.UPCOMING) 0.25f else 0.15f), CircleShape)
+                    .clickable {
+                        HapticFeedback.light()
+                        SoundPlayer.playSoundOnce("Bell")
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     Icons.AutoMirrored.Filled.VolumeUp,
                     contentDescription = "Audio reminder",
-                    tint = Color.White.copy(alpha = if (schedule.status == DoseStatus.UPCOMING) 1f else 0.4f),
+                    tint = Color.White.copy(alpha = if (schedule.status == DoseStatus.UPCOMING) 1f else 0.6f),
                     modifier = Modifier.size(20.dp)
                 )
             }

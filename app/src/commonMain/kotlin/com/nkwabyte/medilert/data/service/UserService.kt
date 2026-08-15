@@ -25,7 +25,10 @@ class UserService(
                 Firebase.firestore.collection("users").document(user.uid).snapshots
                     .map { snapshot ->
                         try {
-                            if (snapshot.exists) snapshot.data<User>() else null
+                            if (snapshot.exists) {
+                                val u = snapshot.data<User>()
+                                if (u.id.isBlank()) u.copy(id = snapshot.id) else u
+                            } else null
                         } catch (_: Exception) { null }
                     }
             }
