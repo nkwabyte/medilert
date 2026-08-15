@@ -25,14 +25,6 @@ class MedicationViewModel(
     private val medicationService: MedicationService = MedicationService()
 ) : ViewModel() {
 
-    init {
-        viewModelScope.launch {
-            scheduleHistory.collect { schedules ->
-                MedicationAlarmScheduler.scheduleAllUpcoming(schedules)
-            }
-        }
-    }
-
     val medications: StateFlow<List<Medication>> = medicationService.medications
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
@@ -53,6 +45,14 @@ class MedicationViewModel(
 
     private val _draftFrequency = MutableStateFlow("Once daily")
     val draftFrequency: StateFlow<String> = _draftFrequency.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            scheduleHistory.collect { schedules ->
+                MedicationAlarmScheduler.scheduleAllUpcoming(schedules)
+            }
+        }
+    }
 
     fun setDraftName(name: String) { _draftMedication.value = _draftMedication.value.copy(name = name) }
     fun updateDraftName(name: String) = setDraftName(name)

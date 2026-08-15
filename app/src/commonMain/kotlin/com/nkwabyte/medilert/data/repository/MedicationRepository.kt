@@ -43,18 +43,24 @@ class MedicationRepository {
             }
             .catch { emit(emptyList()) }
 
+@OptIn(kotlin.uuid.ExperimentalUuidApi::class)
     suspend fun addMedication(medication: Medication): FirebaseResult<Unit> {
         return try {
-            medsCollection().document(medication.id).set(medication)
+            val id = if (medication.id.isNotBlank()) medication.id else kotlin.uuid.Uuid.random().toString()
+            val medToSave = if (medication.id.isNotBlank()) medication else medication.copy(id = id)
+            medsCollection().document(id).set(medToSave)
             FirebaseResult.Success(Unit)
         } catch (e: Exception) {
             FirebaseResult.Error(e.message ?: "Failed to add medication", e)
         }
     }
 
+    @OptIn(kotlin.uuid.ExperimentalUuidApi::class)
     suspend fun updateMedication(medication: Medication): FirebaseResult<Unit> {
         return try {
-            medsCollection().document(medication.id).set(medication)
+            val id = if (medication.id.isNotBlank()) medication.id else kotlin.uuid.Uuid.random().toString()
+            val medToSave = if (medication.id.isNotBlank()) medication else medication.copy(id = id)
+            medsCollection().document(id).set(medToSave)
             FirebaseResult.Success(Unit)
         } catch (e: Exception) {
             FirebaseResult.Error(e.message ?: "Failed to update medication", e)
@@ -62,6 +68,7 @@ class MedicationRepository {
     }
 
     suspend fun deleteMedication(medicationId: String): FirebaseResult<Unit> {
+        if (medicationId.isBlank()) return FirebaseResult.Success(Unit)
         return try {
             val doseRecords = doseCollection()
                 .where { "medicationId" equalTo medicationId }
@@ -78,6 +85,7 @@ class MedicationRepository {
     }
 
     suspend fun getMedicationById(medicationId: String): FirebaseResult<Medication> {
+        if (medicationId.isBlank()) return FirebaseResult.Error("Invalid medication ID")
         return try {
             val snapshot = medsCollection().document(medicationId).get()
             val med = if (snapshot.exists) snapshot.data<Medication>() else null
@@ -88,14 +96,16 @@ class MedicationRepository {
         }
     }
 
+    @OptIn(kotlin.uuid.ExperimentalUuidApi::class)
     suspend fun recordDoseStatus(
         schedule: MedicationSchedule,
         status: DoseStatus,
         takenAt: String = ""
     ): FirebaseResult<Unit> {
         return try {
-            val record = schedule.copy(status = status, takenAt = takenAt)
-            doseCollection().document(record.id).set(record)
+            val recordId = if (schedule.id.isNotBlank()) schedule.id else kotlin.uuid.Uuid.random().toString()
+            val record = schedule.copy(id = recordId, status = status, takenAt = takenAt)
+            doseCollection().document(recordId).set(record)
             FirebaseResult.Success(Unit)
         } catch (e: Exception) {
             FirebaseResult.Error(e.message ?: "Failed to record dose", e)

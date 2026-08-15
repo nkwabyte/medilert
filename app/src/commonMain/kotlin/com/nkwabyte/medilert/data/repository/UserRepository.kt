@@ -56,9 +56,12 @@ class UserRepository {
         }
     }
 
+    @OptIn(kotlin.uuid.ExperimentalUuidApi::class)
     suspend fun addMedication(medication: Medication): FirebaseResult<Unit> {
         return try {
-            medsCollection(uid).document(medication.id).set(medication)
+            val id = if (medication.id.isNotBlank()) medication.id else kotlin.uuid.Uuid.random().toString()
+            val medToSave = if (medication.id.isNotBlank()) medication else medication.copy(id = id)
+            medsCollection(uid).document(id).set(medToSave)
             FirebaseResult.Success(Unit)
         } catch (e: Exception) {
             FirebaseResult.Error(e.message ?: "Failed to add medication", e)
@@ -77,9 +80,12 @@ class UserRepository {
         }
     }
 
+    @OptIn(kotlin.uuid.ExperimentalUuidApi::class)
     suspend fun updateMedication(medication: Medication): FirebaseResult<Unit> {
         return try {
-            medsCollection(uid).document(medication.id).set(medication)
+            val id = if (medication.id.isNotBlank()) medication.id else kotlin.uuid.Uuid.random().toString()
+            val medToSave = if (medication.id.isNotBlank()) medication else medication.copy(id = id)
+            medsCollection(uid).document(id).set(medToSave)
             FirebaseResult.Success(Unit)
         } catch (e: Exception) {
             FirebaseResult.Error(e.message ?: "Failed to update medication", e)
@@ -87,6 +93,7 @@ class UserRepository {
     }
 
     suspend fun deleteMedication(medicationId: String): FirebaseResult<Unit> {
+        if (medicationId.isBlank()) return FirebaseResult.Success(Unit)
         return try {
             medsCollection(uid).document(medicationId).delete()
             FirebaseResult.Success(Unit)

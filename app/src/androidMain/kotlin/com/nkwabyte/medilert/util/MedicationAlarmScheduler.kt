@@ -10,9 +10,6 @@ import com.nkwabyte.medilert.model.DoseStatus
 import com.nkwabyte.medilert.model.MedicationSchedule
 import com.nkwabyte.medilert.service.MedicationAlarmReceiver
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 actual object MedicationAlarmScheduler {
 
@@ -60,7 +57,6 @@ actual object MedicationAlarmScheduler {
                 )
             }
         } catch (e: SecurityException) {
-            // In case exact alarm permission is restricted on Android 12+, fallback to setAndAllowWhileIdle
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     alarmManager.setAndAllowWhileIdle(
@@ -105,7 +101,7 @@ actual object MedicationAlarmScheduler {
         val now = Clock.System.now().toEpochMilliseconds()
         schedules.forEach { schedule ->
             if (schedule.status == DoseStatus.UPCOMING) {
-                val triggerMillis = parseScheduleTime(schedule.scheduledTime, schedule.date)
+                val triggerMillis = parseScheduleTimeToEpochMillis(schedule.scheduledTime, schedule.date)
                 if (triggerMillis > now) {
                     scheduleAlarm(
                         id = schedule.id,
@@ -118,58 +114,5 @@ actual object MedicationAlarmScheduler {
                 }
             }
         }
-    }
-
-    private fun parseScheduleTime(timeStr: String, dateStr: String): Long {
-        return try {
-            val now = Clock.System.now()
-            val localNow = now.toLocalDateTime(TimeZone.currentSystemDefault())
-            val parts = timeStr.trim().split(" ")
-            val timeParts = parts[0].split(":")
-            var hour = timeParts[0].toInt()
-            val minute = if (timeParts.size > 1) timeParts[1].toInt() else 0
-            if (parts.size > 1 && parts[1].equals("PM", ignoreCase = true) && hour < 12) {
-                hour += 12
-            } else if (parts.size > 1 && parts[1].equals("AM", ignoreCase = true) && hour == 12) {
-                hour = 0
-            }
-
-            val targetDate = if (dateStr.isNotBlank()) {
-                try {
-                    val dParts = dateStr.split("-")
-                    if (dParts.size == 3) {
-                        kotlinx.datetime.LocalDate(dParts[0].toInt(), dParts[1].toInt(), dParts[2].toInt())
-                    } else localNow.date
-                } catch (_: Exception) {
-                    localNow.date
-                }
-            } else localNow.date
-
-            val localDateTime = kotlinx.datetime.LocalDateTime(
-                targetDate.year,
-                targetDate.monthNumber,
-                targetDate.dayOfMonth,
-                hour,
-                minute,
-                0,
-                0
-            )
-            localDateTime.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
-        } catch (_: Exception) {
-            0L
-        }
-    }
-
-    private fun kotlinx.datetime.LocalDateTime.toInstant(zone: TimeZone): Instant {
-        val epochSeconds = toEpochSecond(zone)
-        return Instant.fromEpochSeconds(epochSeconds, nanosecond)
-    }
-
-    private fun kotlinx.datetime.LocalDateTime.toEpochSecond(zone: TimeZone): Long {
-        // Approximate calculation with standard epoch conversion
-        val days = java.time.LocalDate.of(year, monthNumber, dayOfMonth).toEpochDay()
-        val secs = days * 86400L + hour * 3600L + minute * 60L + second
-        val offsetSecs = java.time.ZoneId.systemDefault().rules.getOffset(java.time.Instant.now()).totalSeconds
-        return secs - offsetSecs
     }
 }

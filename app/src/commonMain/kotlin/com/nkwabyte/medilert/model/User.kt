@@ -39,7 +39,8 @@ data class UserPreferences(
     val vibrationEnabled: Boolean = true,
     val fontSize: String = "medium",
     val missedAlertsEnabled: Boolean = true,
-    val lowAdherenceEnabled: Boolean = true
+    val lowAdherenceEnabled: Boolean = true,
+    val notificationTone: String = "Happy Bells"
 )
 
 @Serializable(with = UserRoleSerializer::class)

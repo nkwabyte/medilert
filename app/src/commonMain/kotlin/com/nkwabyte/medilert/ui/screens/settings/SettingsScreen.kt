@@ -111,9 +111,10 @@ fun SettingsScreen(
 
     val missedAlerts = currentUser.preferences.missedAlertsEnabled
     val lowAdherence = currentUser.preferences.lowAdherenceEnabled
+    val notificationTone by appViewModel.notificationTone.collectAsState()
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showToneDialog by remember { mutableStateOf(false) }
-    var selectedTone by remember { mutableStateOf("Urgent Loop") }
+    var selectedTone by remember(notificationTone) { mutableStateOf(notificationTone) }
 
 
     // Compute user display info
@@ -543,10 +544,11 @@ fun SettingsScreen(
     }
 
     if (showToneDialog) {
-        val tones = listOf("Urgent Loop", "Bell", "Clear Tones", "Happy Bells")
+        val tones = listOf("Happy Bells", "Bell", "Clear Tones", "Urgent Loop")
         AlertDialog(
             onDismissRequest = { 
                 SoundPlayer.stopNotificationSound()
+                selectedTone = notificationTone
                 showToneDialog = false 
             },
             containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
@@ -602,6 +604,7 @@ fun SettingsScreen(
             confirmButton = {
                 androidx.compose.material3.TextButton(onClick = { 
                     SoundPlayer.stopNotificationSound()
+                    appViewModel.setNotificationTone(selectedTone)
                     showToneDialog = false 
                 }) {
                     Text("OK".tr(), fontFamily = Poppins, fontWeight = FontWeight.Bold, color = PrimaryGreen)
@@ -610,6 +613,7 @@ fun SettingsScreen(
             dismissButton = {
                 androidx.compose.material3.TextButton(onClick = { 
                     SoundPlayer.stopNotificationSound()
+                    selectedTone = notificationTone
                     showToneDialog = false 
                 }) {
                     Text("Cancel".tr(), fontFamily = Poppins, fontWeight = FontWeight.Medium, color = TextSecondary)

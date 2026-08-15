@@ -53,6 +53,9 @@ class AppViewModel(
     private val _fontScale = MutableStateFlow(1f)
     val fontScale: StateFlow<Float> = _fontScale.asStateFlow()
 
+    private val _notificationTone = MutableStateFlow("Happy Bells")
+    val notificationTone: StateFlow<String> = _notificationTone.asStateFlow()
+
     private val _isUploadingPhoto = MutableStateFlow(false)
     val isUploadingPhoto: StateFlow<Boolean> = _isUploadingPhoto.asStateFlow()
 
@@ -80,6 +83,7 @@ class AppViewModel(
                     _selectedLanguage.value = it.preferences.language
                     _isDarkMode.value = it.preferences.theme == "dark"
                     _voiceEnabled.value = it.preferences.voiceEnabled
+                    _notificationTone.value = if (it.preferences.notificationTone.isNotBlank()) it.preferences.notificationTone else "Happy Bells"
                     setTextSize(it.preferences.fontSize)
                     // Only try network download if no local cache exists
                     if (it.photoUrl.isNotBlank() && _profilePhotoBytes.value == null) {
@@ -133,7 +137,8 @@ class AppViewModel(
         fontSize: String? = null,
         voiceEnabled: Boolean? = null,
         missedAlertsEnabled: Boolean? = null,
-        lowAdherenceEnabled: Boolean? = null
+        lowAdherenceEnabled: Boolean? = null,
+        notificationTone: String? = null
     ) {
         viewModelScope.launch {
             val currentPrefs = _currentUser.value.preferences
@@ -146,13 +151,20 @@ class AppViewModel(
                 fontSize = fontSize ?: currentPrefs.fontSize,
                 voiceEnabled = voiceEnabled ?: currentPrefs.voiceEnabled,
                 missedAlertsEnabled = missedAlertsEnabled ?: currentPrefs.missedAlertsEnabled,
-                lowAdherenceEnabled = lowAdherenceEnabled ?: currentPrefs.lowAdherenceEnabled
+                lowAdherenceEnabled = lowAdherenceEnabled ?: currentPrefs.lowAdherenceEnabled,
+                notificationTone = notificationTone ?: currentPrefs.notificationTone
             )
             _currentUser.value = _currentUser.value.copy(preferences = updatedPrefs)
             _isDarkMode.value = updatedPrefs.theme == "dark"
+            _notificationTone.value = updatedPrefs.notificationTone
 
             userService.updateProfile(mapOf("preferences" to updatedPrefs))
         }
+    }
+
+    fun setNotificationTone(tone: String) {
+        _notificationTone.value = tone
+        updatePreferences(notificationTone = tone)
     }
 
     fun updateProfileInfo(
