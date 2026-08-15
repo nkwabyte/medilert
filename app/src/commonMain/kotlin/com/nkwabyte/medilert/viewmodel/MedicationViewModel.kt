@@ -7,6 +7,7 @@ import com.nkwabyte.medilert.data.service.MedicationService
 import com.nkwabyte.medilert.model.Medication
 import com.nkwabyte.medilert.model.MedicationIntake
 import com.nkwabyte.medilert.model.MedicationSchedule
+import com.nkwabyte.medilert.util.MedicationAlarmScheduler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,6 +24,14 @@ data class MedicationUiState(
 class MedicationViewModel(
     private val medicationService: MedicationService = MedicationService()
 ) : ViewModel() {
+
+    init {
+        viewModelScope.launch {
+            scheduleHistory.collect { schedules ->
+                MedicationAlarmScheduler.scheduleAllUpcoming(schedules)
+            }
+        }
+    }
 
     val medications: StateFlow<List<Medication>> = medicationService.medications
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
@@ -134,14 +143,17 @@ class MedicationViewModel(
     }
 
     fun markDoseTaken(schedule: MedicationSchedule) {
+        MedicationAlarmScheduler.cancelAlarm(schedule.id)
         viewModelScope.launch { medicationService.markDoseTaken(schedule) }
     }
 
     fun markDoseMissed(schedule: MedicationSchedule) {
+        MedicationAlarmScheduler.cancelAlarm(schedule.id)
         viewModelScope.launch { medicationService.markDoseMissed(schedule) }
     }
 
     fun markDoseSkipped(schedule: MedicationSchedule) {
+        MedicationAlarmScheduler.cancelAlarm(schedule.id)
         viewModelScope.launch { medicationService.markDoseSkipped(schedule) }
     }
 

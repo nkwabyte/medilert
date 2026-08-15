@@ -57,6 +57,11 @@
             </intent-filter>
         </service>
 
+        <!-- On-Device Local Medication Alarm & Sound Reminder Receiver -->
+        <receiver
+            android:name=".service.MedicationAlarmReceiver"
+            android:exported="false" />
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="medilert_reminders" />
