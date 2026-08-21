@@ -14,20 +14,34 @@ import platform.darwin.dispatch_time
 actual object SoundPlayer {
     private var currentPlayer: AVAudioPlayer? = null
 
-    private fun getFileName(tone: String): String {
+    private fun getFileInfo(tone: String): Pair<String, String> {
         return when (tone) {
-            "Happy Bells", "Default" -> "happy_bells_notification"
-            "Bell" -> "bell_notification"
-            "Clear Tones" -> "clear_announce_tones"
-            "Urgent Loop" -> "urgent_simple_tone_loop"
-            else -> "happy_bells_notification"
+            "Happy Bells", "Default" -> Pair("happy_bells_notification", "wav")
+            "Bell" -> Pair("bell_notification", "wav")
+            "Clear Tones" -> Pair("clear_announce_tones", "wav")
+            "Urgent Loop" -> Pair("urgent_simple_tone_loop", "wav")
+            "time_for_medication_twi", "Twi" -> Pair("time_for_medication_twi", "mp3")
+            "time_for_medication_english", "English" -> Pair("time_for_medication_english", "mp3")
+            else -> {
+                if (tone.contains("twi", ignoreCase = true) || tone.contains("akan", ignoreCase = true)) {
+                    Pair("time_for_medication_twi", "mp3")
+                } else if (tone.contains("english", ignoreCase = true) || tone.contains("medication", ignoreCase = true)) {
+                    Pair("time_for_medication_english", "mp3")
+                } else {
+                    Pair("happy_bells_notification", "wav")
+                }
+            }
         }
     }
 
     @OptIn(ExperimentalForeignApi::class)
     actual fun playNotificationSound(tone: String) {
-        val fileName = getFileName(tone)
-        val url = NSBundle.mainBundle.URLForResource(fileName, withExtension = "wav")
+        val (fileName, ext) = getFileInfo(tone)
+        var url = NSBundle.mainBundle.URLForResource(fileName, withExtension = ext)
+        if (url == null) {
+            val fallbackExt = if (ext == "wav") "mp3" else "wav"
+            url = NSBundle.mainBundle.URLForResource(fileName, withExtension = fallbackExt)
+        }
         if (url != null) {
             try {
                 val session = AVAudioSession.sharedInstance()
@@ -56,8 +70,12 @@ actual object SoundPlayer {
 
     @OptIn(ExperimentalForeignApi::class)
     actual fun playSoundOnce(tone: String) {
-        val fileName = getFileName(tone)
-        val url = NSBundle.mainBundle.URLForResource(fileName, withExtension = "wav")
+        val (fileName, ext) = getFileInfo(tone)
+        var url = NSBundle.mainBundle.URLForResource(fileName, withExtension = ext)
+        if (url == null) {
+            val fallbackExt = if (ext == "wav") "mp3" else "wav"
+            url = NSBundle.mainBundle.URLForResource(fileName, withExtension = fallbackExt)
+        }
         if (url != null) {
             try {
                 val session = AVAudioSession.sharedInstance()
@@ -74,6 +92,15 @@ actual object SoundPlayer {
                 e.printStackTrace()
             }
         }
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
+    actual fun playMedicationReminderSound(language: String) {
+        val isTwi = language.contains("twi", ignoreCase = true) ||
+                    language.contains("akan", ignoreCase = true) ||
+                    language.equals("tw", ignoreCase = true)
+        val tone = if (isTwi) "time_for_medication_twi" else "time_for_medication_english"
+        playSoundOnce(tone)
     }
 
     actual fun stopNotificationSound() {

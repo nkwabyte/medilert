@@ -96,6 +96,7 @@ import com.nkwabyte.medilert.ui.theme.TextPrimary
 import com.nkwabyte.medilert.ui.theme.TextSecondary
 import com.nkwabyte.medilert.util.GhanaianPhrases
 import com.nkwabyte.medilert.util.HapticFeedback
+import com.nkwabyte.medilert.util.LocalAppLanguage
 import com.nkwabyte.medilert.util.SoundPlayer
 import com.nkwabyte.medilert.viewmodel.AppViewModel
 import com.nkwabyte.medilert.viewmodel.ChatViewModel
@@ -1033,6 +1034,7 @@ fun MedicationScheduleCard(
             }
 
             // Speaker icon (bottom-right) — plays sound on click
+            val currentLanguage = LocalAppLanguage.current
             Box(
                 modifier = Modifier
                     .size(40.dp)
@@ -1041,7 +1043,7 @@ fun MedicationScheduleCard(
                     .background(Color.White.copy(alpha = if (schedule.status == DoseStatus.UPCOMING) 0.25f else 0.15f), CircleShape)
                     .clickable {
                         HapticFeedback.light()
-                        SoundPlayer.playSoundOnce("Bell")
+                        SoundPlayer.playMedicationReminderSound(currentLanguage)
                     },
                 contentAlignment = Alignment.Center
             ) {

@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import com.nkwabyte.medilert.util.HapticFeedback
+import com.nkwabyte.medilert.util.LocalAppLanguage
 import com.nkwabyte.medilert.util.SoundPlayer
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -1206,6 +1207,7 @@ private fun TodayScheduleCard(info: TodayDoseInfo, modifier: Modifier = Modifier
                     modifier = Modifier.size(16.dp)
                 )
             }
+            val currentLanguage = LocalAppLanguage.current
             Box(
                 modifier = Modifier
                     .size(32.dp)
@@ -1213,7 +1215,7 @@ private fun TodayScheduleCard(info: TodayDoseInfo, modifier: Modifier = Modifier
                     .background(Color.White.copy(alpha = 0.15f), CircleShape)
                     .clickable {
                         HapticFeedback.light()
-                        SoundPlayer.playSoundOnce("Bell")
+                        SoundPlayer.playMedicationReminderSound(currentLanguage)
                     },
                 contentAlignment = Alignment.Center
             ) {

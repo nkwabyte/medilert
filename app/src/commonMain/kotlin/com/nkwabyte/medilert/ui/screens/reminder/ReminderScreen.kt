@@ -22,6 +22,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nkwabyte.medilert.util.HapticFeedback
+import com.nkwabyte.medilert.util.LocalAppLanguage
+import com.nkwabyte.medilert.util.SoundPlayer
 import com.nkwabyte.medilert.viewmodel.NavViewModel
 import com.nkwabyte.medilert.ui.theme.*
 
@@ -31,6 +34,7 @@ fun ReminderScreen(
     type: String,
     time: String
 ) {
+    val currentLanguage = LocalAppLanguage.current
     val (bgGradient, timeLabel, dotColor) = when (type) {
         "morning" -> Triple(listOf(GhanaRed, GhanaRedLight), "Morning", GhanaRed)
         "afternoon" -> Triple(listOf(GhanaYellow, GhanaYellowDark), "Afternoon", GhanaYellow)
@@ -49,7 +53,11 @@ fun ReminderScreen(
 
         Box(
             modifier = Modifier.align(Alignment.TopEnd).padding(end = 24.dp, top = 56.dp).size(40.dp)
-                .background(textColor.copy(alpha = 0.2f), CircleShape),
+                .background(textColor.copy(alpha = 0.2f), CircleShape)
+                .clickable {
+                    HapticFeedback.light()
+                    SoundPlayer.playMedicationReminderSound(currentLanguage)
+                },
             contentAlignment = Alignment.Center
         ) { Icon(Icons.AutoMirrored.Filled.VolumeUp, contentDescription = "Sound", tint = textColor) }
 

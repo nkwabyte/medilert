@@ -76,13 +76,31 @@ actual object SoundPlayer {
         }
     }
 
+    actual fun playMedicationReminderSound(language: String) {
+        val isTwi = language.contains("twi", ignoreCase = true) ||
+                    language.contains("akan", ignoreCase = true) ||
+                    language.equals("tw", ignoreCase = true)
+        val tone = if (isTwi) "time_for_medication_twi" else "time_for_medication_english"
+        playSoundOnce(tone)
+    }
+
     private fun getToneResourceId(tone: String): Int {
         return when (tone) {
             "Happy Bells", "Default" -> R.raw.happy_bells_notification
             "Bell" -> R.raw.bell_notification
             "Clear Tones" -> R.raw.clear_announce_tones
             "Urgent Loop" -> R.raw.urgent_simple_tone_loop
-            else -> R.raw.happy_bells_notification
+            "time_for_medication_twi", "Twi" -> R.raw.time_for_medication_twi
+            "time_for_medication_english", "English" -> R.raw.time_for_medication_english
+            else -> {
+                if (tone.contains("twi", ignoreCase = true) || tone.contains("akan", ignoreCase = true)) {
+                    R.raw.time_for_medication_twi
+                } else if (tone.contains("english", ignoreCase = true) || tone.contains("medication", ignoreCase = true)) {
+                    R.raw.time_for_medication_english
+                } else {
+                    R.raw.happy_bells_notification
+                }
+            }
         }
     }
 

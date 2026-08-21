@@ -20,7 +20,9 @@ sound_files = [
   'urgent_simple_tone_loop.wav',
   'bell_notification.wav',
   'clear_announce_tones.wav',
-  'happy_bells_notification.wav'
+  'happy_bells_notification.wav',
+  'time_for_medication_english.mp3',
+  'time_for_medication_twi.mp3'
 ]
 
 resources_build_phase = target.resources_build_phase
